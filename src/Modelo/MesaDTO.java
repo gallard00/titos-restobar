@@ -1,16 +1,10 @@
 package Modelo;
 
+import java.util.List;
+
 public class MesaDTO {
-    private int id;
     private String nombre;
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
+    private List<PedidoDTO> Pedido;
 
     public String getNombre() {
         return nombre;
@@ -19,5 +13,18 @@ public class MesaDTO {
     public void setNombre(String nombre) {
         this.nombre = nombre;
     }
+
+    public List<PedidoDTO> getPedido() {
+        return Pedido;
+    }
+
+    public void setPedido(List<PedidoDTO> Pedido) {
+        this.Pedido = Pedido;
+    }
+    
+    
+
+  
+    
     
 }
