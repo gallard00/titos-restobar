@@ -3,8 +3,16 @@ package Modelo;
 
 public class ItemsDTO {
     private int cantidad;
-    private ProductoDTO Poducto;
-    private PedidoDTO Pedido;
+    private float costoTotal;
+    private ProductoDTO producto;
+    private PedidoDTO pedido;
+
+    public ItemsDTO(int cantidad, float costoTotal, ProductoDTO producto, PedidoDTO pedido) {
+        this.cantidad = cantidad;
+        this.costoTotal = costoTotal;
+        this.producto = producto;
+        this.pedido = pedido;
+    }
 
     public int getCantidad() {
         return cantidad;
@@ -14,21 +22,31 @@ public class ItemsDTO {
         this.cantidad = cantidad;
     }
 
-    public ProductoDTO getPoducto() {
-        return Poducto;
+    public float getCostoTotal() {
+        return costoTotal;
     }
 
-    public void setPoducto(ProductoDTO Poducto) {
-        this.Poducto = Poducto;
+    public void setCostoTotal(float costoTotal) {
+        this.costoTotal = costoTotal;
+    }
+
+    public ProductoDTO getProducto() {
+        return producto;
+    }
+
+    public void setProducto(ProductoDTO producto) {
+        this.producto = producto;
     }
 
     public PedidoDTO getPedido() {
-        return Pedido;
+        return pedido;
     }
 
-    public void setPedido(PedidoDTO Pedido) {
-        this.Pedido = Pedido;
+    public void setPedido(PedidoDTO pedido) {
+        this.pedido = pedido;
     }
+
+    
     
     
 }

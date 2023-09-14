@@ -4,7 +4,16 @@ import java.util.List;
 
 public class MesaDTO {
     private String nombre;
-    private List<PedidoDTO> Pedido;
+    private List<PedidoDTO> pedido;
+
+    public MesaDTO(String nombre, List<PedidoDTO> pedido) {
+        this.nombre = nombre;
+        this.pedido = pedido;
+    }
+
+    public MesaDTO() {
+        
+    }
 
     public String getNombre() {
         return nombre;
@@ -15,11 +24,11 @@ public class MesaDTO {
     }
 
     public List<PedidoDTO> getPedido() {
-        return Pedido;
+        return pedido;
     }
 
-    public void setPedido(List<PedidoDTO> Pedido) {
-        this.Pedido = Pedido;
+    public void setPedido(List<PedidoDTO> pedido) {
+        this.pedido = pedido;
     }
     
     
