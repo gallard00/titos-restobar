@@ -17,7 +17,7 @@ public class MesaDAO {
     
     public void CrearMesas(){
         MesaDTO mesa = new MesaDTO();
-        System.out.println("Nombre de la mesa:");
+        System.out.println("Escriba el nombre de la mesa:");
         
         System.out.println("Nombre:");
         mesa.setNombre(scanner.nextLine());
@@ -25,6 +25,17 @@ public class MesaDAO {
         mesas.add(mesa);
         
         System.out.println("Mesa agregada exitosamente.");
+    }
+    
+    public void listaMesas() { //Muestra la lista de Mesas guardadas en la agenda, si es que hay
+        if (mesas.isEmpty()) {
+            System.out.println("No hay mesas en la agenda.");
+        } else {
+            System.out.println("Lista de Mesas:");
+            for (MesaDTO mesa : mesas) {
+                System.out.println(mesa);
+            }
+        }
     }
     
 }

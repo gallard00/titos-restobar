@@ -46,7 +46,8 @@ public class ItemsDTO {
         this.pedido = pedido;
     }
 
-    
-    
-    
+    private void calcularCostoTotal()
+    {
+        this.costoTotal = this.producto.getPrecio().getValor() * this.getCantidad();
+    }
 }

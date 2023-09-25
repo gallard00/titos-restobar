@@ -5,12 +5,12 @@ import java.util.List;
 public class ProductoDTO {
     private String nombre;
     private String descripcion;
-    private List<PrecioDTO> precios;
+    private PrecioDTO precio;
 
-    public ProductoDTO(String nombre, String descripcion, List<PrecioDTO> precios) {
+    public ProductoDTO(String nombre, String descripcion, PrecioDTO precio) {
         this.nombre = nombre;
         this.descripcion = descripcion;
-        this.precios = precios;
+        this.precio = precio;
     }
 
     public String getNombre() {
@@ -29,12 +29,12 @@ public class ProductoDTO {
         this.descripcion = descripcion;
     }
 
-    public List<PrecioDTO> getPrecios() {
-        return precios;
+    public PrecioDTO getPrecio() {
+        return precio;
     }
 
-    public void setPrecios(List<PrecioDTO> precios) {
-        this.precios = precios;
+    public void setPrecio(PrecioDTO precio) {
+        this.precio = precio;
     }
        
 }
