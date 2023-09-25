@@ -1,15 +1,13 @@
 package Modelo;
 
-import java.util.List;
 
 public class ProductoNoElaboradoDTO extends ProductoDTO {
     private int stock;
 
-    public ProductoNoElaboradoDTO(int stock, String nombre, String descripcion, List<PrecioDTO> precios) {
-        super(nombre, descripcion, precios);
+    public ProductoNoElaboradoDTO(int stock, String nombre, String descripcion, PrecioDTO precio) {
+        super(nombre, descripcion, precio);
         this.stock = stock;
     }
-
     
     public int getStock() {
         return stock;
