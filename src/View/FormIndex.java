@@ -32,6 +32,7 @@ public class FormIndex extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
+        jLabel1.setFont(new java.awt.Font("Segoe UI", 0, 36)); // NOI18N
         jLabel1.setText("TITO´S RESTOBAR");
 
         jButtonMesas.setText("MESAS");
@@ -52,6 +53,7 @@ public class FormIndex extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+<<<<<<< HEAD
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addGap(91, 91, 91)
                 .addComponent(jButtonMesas)
@@ -62,10 +64,22 @@ public class FormIndex extends javax.swing.JFrame {
                 .addGap(150, 150, 150)
                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+=======
+            .addGroup(layout.createSequentialGroup()
+                .addGap(190, 190, 190)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jButton1)
+                        .addGap(107, 107, 107)
+                        .addComponent(jButton2))
+                    .addComponent(jLabel1))
+                .addContainerGap(196, Short.MAX_VALUE))
+>>>>>>> 01264fafc55600ab257f06bc4282d2763b0a65b4
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
+<<<<<<< HEAD
                 .addGap(16, 16, 16)
                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(53, 53, 53)
@@ -73,6 +87,15 @@ public class FormIndex extends javax.swing.JFrame {
                     .addComponent(jButtonMesas)
                     .addComponent(jButtonProducto))
                 .addContainerGap(42, Short.MAX_VALUE))
+=======
+                .addGap(95, 95, 95)
+                .addComponent(jLabel1)
+                .addGap(51, 51, 51)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButton1)
+                    .addComponent(jButton2))
+                .addContainerGap(152, Short.MAX_VALUE))
+>>>>>>> 01264fafc55600ab257f06bc4282d2763b0a65b4
         );
 
         pack();
