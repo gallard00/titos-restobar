@@ -13,13 +13,19 @@ public class PedidoDTO extends Entidad {
     private float costoTotal;
     private List<ItemsDTO> producto;
 
-    public PedidoDTO(Date fechaApertura, Date fechaCierre, float descuento, float costoTotal, List<ItemsDTO> producto) {
+    public PedidoDTO() {
+    }
+
+    public PedidoDTO(int id, Date fechaApertura, Date fechaCierre, float descuento, float costoTotal, List<ItemsDTO> producto) {
+        this.id = id;
         this.fechaApertura = fechaApertura;
         this.fechaCierre = fechaCierre;
         this.descuento = descuento;
         this.costoTotal = costoTotal;
         this.producto = producto;
     }
+
+   
 
     public float getCostoTotal() {
         return costoTotal;
