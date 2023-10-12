@@ -2,13 +2,15 @@ package Modelo;
 
 
 public class ProductoNoElaboradoDTO extends ProductoDTO {
+    
     private int stock;
 
-    public ProductoNoElaboradoDTO(int stock, String nombre, String descripcion, PrecioDTO precio) {
-        super(nombre, descripcion, precio);
+    public ProductoNoElaboradoDTO(int stock, int id, String nombre, String descripcion, float costo, PrecioDTO precio) {
+        super(id, nombre, descripcion, costo, precio);
         this.stock = stock;
     }
-    
+
+
     public int getStock() {
         return stock;
     }

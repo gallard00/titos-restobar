@@ -1,13 +1,11 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package DAO;
 
-/**
- *
- * @author Nahu
- */
-public class ProductoNoElaboradoDAO {
+import java.sql.SQLException;
+
+public class ProductoNoElaboradoDAO extends ProductoDAO {
+    ControladoraConnector ConnectorController;
     
+    public ProductoNoElaboradoDAO() throws SQLException {
+        ConnectorController = ControladoraConnector.GetInstanceConnector();
+    }
 }

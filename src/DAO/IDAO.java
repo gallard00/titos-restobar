@@ -1,19 +1,16 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Interface.java to edit this template
- */
 package DAO;
 
 import java.util.List;
 
-/**
- *
- * @author Nahu
- */
 public interface IDAO {
-    public void Crear(Object e);
-    public List<Object> Lear();
-    public Object LeerPorId(Object e);
-    public Object Modificar(Object e);
-    public Object Borrar(Object e);
+    
+    abstract int crear(Entidad e); //Devuelo la ID del objecto ingresado en la BD para la vista 
+
+    abstract List mostrar();
+
+    abstract void actualizar(Entidad e);
+
+    public abstract void borrar(Entidad e);
+
+    public abstract Entidad porId(int id);
 }

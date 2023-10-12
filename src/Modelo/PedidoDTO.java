@@ -1,9 +1,12 @@
 package Modelo;
 
+import DAO.Entidad;
 import java.util.Date;
 import java.util.List;
 
-public class PedidoDTO {
+public class PedidoDTO extends Entidad {
+    
+    private int id;
     private Date fechaApertura;
     private Date fechaCierre;
     private float descuento;
