@@ -49,4 +49,9 @@ public class ProductoController {
     }
     
 //</editor-fold>
+    
+     public void ActualizarProducto(String nombre, String descripcion, float costo, PrecioDTO precio) {
+        ProductoDTO prodModif = new ProductoDTO(nombre, descripcion, costo,  precio);
+        ProductoDAO.actualizar(prodModif);
+    }
 }
