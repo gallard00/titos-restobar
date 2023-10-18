@@ -3,6 +3,8 @@ package View;
 
 import Controlador.MesaController;
 import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 public class FormMesa extends javax.swing.JFrame {
@@ -146,7 +148,11 @@ public class FormMesa extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new FormMesa().setVisible(true);
+                try {
+                    new FormMesa().setVisible(true);
+                } catch (SQLException ex) {
+                    Logger.getLogger(FormMesa.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         });
     }
