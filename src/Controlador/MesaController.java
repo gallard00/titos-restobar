@@ -54,6 +54,19 @@ public class MesaController {
     
     public void CrearPedido (Date fechaApertura, Date fechaCierre, float descuento, float costoTotal, List<ItemsDTO> producto) {
         PedidoDTO crearPedido = new PedidoDTO(fechaApertura, fechaCierre, descuento, costoTotal, producto);
-        MesaDAO.crear(crearPedido);
+        PedidoDAO.crear(crearPedido);
     }
+    
+    public void ActualizarPedido (Date fechaApertura, Date fechaCierre, float descuento, float costoTotal, List<ItemsDTO> producto) {
+        PedidoDTO actPedido = new PedidoDTO(fechaApertura, fechaCierre, descuento, costoTotal, producto);
+        PedidoDAO.actualizar(actPedido);
+    }
+    
+    public void BorrarPedido (int id) {
+        PedidoDTO borrarPedido = new PedidoDTO(id);
+        PedidoDAO.borrar(borrarPedido);
+        ListaMesa.remove(borrarPedido);
+    }
+    
+    
 }
