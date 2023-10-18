@@ -2,10 +2,12 @@ package Controlador;
 
 import DAO.MesaDAO;
 import DAO.PedidoDAO;
+import Modelo.ItemsDTO;
 import Modelo.MesaDTO;
 import Modelo.PedidoDTO;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class MesaController {
@@ -49,4 +51,9 @@ public class MesaController {
     }
     
     //</editor-fold>
+    
+    public void CrearPedido (Date fechaApertura, Date fechaCierre, float descuento, float costoTotal, List<ItemsDTO> producto) {
+        PedidoDTO crearPedido = new PedidoDTO(fechaApertura, fechaCierre, descuento, costoTotal, producto);
+        MesaDAO.crear(crearPedido);
+    }
 }
