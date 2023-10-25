@@ -52,6 +52,11 @@ public class MesaController {
     
     //</editor-fold>
     
+    public List<MesaDTO> PedirListaMesas() {
+        ListaMesa = ReadMesa();
+        return ListaMesa;
+    }
+    
     public void CrearPedido (Date fechaApertura, Date fechaCierre, float descuento, float costoTotal, List<ItemsDTO> producto) {
         PedidoDTO crearPedido = new PedidoDTO(fechaApertura, fechaCierre, descuento, costoTotal, producto);
         PedidoDAO.crear(crearPedido);
@@ -67,6 +72,5 @@ public class MesaController {
         PedidoDAO.borrar(borrarPedido);
         ListaMesa.remove(borrarPedido);
     }
-    
-    
+     
 }

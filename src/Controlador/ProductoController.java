@@ -54,4 +54,10 @@ public class ProductoController {
         ProductoDTO prodModif = new ProductoDTO(nombre, descripcion, costo,  precio);
         ProductoDAO.actualizar(prodModif);
     }
+     
+    public void BorrarProducto (int id) {
+        ProductoDTO borrarProd = new ProductoDTO(id);
+        ProductoDAO.borrar(borrarProd);
+        ListaProducto.remove(borrarProd);
+    }
 }
