@@ -16,7 +16,7 @@ public abstract class ControladoraConnector {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
             try{
-                connector = DriverManager.getConnection("jdbc:mysql://localhost:3306/restobar?zeroDateTimeBehavior=CONVERT_TO_NULL");
+                connector = DriverManager.getConnection("jdbc:mysql://localhost:3306/restobar?zeroDateTimeBehavior=CONVERT_TO_NULL","nahue", "1234");
             } catch (SQLException ex) {
                 Logger.getLogger(ControladoraConnector.class.getName()).log(Level.SEVERE, null, ex);
             }

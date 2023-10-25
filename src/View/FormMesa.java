@@ -2,13 +2,9 @@
 package View;
 
 import Controlador.MesaController;
-import Modelo.MesaDTO;
-import java.awt.event.ActionEvent;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.DefaultListModel;
-import javax.swing.JOptionPane;
 
 
 public class FormMesa extends javax.swing.JFrame {
@@ -30,8 +26,6 @@ public class FormMesa extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jScrollPane1 = new javax.swing.JScrollPane();
-        jList1 = new javax.swing.JList<>();
         btnBorrar = new javax.swing.JButton();
         btnGuardar = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
@@ -39,15 +33,10 @@ public class FormMesa extends javax.swing.JFrame {
         txtNombreMesa = new javax.swing.JTextPane();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        jTable1 = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-
-        jList1.setModel(new javax.swing.AbstractListModel<String>() {
-            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
-            public int getSize() { return strings.length; }
-            public String getElementAt(int i) { return strings[i]; }
-        });
-        jScrollPane1.setViewportView(jList1);
 
         btnBorrar.setText("BORRAR");
 
@@ -67,6 +56,19 @@ public class FormMesa extends javax.swing.JFrame {
 
         jLabel3.setText("Lista de mesas");
 
+        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {},
+                {},
+                {},
+                {}
+            },
+            new String [] {
+
+            }
+        ));
+        jScrollPane3.setViewportView(jTable1);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -78,23 +80,22 @@ public class FormMesa extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap(127, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel1)
-                                .addGap(2, 2, 2)
-                                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(btnGuardar)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(btnBorrar)))
-                        .addGap(216, 216, 216))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 424, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(120, 120, 120))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(jLabel3)
-                        .addGap(468, 468, 468))))
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 456, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addGroup(layout.createSequentialGroup()
+                                    .addComponent(jLabel1)
+                                    .addGap(2, 2, 2)
+                                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGroup(layout.createSequentialGroup()
+                                    .addComponent(btnGuardar)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(btnBorrar)))
+                            .addGap(216, 216, 216))
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                            .addComponent(jLabel3)
+                            .addGap(468, 468, 468)))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -112,61 +113,15 @@ public class FormMesa extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel3)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 185, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(16, Short.MAX_VALUE))
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 348, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(18, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-   
-    /*btnGuardar.addActionListiner(new ActionListener(){
-        @Override
-        public void actionPerformed(ActionEvent e){
-        String nombreMesa = txtNombreMesa.getText().trim();
-        
-        if (nombreMesa.isEmpty()){
-            JOptionPane.showMessageDialog(FormMesa.this,"El campo nombre de la mesa no puede estar vacio", "Error", JOptionPane.ERROR_MESSAGE);
-        return;
-        }
-        
-        try{
-            MesaDTO mesaDTO = new MesaDTO();
-            mesaDTO.setNombre(nombreMesa);
-            MesaController.CrearMesa(mesaDTO);
-            
-            DefaultListModel<String> listModel = (DefaultListModel<String>) jList1.getModel();
-            listModel.addElement(nombreMesa);
-            
-            txtNombreMesa.setText("");
-        } catch (SQLException ex){
-            JOptionPane.showMessageDialog(FormMesa.this, "Error al guardar en la base de datos: " + ex.getMessage(), JOptionPane.ERROR_MESSAGE);
-        }
-    }
-    });*/
     
     private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
-        String nombreMesa = txtNombreMesa.getText().trim();
-
-        if (nombreMesa.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "El campo de nombre de la mesa está vacío. Debe ingresar un valor.", "Error", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-
-        try {
-            // Guardar el nombre de la mesa en la base de datos usando el controlador
-            MesaDTO mesaDTO = new MesaDTO();
-            mesaDTO.setNombre(nombreMesa);
-            MesaController.CrearMesa(mesaDTO);
-
-            // Actualizar la lista JList con el nuevo nombre de la mesa
-            DefaultListModel<String> listModel = (DefaultListModel<String>) jList1.getModel();
-            listModel.addElement(nombreMesa);
-
-            // Limpiar el campo de texto después de guardar
-            txtNombreMesa.setText("");
-        } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(this, "Error al guardar en la base de datos: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-        }
+        
     }//GEN-LAST:event_btnGuardarActionPerformed
 
     /**
@@ -215,9 +170,9 @@ public class FormMesa extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
-    private javax.swing.JList<String> jList1;
-    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JTable jTable1;
     private javax.swing.JTextPane txtNombreMesa;
     // End of variables declaration//GEN-END:variables
 }
