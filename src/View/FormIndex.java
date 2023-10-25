@@ -27,25 +27,25 @@ public class FormIndex extends javax.swing.JFrame {
     private void initComponents() {
 
         jLabel1 = new javax.swing.JLabel();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
+        btnMesas = new javax.swing.JButton();
+        btnProductos = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 0, 36)); // NOI18N
         jLabel1.setText("TITO´S RESTOBAR");
 
-        jButton1.setText("MESAS");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        btnMesas.setText("MESAS");
+        btnMesas.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                btnMesasActionPerformed(evt);
             }
         });
 
-        jButton2.setText("PRODUCTOS");
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
+        btnProductos.setText("PRODUCTOS");
+        btnProductos.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
+                btnProductosActionPerformed(evt);
             }
         });
 
@@ -57,9 +57,9 @@ public class FormIndex extends javax.swing.JFrame {
                 .addGap(190, 190, 190)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jButton1)
+                        .addComponent(btnMesas)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jButton2))
+                        .addComponent(btnProductos))
                     .addComponent(jLabel1))
                 .addContainerGap(196, Short.MAX_VALUE))
         );
@@ -70,21 +70,21 @@ public class FormIndex extends javax.swing.JFrame {
                 .addComponent(jLabel1)
                 .addGap(51, 51, 51)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton1)
-                    .addComponent(jButton2))
+                    .addComponent(btnMesas)
+                    .addComponent(btnProductos))
                 .addContainerGap(152, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void btnMesasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMesasActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }//GEN-LAST:event_btnMesasActionPerformed
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+    private void btnProductosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnProductosActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jButton2ActionPerformed
+    }//GEN-LAST:event_btnProductosActionPerformed
 
     /**
      * @param args the command line arguments
@@ -122,8 +122,8 @@ public class FormIndex extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
+    private javax.swing.JButton btnMesas;
+    private javax.swing.JButton btnProductos;
     private javax.swing.JLabel jLabel1;
     // End of variables declaration//GEN-END:variables
 }

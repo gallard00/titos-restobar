@@ -27,9 +27,9 @@
               <EmptySpace min="-2" pref="190" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="1" max="-2" attributes="0">
                   <Group type="102" attributes="0">
-                      <Component id="jButton1" min="-2" max="-2" attributes="0"/>
+                      <Component id="btnMesas" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="32767" attributes="0"/>
-                      <Component id="jButton2" min="-2" max="-2" attributes="0"/>
+                      <Component id="btnProductos" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
               </Group>
@@ -44,8 +44,8 @@
               <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
               <EmptySpace min="-2" pref="51" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
-                  <Component id="jButton1" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="jButton2" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="btnMesas" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="btnProductos" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace pref="152" max="32767" attributes="0"/>
           </Group>
@@ -61,20 +61,20 @@
         <Property name="text" type="java.lang.String" value="TITO&#xb4;S RESTOBAR"/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JButton" name="jButton1">
+    <Component class="javax.swing.JButton" name="btnMesas">
       <Properties>
         <Property name="text" type="java.lang.String" value="MESAS"/>
       </Properties>
       <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton1ActionPerformed"/>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnMesasActionPerformed"/>
       </Events>
     </Component>
-    <Component class="javax.swing.JButton" name="jButton2">
+    <Component class="javax.swing.JButton" name="btnProductos">
       <Properties>
         <Property name="text" type="java.lang.String" value="PRODUCTOS"/>
       </Properties>
       <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton2ActionPerformed"/>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnProductosActionPerformed"/>
       </Events>
     </Component>
   </SubComponents>
