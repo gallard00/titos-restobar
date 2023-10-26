@@ -30,8 +30,8 @@ public class MesaController {
     
     //<editor-fold defaultstate="collapsed" desc=" CRUD "> 
      
-    public void CrearMesa (String nombre, List<PedidoDTO> pedido) {
-        MesaDTO crearMesa = new MesaDTO(nombre, pedido);
+    public void CrearMesa (String nombre) {
+        MesaDTO crearMesa = new MesaDTO(nombre);
         MesaDAO.crear(crearMesa);
     }
     
@@ -52,10 +52,19 @@ public class MesaController {
     
     //</editor-fold>
     
+    //<editor-fold defaultstate="collapsed" desc=" Class Methods & External Requests ">
+    public MesaDTO ClonarMesaPorID(int id) {
+        MesaDTO e = (MesaDTO) MesaDAO.porId(id);
+        return e;
+    }
+    
+    
     public List<MesaDTO> PedirListaMesas() {
         ListaMesa = ReadMesa();
         return ListaMesa;
     }
+  //</editor-fold>  
+    
     
     public void CrearPedido (Date fechaApertura, Date fechaCierre, float descuento, float costoTotal, List<ItemsDTO> producto) {
         PedidoDTO crearPedido = new PedidoDTO(fechaApertura, fechaCierre, descuento, costoTotal, producto);
@@ -72,5 +81,30 @@ public class MesaController {
         PedidoDAO.borrar(borrarPedido);
         ListaMesa.remove(borrarPedido);
     }
+    
+    //<editor-fold defaultstate="collapsed" desc=" DataTable Rows&Index">
+    public Object[] RequestObjectIndex(int i)
+    {
+        Object rowdata[] = new Object[4];
+        MesaDTO thisMesa = ClonarMesaPorID(i);
+        for(MesaDTO e : PedirListaMesas())
+        {
+            if(e.getID() == thisMesa.getID())
+            {
+                rowdata[0] = thisMesa.getID();
+                rowdata[1] = thisMesa.getNombre();
+            }
+        }
+        return rowdata;
+    }
+    
+    public Object[] RequestTableRow(int i)
+    {
+        Object rowdata[] = new Object[4];
+        rowdata[0] = PedirListaMesas().get(i).getID();
+        rowdata[1] = PedirListaMesas().get(i).getNombre();
+        return rowdata;
+    }
+//</editor-fold>
      
 }

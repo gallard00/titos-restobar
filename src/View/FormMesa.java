@@ -3,8 +3,12 @@ package View;
 
 import Controlador.MesaController;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
 
 
 public class FormMesa extends javax.swing.JFrame implements ITableFilas {
@@ -46,6 +50,27 @@ public class FormMesa extends javax.swing.JFrame implements ITableFilas {
     public String toString() {
         return "NombreMesa{" + ", NombreMesa=" + txtNombreMesa.getText()+ '}';
     }
+    
+    public void ResetTableMesa() {
+        List<? extends Object> ListaMesa = MesaControladora.PedirListaMesas();
+
+        DefaultTableModel modelo = new DefaultTableModel();
+        ArrayList<Object> columnas = new ArrayList<>();
+        columnas.add("ID");
+        columnas.add("Nombre");
+        columnas.forEach(columna -> {
+            modelo.addColumn(columna);
+        });
+
+        for(int i = 0; i<ListaMesa.size();i++)
+        {
+            modelo.addRow(MesaControladora.RequestTableRow(i));
+        }
+
+        DataTableMesa.setModel(modelo);
+        DataTableMesa.setCellSelectionEnabled(false);
+        DataTableMesa.setRowSelectionAllowed(true);
+    } //DataTable valores iniciales
 
     @SuppressWarnings("unchecked")
     
@@ -60,11 +85,16 @@ public class FormMesa extends javax.swing.JFrame implements ITableFilas {
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         jScrollPane3 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        DataTableMesa = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         btnBorrar.setText("BORRAR");
+        btnBorrar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBorrarActionPerformed(evt);
+            }
+        });
 
         btnGuardar.setText("GUARDAR");
         btnGuardar.addActionListener(new java.awt.event.ActionListener() {
@@ -82,7 +112,7 @@ public class FormMesa extends javax.swing.JFrame implements ITableFilas {
 
         jLabel3.setText("Lista de mesas");
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        DataTableMesa.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {},
                 {},
@@ -93,7 +123,12 @@ public class FormMesa extends javax.swing.JFrame implements ITableFilas {
 
             }
         ));
-        jScrollPane3.setViewportView(jTable1);
+        DataTableMesa.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                DataTableMesaMouseClicked(evt);
+            }
+        });
+        jScrollPane3.setViewportView(DataTableMesa);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -145,14 +180,39 @@ public class FormMesa extends javax.swing.JFrame implements ITableFilas {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-<<<<<<< HEAD
-=======
 
->>>>>>> 130559e6078d29c822fb26ef35c165e727bea724
-    
     private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
-        
+        if (evt.getSource() == btnGuardar) {
+            System.out.print("Guardado");
+            if (validarDatos() == false) {
+                System.out.print("\n" + "Error");
+            } else {
+                JOptionPane.showMessageDialog(null, "NombreMesa Guardado");
+                int id = MesaControladora.CrearMesa(txtNombreMesa.getText());
+                AgregarFila(id);
+            }
+        }
     }//GEN-LAST:event_btnGuardarActionPerformed
+
+    private void DataTableMesaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_DataTableMesaMouseClicked
+       int i = DataTableMesa.getSelectedRow();
+        String nombre = (String) DataTableMesa.getModel().getValueAt(i, 1);
+        txtNombreMesa.setText(nombre); //nombre
+    }//GEN-LAST:event_DataTableMesaMouseClicked
+
+    private void btnBorrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBorrarActionPerformed
+         if (evt.getSource() == btnBorrar) {
+            System.out.print("Eliminado");
+            if (validarDatos() == false) {
+                System.out.print("\n" + "Error");
+            } else {
+                JOptionPane.showMessageDialog(null, "NombreMesa Eliminado");
+                int idMesa = Integer.parseInt(DataTableMesa.getValueAt(DataTableMesa.getSelectedRow(), 0).toString()); //ID de Vehiculo a Borrar
+                MesaControladora.DeleteMesa(idMesa);
+                EliminarFila(idMesa);
+            }
+        }
+    }//GEN-LAST:event_btnBorrarActionPerformed
 
     /**
      * @param args the command line arguments
@@ -195,6 +255,7 @@ public class FormMesa extends javax.swing.JFrame implements ITableFilas {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JTable DataTableMesa;
     private javax.swing.JButton btnBorrar;
     private javax.swing.JButton btnGuardar;
     private javax.swing.JLabel jLabel1;
@@ -202,13 +263,16 @@ public class FormMesa extends javax.swing.JFrame implements ITableFilas {
     private javax.swing.JLabel jLabel3;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
-    private javax.swing.JTable jTable1;
     private javax.swing.JTextPane txtNombreMesa;
     // End of variables declaration//GEN-END:variables
 
     @Override
     public void AgregarFila(int id) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        javax.swing.table.DefaultTableModel modelo = (javax.swing.table.DefaultTableModel) DataTableMesa.getModel();
+       //int ultimafila = (int) DataTableTipoVehiculo.getModel().getRowCount() - 1; //Seleccionar ultima fila del datatable ID
+        //int idsuma = (int) DataTableTipoVehiculo.getModel().getValueAt(ultimafila, 0);
+        modelo.addRow(MesaControladora.RequestObjectIndex(id));
+        DataTableMesa.setModel(modelo);
     }
 
     @Override
@@ -218,6 +282,15 @@ public class FormMesa extends javax.swing.JFrame implements ITableFilas {
 
     @Override
     public void EliminarFila(int id) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        int columna = 0;
+        String IDString = String.valueOf(id);
+        javax.swing.table.DefaultTableModel modelo = (javax.swing.table.DefaultTableModel) DataTableMesa.getModel();
+        for (int i = 0; i < modelo.getRowCount(); i++) {
+            
+            if (modelo.getValueAt(i, columna).toString().equals(IDString)) {
+                modelo.removeRow(i);
+            }
+        }
+        DataTableMesa.setModel(modelo);
     }
 }

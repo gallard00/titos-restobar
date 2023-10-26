@@ -17,6 +17,10 @@ public class MesaDTO extends Entidad {
         this.id = id;
     }
 
+    public MesaDTO(String nombre) {
+        this.nombre = nombre;
+    }
+
     public MesaDTO(String nombre, List<PedidoDTO> pedido) {
         this.nombre = nombre;
         this.pedido = pedido;
