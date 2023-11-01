@@ -9,10 +9,6 @@ public class ProductoNoElaboradoDTO extends ProductoDTO {
         super(id, nombre, descripcion, costo, precio);
         this.stock = stock;
     }
-
-
-
-
     public int getStock() {
         return stock;
     }
