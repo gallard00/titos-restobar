@@ -1,10 +1,9 @@
 package Modelo;
 
-import DAO.Entidad;
 import java.util.Date;
 import java.util.Objects;
 
-public class PrecioDTO extends Entidad {
+public class PrecioDTO {
     
     private int id;
     private float valor;
@@ -35,9 +34,7 @@ public class PrecioDTO extends Entidad {
     public void setId(int id) {
         this.id = id;
     }
-
-  
-
+    
     public float getValor() {
         return valor;
     }

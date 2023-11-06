@@ -25,13 +25,13 @@ public class ProductoDAO implements IDAO{
     }
 
     @Override
-    public int crear(Entidad e) {
+    public int crear(Object e) {
         ProductoDTO prod = (ProductoDTO) e;
         int id = 0;
         String sql = "insert into ProductoDTO(id_productos, nombre, descripcion, costo, id_precios) value (?, ?, ?, ?, ?);";
         try {
             PreparedStatement st = ConnectorController.getConnection().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-            st.setString(1, String.valueOf(prod.getID()));
+            st.setString(1, String.valueOf(prod.getId()));
             st.setString(2, prod.getNombre());
             st.setString(3, prod.getDescripcion());
             st.setString(4, String.valueOf(prod.getCosto()));
@@ -40,7 +40,6 @@ public class ProductoDAO implements IDAO{
             ResultSet rs = st.getGeneratedKeys();
             if (rs.next()) {
             id = rs.getInt(1);
-            e.setID(id);
             }
         } catch (SQLException ex) {
             Logger.getLogger(ProductoDAO.class.getName()).log(Level.SEVERE, null, ex);
@@ -70,7 +69,7 @@ public class ProductoDAO implements IDAO{
     }
 
     @Override
-    public void actualizar(Entidad e) {
+    public void actualizar(Object e) {
         ProductoDTO prod = (ProductoDTO) e;
         String sql = "update Productos set nombre = ?, descripcion = ?, costo = ?, id_precios = ? where id_productos = ?;";
         try {
@@ -79,7 +78,7 @@ public class ProductoDAO implements IDAO{
             st.setString(2, prod.getDescripcion());
             st.setString(3, String.valueOf(prod.getCosto()));
             st.setString(4, String.valueOf(prod.getPrecio()));
-            st.setString(5, String.valueOf(prod.getID()));
+            st.setString(5, String.valueOf(prod.getId()));
             st.executeUpdate();
         } catch (SQLException ex) {
             Logger.getLogger(ProductoDAO.class.getName()).log(Level.SEVERE, null, ex);
@@ -89,13 +88,13 @@ public class ProductoDAO implements IDAO{
     }
 
     @Override
-    public void borrar(Entidad e) {
+    public void borrar(Object e) {
         ProductoDTO prod = (ProductoDTO) e;
         String sql = "DELETE FROM PRoductos WHERE id_productos = ?";
         try {
             PreparedStatement st = ConnectorController.getConnection().prepareStatement(sql);
-            st.setInt(1, prod.getID());
-            JOptionPane.showMessageDialog(null, "ID : " + prod.getID());
+            st.setInt(1, prod.getId());
+            JOptionPane.showMessageDialog(null, "ID : " + prod.getId());
             st.executeUpdate();
         } catch (SQLException ex) {
             Logger.getLogger(ProductoDAO.class.getName()).log(Level.SEVERE, null, ex);
@@ -106,7 +105,7 @@ public class ProductoDAO implements IDAO{
     }
 
     @Override
-    public Entidad porId(int id) {
+    public Object porId(int id) {
         ProductoDTO prod = new ProductoDTO();
         String sql = "select id_productos, nombre, descripcion, costo, id_precios from Productos WHERE id_productos = ?";
         try {

@@ -20,13 +20,13 @@ public class PrecioDAO implements IDAO {
     }
 
     @Override
-    public int crear(Entidad e) {
+    public int crear(Object e) {
         PrecioDTO pre = (PrecioDTO) e;
         int id = 0;
         String sql = "insert into Precios(id_precios, valor,fecha) value (?, ?, ?);";
         try {
             PreparedStatement st = ConnectorController.getConnection().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-            st.setString(1, String.valueOf(pre.getID()));
+            st.setString(1, String.valueOf(pre.getId()));
             st.setString(2, String.valueOf(pre.getValor()));
             st.setString(3, String.valueOf(pre.getFecha()));
            
@@ -34,7 +34,6 @@ public class PrecioDAO implements IDAO {
             ResultSet rs = st.getGeneratedKeys();
             if (rs.next()) {
             id = rs.getInt(1);
-            e.setID(id);
             }
         } catch (SQLException ex) {
             Logger.getLogger(PrecioDAO.class.getName()).log(Level.SEVERE, null, ex);
@@ -64,14 +63,14 @@ public class PrecioDAO implements IDAO {
     }
 
     @Override
-    public void actualizar(Entidad e) {
+    public void actualizar(Object e) {
         PrecioDTO pre = (PrecioDTO) e;
         String sql = "update Precios set valor = ?, fecha = ?,where id_precio = ?;";
         try {
             PreparedStatement st = ConnectorController.getConnection().prepareStatement(sql);
             st.setString(1, String.valueOf(pre.getValor()));
             st.setString(2, String.valueOf(pre.getFecha()));
-            st.setString(3, String.valueOf(pre.getID()));
+            st.setString(3, String.valueOf(pre.getId()));
           
         } catch (SQLException ex) {
             Logger.getLogger(PrecioDAO.class.getName()).log(Level.SEVERE, null, ex);
@@ -81,13 +80,13 @@ public class PrecioDAO implements IDAO {
     }
 
     @Override
-    public void borrar(Entidad e) {
+    public void borrar(Object e) {
         PrecioDTO pre = (PrecioDTO) e;
         String sql = "DELETE FROM Precios WHERE id_precios = ?";
         try {
             PreparedStatement st = ConnectorController.getConnection().prepareStatement(sql);
-            st.setInt(1, pre.getID());
-            JOptionPane.showMessageDialog(null, "ID : " + pre.getID());
+            st.setInt(1, pre.getId());
+            JOptionPane.showMessageDialog(null, "ID : " + pre.getId());
             st.executeUpdate();
         } catch (SQLException ex) {
             Logger.getLogger(PrecioDAO.class.getName()).log(Level.SEVERE, null, ex);
@@ -98,7 +97,7 @@ public class PrecioDAO implements IDAO {
     }
 
     @Override
-    public Entidad porId(int id) {
+    public Object porId(int id) {
         PrecioDTO pre = new PrecioDTO();
         String sql = "select id_precio, valor, fecha from Precios WHERE id_precio = ?";
         try {
@@ -119,7 +118,7 @@ public class PrecioDAO implements IDAO {
         return pre;
     }
     
-    public Entidad PrecioActual() {
+    public Object PrecioActual() {
         PrecioDTO preact = new PrecioDTO();
         String sql = "select id_precios,valor,fecha, costo from Precios WHERE id_precios = ?";
         try {
@@ -140,7 +139,7 @@ public class PrecioDAO implements IDAO {
         return preact;
     }
 
-    public Entidad VerHistorialPrecio() {
+    public Object VerHistorialPrecio() {
        PrecioDTO ultimo = new PrecioDTO();
         String sql = "select id_precios,valor,fecha, costo from Precios WHERE id_precios = ?";
         try {
@@ -161,13 +160,13 @@ public class PrecioDAO implements IDAO {
         return ultimo;
     }
     
-    public int crearPrecio(Entidad e) {
+    public int crearPrecio(Object e) {
         PrecioDTO prec = (PrecioDTO) e;
         int id = 0;
         String sql = "insert into PrecioDTO(id_precios,valor,fecha, costo) value (?, ?, ?);";
         try {
             PreparedStatement st = ConnectorController.getConnection().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-            st.setString(1, String.valueOf(prec.getID()));
+            st.setString(1, String.valueOf(prec.getId()));
             st.setString(2, String.valueOf(prec.getValor()));
             st.setString(3, String.valueOf(prec.getFecha()));
         
@@ -175,7 +174,6 @@ public class PrecioDAO implements IDAO {
             ResultSet rs = st.getGeneratedKeys();
             if (rs.next()) {
             id = rs.getInt(1);
-            e.setID(id);
             }
         } catch (SQLException ex) {
             Logger.getLogger(PrecioDAO.class.getName()).log(Level.SEVERE, null, ex);

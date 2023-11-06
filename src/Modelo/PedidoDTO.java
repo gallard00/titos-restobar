@@ -1,11 +1,10 @@
 package Modelo;
 
-import DAO.Entidad;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
-public class PedidoDTO extends Entidad {
+public class PedidoDTO {
     
     private int id;
     private Date fechaApertura;
@@ -38,7 +37,13 @@ public class PedidoDTO extends Entidad {
         this.producto = producto;
     }
 
-   
+    public int getId() {
+        return this.id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public float getCostoTotal() {
         return costoTotal;

@@ -24,13 +24,13 @@ public class PedidoDAO implements IDAO {
     }
 
     @Override
-    public int crear(Entidad e) {
+    public int crear(Object e) {
         PedidoDTO ped = (PedidoDTO) e;
         int id = 0;
         String sql = "insert into Pedidos(id_pedidos, fecha_apertura, fecha_cierre, descuento, costo_total, id_items) value (?, ?, ?, ?, ?, ?);";
         try {
             PreparedStatement st = ConnectorController.getConnection().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-            st.setString(1, String.valueOf(ped.getID()));
+            st.setString(1, String.valueOf(ped.getId()));
             st.setString(2, String.valueOf(ped.getFechaApertura()));
             st.setString(3, String.valueOf(ped.getFechaCierre()));
             st.setString(2, String.valueOf(ped.getDescuento()));
@@ -40,7 +40,6 @@ public class PedidoDAO implements IDAO {
             ResultSet rs = st.getGeneratedKeys();
             if (rs.next()) {
             id = rs.getInt(1);
-            e.setID(id);
             }
         } catch (SQLException ex) {
             Logger.getLogger(PedidoDAO.class.getName()).log(Level.SEVERE, null, ex);
@@ -70,7 +69,7 @@ public class PedidoDAO implements IDAO {
     }
 
     @Override
-    public void actualizar(Entidad e) {
+    public void actualizar(Object e) {
         PedidoDTO ped = (PedidoDTO) e;
         String sql = "update Pedidos set fecha_apertura = ?, fecha_cierre = ?, descuento = ?, costo_total = ?, id_items = ? where id_pedidos = ?;";
         try {
@@ -89,13 +88,13 @@ public class PedidoDAO implements IDAO {
     }
 
     @Override
-    public void borrar(Entidad e) {
+    public void borrar(Object e) {
         PedidoDTO ped = (PedidoDTO) e;
         String sql = "DELETE FROM Pedidos WHERE id_pedidos = ?";
         try {
             PreparedStatement st = ConnectorController.getConnection().prepareStatement(sql);
-            st.setInt(1, ped.getID());
-            JOptionPane.showMessageDialog(null, "ID : " + ped.getID());
+            st.setInt(1, ped.getId());
+            JOptionPane.showMessageDialog(null, "ID : " + ped.getId());
             st.executeUpdate();
         } catch (SQLException ex) {
             Logger.getLogger(PedidoDAO.class.getName()).log(Level.SEVERE, null, ex);
@@ -106,7 +105,7 @@ public class PedidoDAO implements IDAO {
     }
 
     @Override
-    public Entidad porId(int id) {
+    public Object porId(int id) {
         PedidoDTO ped = new PedidoDTO();
         String sql = "select id_pedidos, fecha_apertura, fecha_cierre, descuento, costo_total, id_items from Pedidos WHERE id_pedidos = ?";
         try {

@@ -12,7 +12,7 @@ public class ItemsDAO implements IDAO {
     }
 
     @Override
-    public int crear(Entidad e) {
+    public int crear(Object e) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
@@ -22,17 +22,17 @@ public class ItemsDAO implements IDAO {
     }
 
     @Override
-    public void actualizar(Entidad e) {
+    public void actualizar(Object e) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
     @Override
-    public void borrar(Entidad e) {
+    public void borrar(Object e) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
     @Override
-    public Entidad porId(int id) {
+    public Object porId(int id) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 

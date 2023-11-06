@@ -1,7 +1,5 @@
 package Controlador;
-
 import DAO.MesaDAO;
-import DAO.PedidoDAO;
 import Modelo.ItemsDTO;
 import Modelo.MesaDTO;
 import Modelo.PedidoDTO;
@@ -14,11 +12,9 @@ public class MesaController {
     private List<MesaDTO> ListaMesa = new ArrayList<>();
     private static MesaController Instance;
     private final MesaDAO MesaDAO;
-    private final PedidoDAO PedidoDAO;
     
     private MesaController() throws SQLException {
         MesaDAO = new MesaDAO();
-        PedidoDAO = new PedidoDAO();
     }
     
     public static MesaController GetInstance() throws SQLException {
@@ -30,17 +26,18 @@ public class MesaController {
     
     //<editor-fold defaultstate="collapsed" desc=" CRUD "> 
      
-    public void CrearMesa (String nombre) {
+    public int CrearMesa (String nombre) {
         MesaDTO crearMesa = new MesaDTO(nombre);
-        MesaDAO.crear(crearMesa);
+        int id = MesaDAO.crear(crearMesa);
+        return id;
     }
     
     public List ReadMesa(){
         return MesaDAO.mostrar();
     }
     
-    public void UpdateMesa (String nombre, List<PedidoDTO> pedido) {
-        MesaDTO actMesa = new MesaDTO(nombre, pedido);
+    public void UpdateMesa (int id, String nombre) {
+        MesaDTO actMesa = new MesaDTO(id , nombre);
         MesaDAO.actualizar(actMesa);
     }
     
@@ -53,56 +50,74 @@ public class MesaController {
     //</editor-fold>
     
     //<editor-fold defaultstate="collapsed" desc=" Class Methods & External Requests ">
-    public MesaDTO ClonarMesaPorID(int id) {
-        MesaDTO e = (MesaDTO) MesaDAO.porId(id);
-        return e;
-    }
-    
-    
     public List<MesaDTO> PedirListaMesas() {
         ListaMesa = ReadMesa();
         return ListaMesa;
+    }
+    
+    public MesaDTO getMesaFromList(int id){
+        for (MesaDTO mesa : PedirListaMesas())
+        {
+            if(mesa.getId() == id)
+            {
+                return mesa;
+            }
+        }
+        return null;
     }
   //</editor-fold>  
     
     
     public void CrearPedido (Date fechaApertura, Date fechaCierre, float descuento, float costoTotal, List<ItemsDTO> producto) {
         PedidoDTO crearPedido = new PedidoDTO(fechaApertura, fechaCierre, descuento, costoTotal, producto);
-        PedidoDAO.crear(crearPedido);
+        /*PedidoDAO.crear(crearPedido);*/
     }
     
     public void ActualizarPedido (Date fechaApertura, Date fechaCierre, float descuento, float costoTotal, List<ItemsDTO> producto) {
         PedidoDTO actPedido = new PedidoDTO(fechaApertura, fechaCierre, descuento, costoTotal, producto);
-        PedidoDAO.actualizar(actPedido);
+        /*PedidoDAO.actualizar(actPedido);*/
     }
     
     public void BorrarPedido (int id) {
         PedidoDTO borrarPedido = new PedidoDTO(id);
-        PedidoDAO.borrar(borrarPedido);
+       /* PedidoDAO.borrar(borrarPedido);*/
         ListaMesa.remove(borrarPedido);
     }
     
-    //<editor-fold defaultstate="collapsed" desc=" DataTable Rows&Index">
-    public Object[] RequestObjectIndex(int i)
+    public Boolean SiMesaExiste(String name)
     {
-        Object rowdata[] = new Object[4];
-        MesaDTO thisMesa = ClonarMesaPorID(i);
-        for(MesaDTO e : PedirListaMesas())
+        if(MesaDAO.porNombre(name) != null)
         {
-            if(e.getID() == thisMesa.getID())
-            {
-                rowdata[0] = thisMesa.getID();
-                rowdata[1] = thisMesa.getNombre();
-            }
+            return true;
         }
-        return rowdata;
+        return false;
     }
+   
+    
+    //<editor-fold defaultstate="collapsed" desc=" DataTable Rows&Index">
     
     public Object[] RequestTableRow(int i)
     {
-        Object rowdata[] = new Object[4];
-        rowdata[0] = PedirListaMesas().get(i).getID();
-        rowdata[1] = PedirListaMesas().get(i).getNombre();
+        Object rowdata[] = new Object[2];
+        MesaDTO mesa = PedirListaMesas().get(i);
+        if(mesa != null)
+        {
+            rowdata[0] = PedirListaMesas().get(i).getId();
+            rowdata[1] = PedirListaMesas().get(i).getNombre();
+            return rowdata;
+        }
+        return null;
+    }
+    
+    public Object[] RequestObjectIndex(int id)
+    {
+        Object rowdata[] = new Object[2];
+        MesaDTO mesa = getMesaFromList(id);
+        if(mesa != null)
+        {
+            rowdata[0] =  mesa.getId();
+            rowdata[1] =  mesa.getNombre();
+        }
         return rowdata;
     }
 //</editor-fold>

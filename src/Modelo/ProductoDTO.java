@@ -1,9 +1,8 @@
 package Modelo;
 
-import DAO.Entidad;
 import java.util.Objects;
 
-public class ProductoDTO extends Entidad {
+public class ProductoDTO {
     
     private int id;
     private String nombre;
@@ -48,8 +47,6 @@ public class ProductoDTO extends Entidad {
     public void setId(int id) {
         this.id = id;
     }
-
-   
 
     public String getNombre() {
         return nombre;

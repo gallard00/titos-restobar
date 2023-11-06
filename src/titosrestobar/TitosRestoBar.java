@@ -1,8 +1,6 @@
 package titosrestobar;
 
 import View.FormMesa;
-import java.lang.System.Logger;
-import java.lang.System.Logger.Level;
 import java.sql.SQLException;
 
 
@@ -14,7 +12,7 @@ public class TitosRestoBar {
                 try {
                     new FormMesa().setVisible(true);
                 } catch (SQLException ex) {
-                    Logger.getLogger(FormMesa.class.getName()).log(Level.SEVERE, null, ex);
+                    java.util.logging.Logger.getLogger(FormMesa.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
                 }
             }
         });

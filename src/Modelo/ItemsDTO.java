@@ -1,10 +1,9 @@
 package Modelo;
 
-import DAO.Entidad;
 import java.util.Objects;
 
 
-public class ItemsDTO extends Entidad {
+public class ItemsDTO {
     
     private int id;
     private int cantidad;

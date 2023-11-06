@@ -22,23 +22,21 @@ public class MesaDAO implements IDAO {
     }
 
     @Override
-    public int crear(Entidad e) {
+    public int crear(Object e) {
         MesaDTO mesa = (MesaDTO) e;
         int id = 0;
-        String sql = "insert into MesaDTO(id_mesas, nombre, id_pedidos) value (?, ?, ?);";
+        String sql = "insert into mesas (id_mesas, nombre) value (?, ?);";
         try {
             PreparedStatement st = ConnectorController.getConnection().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-            st.setString(1, String.valueOf(mesa.getID()));
+            st.setString(1, String.valueOf(mesa.getId()));
             st.setString(2, mesa.getNombre());
-            st.setString(5, String.valueOf(mesa.getPedido()));
-            st.execute();
+            st.executeUpdate();
             ResultSet rs = st.getGeneratedKeys();
             if (rs.next()) {
             id = rs.getInt(1);
-            e.setID(id);
             }
         } catch (SQLException ex) {
-            Logger.getLogger(ProductoDAO.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(MesaDAO.class.getName()).log(Level.SEVERE, null, ex);
         }finally {
              ConnectorController.CloseConnection();
         }
@@ -48,12 +46,12 @@ public class MesaDAO implements IDAO {
     @Override
     public List<MesaDTO> mostrar() {
         List Salida = new ArrayList();
-        String sql = "select id_mesas, nombre, id_pedidos;";
+        String sql = "select id_mesas, nombre from mesas;";
         try {
             PreparedStatement state = ConnectorController.getConnection().prepareStatement(sql);
             ResultSet result = state.executeQuery(sql);
             while (result.next()) {
-                MesaDTO mesa = new MesaDTO(result.getInt(1), result.getString(2), (List<PedidoDTO>) result.getObject(3));      
+                MesaDTO mesa = new MesaDTO(result.getInt(1), result.getString(2));      
                 Salida.add(mesa);
             }
         } catch (SQLException ex) {
@@ -65,14 +63,14 @@ public class MesaDAO implements IDAO {
     }
 
     @Override
-    public void actualizar(Entidad e) {
+    public void actualizar(Object e) {
         MesaDTO mesa = (MesaDTO) e;
-        String sql = "update Mesas set nombre = ?, id_pedidos = ? where id_mesas = ?;";
+        String sql = "update mesas set nombre = ? where id_mesas = ?;";
         try {
             PreparedStatement st = ConnectorController.getConnection().prepareStatement(sql);
             st.setString(1, mesa.getNombre());
-            st.setString(4, String.valueOf(mesa.getPedido()));
-            st.setString(5, String.valueOf(mesa.getID()));
+            //st.setString(4, String.valueOf(mesa.getPedido()));
+            st.setString(2, String.valueOf(mesa.getId()));
             st.executeUpdate();
         } catch (SQLException ex) {
             Logger.getLogger(MesaDAO.class.getName()).log(Level.SEVERE, null, ex);
@@ -82,13 +80,13 @@ public class MesaDAO implements IDAO {
     }
 
     @Override
-    public void borrar(Entidad e) {
+    public void borrar(Object e) {
         MesaDTO mesa = (MesaDTO) e;
-        String sql = "DELETE FROM Mesas WHERE id_mesas = ?";
+        String sql = "DELETE FROM mesas WHERE id_mesas = ?";
         try {
             PreparedStatement st = ConnectorController.getConnection().prepareStatement(sql);
-            st.setInt(1, mesa.getID());
-            JOptionPane.showMessageDialog(null, "ID : " + mesa.getID());
+            st.setInt(1, mesa.getId());
+            //JOptionPane.showMessageDialog(null, "ID : " + mesa.getId());
             st.executeUpdate();
         } catch (SQLException ex) {
             Logger.getLogger(MesaDAO.class.getName()).log(Level.SEVERE, null, ex);
@@ -99,16 +97,36 @@ public class MesaDAO implements IDAO {
     }
 
     @Override
-    public Entidad porId(int id) {
+    public Object porId(int id) {
         MesaDTO mesa = new MesaDTO();
-        String sql = "select id_mesas, nombre, id_pedidos from Mesas WHERE id_mesas = ?";
+        String sql = "select id_mesas, nombre from mesas WHERE id_mesas = ?";
         try {
             PreparedStatement st = ConnectorController.getConnection().prepareStatement(sql);
             st.setString(1, Integer.toString(id));
             ResultSet result = st.executeQuery();
             //JOptionPane.showMessageDialog(null,"En Execute Query");
             if (result.next()) {
-                MesaDTO clone = new MesaDTO(result.getInt(1), result.getString(2), (List<PedidoDTO>) result.getObject(3));
+                MesaDTO clone = new MesaDTO(result.getInt(1), result.getString(2));
+                mesa = clone;
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(ProductoDAO.class.getName()).log(Level.SEVERE, null, ex);
+            JOptionPane.showMessageDialog(null, "Error en seleccion de ID");
+        }finally {
+             ConnectorController.CloseConnection();
+        }
+        return mesa;
+    }
+    
+    public Object porNombre(String nombre) {
+        MesaDTO mesa = new MesaDTO();
+        String sql = "select id_mesas, nombre from mesas WHERE nombre = ?";
+        try {
+            PreparedStatement st = ConnectorController.getConnection().prepareStatement(sql);
+            st.setString(1, nombre);
+            ResultSet result = st.executeQuery();
+            if (result.next()) {
+                MesaDTO clone = new MesaDTO(result.getInt(1), result.getString(2));
                 mesa = clone;
             }
         } catch (SQLException ex) {

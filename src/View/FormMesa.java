@@ -18,7 +18,15 @@ public class FormMesa extends javax.swing.JFrame implements ITableFilas {
     public FormMesa() throws SQLException {
         MesaControladora = MesaController.GetInstance();
         initComponents();
-        
+        nullCheckMesas();
+    }
+    
+    public void nullCheckMesas() //Verifica si la lista de mesas tiene algo
+    {
+        if(MesaControladora.PedirListaMesas().size() > 0)
+        {
+            ResetTableMesa();
+        }
     }
     
     private boolean validarDatos() {
@@ -28,17 +36,7 @@ public class FormMesa extends javax.swing.JFrame implements ITableFilas {
                     throw new Exception();
                 }
             } catch (Exception e) {
-                 JOptionPane.showMessageDialog(null, "Ningun campo puede estar vacio, Reingrese:");
-                return false;
-            }
-            
-            try {
-                if(Integer.parseInt(txtNombreMesa.getText())<0)
-                {
-                    throw new Exception();
-                }
-            } catch(Exception e) {
-                 JOptionPane.showMessageDialog(null, "Campo [Nombre] no puede contener numeros negativos");
+                 JOptionPane.showMessageDialog(null ,"Ningun campo puede estar vacio, Reingrese:");
                 return false;
             }
 
@@ -46,27 +44,21 @@ public class FormMesa extends javax.swing.JFrame implements ITableFilas {
         return true;
     }
     
-    @Override
-    public String toString() {
-        return "NombreMesa{" + ", NombreMesa=" + txtNombreMesa.getText()+ '}';
-    }
-    
     public void ResetTableMesa() {
-        List<? extends Object> ListaMesa = MesaControladora.PedirListaMesas();
-
         DefaultTableModel modelo = new DefaultTableModel();
-        ArrayList<Object> columnas = new ArrayList<>();
-        columnas.add("ID");
-        columnas.add("Nombre");
-        columnas.forEach(columna -> {
+  
+        List<? extends Object> ListaMesa = MesaControladora.PedirListaMesas();
+        ArrayList<Object> nombrecolumna = new ArrayList<>();
+        nombrecolumna.add("ID");
+        nombrecolumna.add("Nombre");
+        nombrecolumna.forEach(columna -> {
             modelo.addColumn(columna);
         });
-
+        
         for(int i = 0; i<ListaMesa.size();i++)
         {
-            modelo.addRow(MesaControladora.RequestTableRow(i));
+             modelo.addRow(MesaControladora.RequestTableRow(i));
         }
-
         DataTableMesa.setModel(modelo);
         DataTableMesa.setCellSelectionEnabled(false);
         DataTableMesa.setRowSelectionAllowed(true);
@@ -114,15 +106,30 @@ public class FormMesa extends javax.swing.JFrame implements ITableFilas {
 
         DataTableMesa.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {},
-                {},
-                {},
-                {}
+                {null, null},
+                {null, null},
+                {null, null},
+                {null, null}
             },
             new String [] {
-
+                "Id", "Nombre"
             }
-        ));
+        ) {
+            Class[] types = new Class [] {
+                java.lang.Integer.class, java.lang.String.class
+            };
+            boolean[] canEdit = new boolean [] {
+                false, false
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
         DataTableMesa.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 DataTableMesaMouseClicked(evt);
@@ -183,13 +190,22 @@ public class FormMesa extends javax.swing.JFrame implements ITableFilas {
 
     private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
         if (evt.getSource() == btnGuardar) {
-            System.out.print("Guardado");
             if (validarDatos() == false) {
-                System.out.print("\n" + "Error");
             } else {
-                JOptionPane.showMessageDialog(null, "NombreMesa Guardado");
-                int id = MesaControladora.CrearMesa(txtNombreMesa.getText());
-                AgregarFila(id);
+                String nombre = txtNombreMesa.getText();
+                if(MesaControladora.SiMesaExiste(nombre))
+                {
+                    int i = DataTableMesa.getSelectedRow();
+                    int id = (int) DataTableMesa.getModel().getValueAt(i, 0);
+                    MesaControladora.UpdateMesa(id, nombre);
+                    JOptionPane.showMessageDialog(null, "Mesa Modificada");
+                    this.ResetTableMesa();
+                }
+                else{
+                    int id = MesaControladora.CrearMesa(nombre);
+                    JOptionPane.showMessageDialog(null, "Mesa Guardada");
+                    AgregarFila(id);
+                }
             }
         }
     }//GEN-LAST:event_btnGuardarActionPerformed
@@ -206,10 +222,10 @@ public class FormMesa extends javax.swing.JFrame implements ITableFilas {
             if (validarDatos() == false) {
                 System.out.print("\n" + "Error");
             } else {
-                JOptionPane.showMessageDialog(null, "NombreMesa Eliminado");
-                int idMesa = Integer.parseInt(DataTableMesa.getValueAt(DataTableMesa.getSelectedRow(), 0).toString()); //ID de Vehiculo a Borrar
-                MesaControladora.DeleteMesa(idMesa);
-                EliminarFila(idMesa);
+                JOptionPane.showMessageDialog(null, "Mesa Eliminada");
+                int id = Integer.parseInt(DataTableMesa.getValueAt(DataTableMesa.getSelectedRow(), 0).toString()); //ID de Mesa a Borrar
+                MesaControladora.DeleteMesa(id);
+                EliminarFila(id);
             }
         }
     }//GEN-LAST:event_btnBorrarActionPerformed
@@ -269,15 +285,8 @@ public class FormMesa extends javax.swing.JFrame implements ITableFilas {
     @Override
     public void AgregarFila(int id) {
         javax.swing.table.DefaultTableModel modelo = (javax.swing.table.DefaultTableModel) DataTableMesa.getModel();
-       //int ultimafila = (int) DataTableTipoVehiculo.getModel().getRowCount() - 1; //Seleccionar ultima fila del datatable ID
-        //int idsuma = (int) DataTableTipoVehiculo.getModel().getValueAt(ultimafila, 0);
         modelo.addRow(MesaControladora.RequestObjectIndex(id));
         DataTableMesa.setModel(modelo);
-    }
-
-    @Override
-    public void ModificarFila(int id) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
     @Override
@@ -293,4 +302,11 @@ public class FormMesa extends javax.swing.JFrame implements ITableFilas {
         }
         DataTableMesa.setModel(modelo);
     }
+
+    @Override
+    public void ModificarFila(int id) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+    
+    
 }

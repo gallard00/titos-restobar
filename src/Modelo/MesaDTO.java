@@ -1,10 +1,9 @@
 package Modelo;
 
-import DAO.Entidad;
 import java.util.List;
 import java.util.Objects;
 
-public class MesaDTO extends Entidad {
+public class MesaDTO {
     
     private int id;
     private String nombre;
@@ -21,15 +20,9 @@ public class MesaDTO extends Entidad {
         this.nombre = nombre;
     }
 
-    public MesaDTO(String nombre, List<PedidoDTO> pedido) {
-        this.nombre = nombre;
-        this.pedido = pedido;
-    }
-
-    public MesaDTO(int id, String nombre, List<PedidoDTO> pedido) {
+    public MesaDTO(int id, String nombre) {
         this.id = id;
         this.nombre = nombre;
-        this.pedido = pedido;
     }
 
     public int getId() {
