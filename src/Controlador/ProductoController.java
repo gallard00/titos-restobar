@@ -1,6 +1,5 @@
 package Controlador;
 
-import DAO.PrecioDAO;
 import DAO.ProductoDAO;
 import Modelo.PrecioDTO;
 import Modelo.ProductoDTO;
@@ -9,14 +8,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ProductoController {
-    private  List<ProductoDTO> ListaProducto = new ArrayList<>();
+    private final  List<ProductoDTO> ListaProducto = new ArrayList<>();
     private static ProductoController Instance;
     private final ProductoDAO ProductoDAO;
-    private final PrecioDAO PrecioDAO;
     
        private ProductoController() throws SQLException {
         ProductoDAO = new ProductoDAO();
-        PrecioDAO = new PrecioDAO();
     }
        
      public static ProductoController GetInstance() throws SQLException {

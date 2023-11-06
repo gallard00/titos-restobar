@@ -1,6 +1,7 @@
 
 package View;
 
+import Controlador.PrecioController;
 import Controlador.ProductoController;
 import java.sql.SQLException;
 import java.util.logging.Level;
@@ -11,9 +12,11 @@ import javax.swing.JOptionPane;
 public class FormProducto extends javax.swing.JFrame {
     
     ProductoController ProductoControladora;
-
+    PrecioController PrecioControladora;
+    
     public FormProducto() throws SQLException {
         ProductoControladora = ProductoController.GetInstance();
+        PrecioControladora = PrecioController.GetInstance();
         initComponents();
     }
 
@@ -200,23 +203,22 @@ public class FormProducto extends javax.swing.JFrame {
             if (validarDatos() == false) {
                 System.out.print("\n" + "Error");
             } else {
+                
+                String nombre = txtNombreProducto.getText();
+                String descripcion = txtDescripcion.getText();
+                float costo = Float.parseFloat(txtCosto.getText());
+                
                 if(chkBox.isSelected()){
+                    float precio = costo * 1.3f;
+                    int id = ProductoControladora.CreateProducto(nombre, descripcion, costo, precio);
+                    AgregarFila(id);
                     JOptionPane.showMessageDialog(null, "Producto Guardado");
-                
-                String nombre = txtNombreProducto.getText();
-                String descripcion = txtDescripcion.getText();
-                float costo = Float.parseFloat(txtCosto.getText());
-                int id = ProductoControladora.CreateProducto(nombre, descripcion, costo, precioDTO);
-                AgregarFila(id);
                 }else{
+                    float precio = costo * 1.3f;
+                    int stock = (int) spnCantidadProducto.getValue();
+                    int id = ProductoControladora.CreateProducto(nombre, descripcion, costo, precio, stock);
+                    AgregarFila(id);
                     JOptionPane.showMessageDialog(null, "Producto Guardado");
-                
-                String nombre = txtNombreProducto.getText();
-                String descripcion = txtDescripcion.getText();
-                float costo = Float.parseFloat(txtCosto.getText());
-                int stock = (int) spnCantidadProducto.getValue();
-                int id = ProductoControladora.CreateProducto(nombre, descripcion, costo, precioDTO, stock);
-                AgregarFila(id);
                 }
                 
             }
@@ -224,10 +226,10 @@ public class FormProducto extends javax.swing.JFrame {
     }//GEN-LAST:event_btnGuardarActionPerformed
 
     private void chkBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkBoxActionPerformed
-        if(chkBox.isSelected()){
-            spnCantidadProducto.setEnabled(false);
-        }else{
+        if(!evt.equals(chkBox.isSelected())){
             spnCantidadProducto.setEnabled(true);
+        }else{
+            spnCantidadProducto.setEnabled(false);
         }
     }//GEN-LAST:event_chkBoxActionPerformed
 
