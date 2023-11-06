@@ -1,4 +1,3 @@
-
 package View;
 
 import Controlador.PrecioController;
@@ -16,7 +15,7 @@ public class FormProducto extends javax.swing.JFrame {
     
     public FormProducto() throws SQLException {
         ProductoControladora = ProductoController.GetInstance();
-        PrecioControladora = PrecioController.GetInstance();
+        //PrecioControladora = PrecioController.GetInstance();
         initComponents();
     }
 
