@@ -115,7 +115,7 @@ public class MesaDAO implements IDAO {
         }finally {
              ConnectorController.CloseConnection();
         }
-        return mesa;
+        return null;
     }
     
     public Object porNombre(String nombre) {
