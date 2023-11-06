@@ -18,7 +18,8 @@ public class FormMesa extends javax.swing.JFrame implements ITableFilas {
     public FormMesa() throws SQLException {
         MesaControladora = MesaController.GetInstance();
         initComponents();
-        nullCheckMesas();
+        ResetTableMesa();
+        //nullCheckMesas();
     }
     
     public void nullCheckMesas() //Verifica si la lista de mesas tiene algo

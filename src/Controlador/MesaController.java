@@ -86,7 +86,8 @@ public class MesaController {
     
     public Boolean SiMesaExiste(String name)
     {
-        if(MesaDAO.porNombre(name) != null)
+        MesaDTO mesa = (MesaDTO)MesaDAO.porNombre(name);
+        if(mesa != null)
         {
             return true;
         }

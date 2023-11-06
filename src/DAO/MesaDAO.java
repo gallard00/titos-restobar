@@ -126,8 +126,9 @@ public class MesaDAO implements IDAO {
             st.setString(1, nombre);
             ResultSet result = st.executeQuery();
             if (result.next()) {
-                MesaDTO clone = new MesaDTO(result.getInt(1), result.getString(2));
-                mesa = clone;
+                mesa.setId(result.getInt(1));
+                mesa.setNombre(result.getString(2));
+                return mesa;
             }
         } catch (SQLException ex) {
             Logger.getLogger(ProductoDAO.class.getName()).log(Level.SEVERE, null, ex);
@@ -135,7 +136,7 @@ public class MesaDAO implements IDAO {
         }finally {
              ConnectorController.CloseConnection();
         }
-        return mesa;
+        return null;
     }
 
 }
