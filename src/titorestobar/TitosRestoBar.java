@@ -12,7 +12,7 @@ public class TitosRestoBar {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 try {
-                    new FormProducto().setVisible(true);
+                    new FormMesa().setVisible(true);
                 } catch (SQLException ex) {
                 }
             }

@@ -193,33 +193,33 @@ public class FormMesa extends javax.swing.JFrame {
         if (evt.getSource() == btnGuardar) {
             if (validarDatos() == false) {
             } else {
-                
+                int filaSeleccionada = seleccionarFila();
                 String nombre = txtNombreMesa.getText();
-                String rowName = "";
-                Object selectedRowValue = DataTableMesa.getModel().getValueAt(selectedRow(), 1);
                 
-                if(selectedRowValue != null)
-                {
-                    rowName = (String) selectedRowValue;
+                if(filaSeleccionada >=0 ){
+                    int id = (int) DataTableMesa.getModel().getValueAt(filaSeleccionada, 0);
+                    if (!MesaControladora.SiMesaExiste(nombre)) {
+                        if(MesaControladora.UpdateMesa(id, nombre)){
+                        JOptionPane.showMessageDialog(null, "Mesa Modificada.");
+                        }
+                    }else{
+                        JOptionPane.showMessageDialog(null, "Ya existe una mesa con el mismo nombre.");
+                    }
+                }else{
+                    if (!MesaControladora.SiMesaExiste(nombre)) {
+                        if(MesaControladora.CrearMesa(nombre)){
+                        JOptionPane.showMessageDialog(null, "Mesa Guardado");
+                        }
+                    }else{
+                       JOptionPane.showMessageDialog(null, "Ya existe una mesa con el mismo nombre.");
+                    }
                 }
-                
-                if(!rowName.equals("") && MesaControladora.SiMesaExiste(rowName))
-                {
-                    int i = DataTableMesa.getSelectedRow();
-                    int id = (int) DataTableMesa.getModel().getValueAt(i, 0);
-                    if(MesaControladora.UpdateMesa(id, nombre))
-                        JOptionPane.showMessageDialog(null, "Mesa Modificada");
-                }
-                else{
-                    if(MesaControladora.CrearMesa(nombre))
-                        JOptionPane.showMessageDialog(null, "Mesa Guardada");
-                }
-            }
             this.ResetTableMesa();
+            }
         }
     }//GEN-LAST:event_btnGuardarActionPerformed
 
-    private int selectedRow()
+    private int seleccionarFila()
     {
         int i = DataTableMesa.getSelectedRow();
         
