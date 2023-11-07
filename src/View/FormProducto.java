@@ -1,21 +1,21 @@
 package View;
 
-import Controlador.PrecioController;
 import Controlador.ProductoController;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
 
 
-public class FormProducto extends javax.swing.JFrame implements ITableFilas {
+public class FormProducto extends javax.swing.JFrame {
     
     ProductoController ProductoControladora;
-    PrecioController PrecioControladora;
     
     public FormProducto() throws SQLException {
         ProductoControladora = ProductoController.GetInstance();
-        //PrecioControladora = PrecioController.GetInstance();
         initComponents();
     }
 
@@ -43,6 +43,29 @@ public class FormProducto extends javax.swing.JFrame implements ITableFilas {
         }
         return true;
     }
+    public void ResetTableProducto() {
+        DefaultTableModel modelo = new DefaultTableModel();
+  
+        List<? extends Object> ListaProducto = ProductoControladora.PedirListaProducto();
+        ArrayList<Object> nombrecolumna = new ArrayList<>();
+        nombrecolumna.add("ID");
+        nombrecolumna.add("Nombre");
+        nombrecolumna.add("Descripcion");
+        nombrecolumna.add("Costo");
+        nombrecolumna.add("Cantidad");
+        nombrecolumna.forEach(columna -> {
+            modelo.addColumn(columna);
+        });
+        
+        for(int i = 0; i<ListaProducto.size();i++)
+        {
+             modelo.addRow(ProductoControladora.RequestTableRow(i));
+        }
+        dataTableProducto.setModel(modelo);
+        dataTableProducto.setCellSelectionEnabled(false);
+        dataTableProducto.setRowSelectionAllowed(true);
+    } //Datos de la Tabla, valores iniciales.
+    
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -78,6 +101,11 @@ public class FormProducto extends javax.swing.JFrame implements ITableFilas {
         });
 
         btnBorrar.setText("BORRAR");
+        btnBorrar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBorrarActionPerformed(evt);
+            }
+        });
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 0, 36)); // NOI18N
         jLabel1.setText("PRODUCTOS");
@@ -112,7 +140,7 @@ public class FormProducto extends javax.swing.JFrame implements ITableFilas {
                 {null, null, null, null, null}
             },
             new String [] {
-                "Nombre", "Descripcion", "Costo", "Precio", "Cantidad"
+                "ID", "Nombre", "Descripcion", "Costo", "Cantidad"
             }
         ));
         jScrollPane6.setViewportView(dataTableProducto);
@@ -198,32 +226,49 @@ public class FormProducto extends javax.swing.JFrame implements ITableFilas {
 
     private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
         if(evt.getSource() == btnGuardar){
-           System.out.print("Guardado");
-            if (validarDatos() == false) {
-                System.out.print("\n" + "Error");
-            } else {
-                
+            if (validarDatos()== false) {
+            }else{
+                int seleccionadaRow = seleccionarRow();
                 String nombre = txtNombreProducto.getText();
                 String descripcion = txtDescripcion.getText();
                 float costo = Float.parseFloat(txtCosto.getText());
                 
-                if(chkBox.isSelected()){
-                    float precio = costo * 1.3f;
-                    int id = ProductoControladora.CreateProducto(nombre, descripcion, costo, precio);
-                    AgregarFila(id);
-                    JOptionPane.showMessageDialog(null, "Producto Guardado");
-                }else{
-                    float precio = costo * 1.3f;
-                    int stock = (int) spnCantidadProducto.getValue();
-                    int id = ProductoControladora.CreateProducto(nombre, descripcion, costo, precio, stock);
-                    AgregarFila(id);
-                    JOptionPane.showMessageDialog(null, "Producto Guardado");
-                }
                 
+                
+                if (seleccionadaRow >=0) {
+                    int id = (int) dataTableProducto.getModel().getValueAt(seleccionadaRow, 0);
+                    if (!ProductoControladora.SiProductoExiste(nombre, descripcion)) {
+                        if (ProductoControladora.ActualizarProducto(id, nombre, descripcion, costo)) {
+                           JOptionPane.showMessageDialog(null, "Producto Modificado");
+                       } 
+                   }else{
+                        JOptionPane.showMessageDialog(null, "Ya existe un producto con el mismo nombre y descripción");
+                    }
+                }else{
+                    if (!ProductoControladora.SiProductoExiste(nombre, descripcion)) {
+                        if(ProductoControladora.CrearProducto(nombre, descripcion, costo)){
+                        JOptionPane.showMessageDialog(null, "Producto Guardado");
+                        }
+                    }else{
+                       JOptionPane.showMessageDialog(null, "Ya existe un producto con el mismo nombre y descripción");
+                    }
             }
+            this.ResetTableProducto();
         }
     }//GEN-LAST:event_btnGuardarActionPerformed
-
+    }
+    
+    private int seleccionarRow(){
+        int i = dataTableProducto.getSelectedRow();
+        
+        if(i > -1)
+        {
+            return i;
+        }
+        return -1;
+    }
+     
+     
     private void chkBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkBoxActionPerformed
         if(!evt.equals(chkBox.isSelected())){
             spnCantidadProducto.setEnabled(true);
@@ -231,6 +276,20 @@ public class FormProducto extends javax.swing.JFrame implements ITableFilas {
             spnCantidadProducto.setEnabled(false);
         }
     }//GEN-LAST:event_chkBoxActionPerformed
+
+    private void btnBorrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBorrarActionPerformed
+        if (evt.getSource() == btnBorrar) {
+        int selectedRow = seleccionarRow();
+        if (selectedRow >= 0) {
+            int id = (int) dataTableProducto.getModel().getValueAt(selectedRow, 0);
+            ProductoControladora.BorrarProducto(id);
+            ResetTableProducto(); // Actualizar la tabla después de eliminar
+            } else {
+                JOptionPane.showMessageDialog(null, "Error al eliminar el producto");
+            }
+        }
+    
+    }//GEN-LAST:event_btnBorrarActionPerformed
 
     /**
      * @param args the command line arguments
@@ -293,21 +352,31 @@ public class FormProducto extends javax.swing.JFrame implements ITableFilas {
     private javax.swing.JTextPane txtNombreProducto;
     // End of variables declaration//GEN-END:variables
 
-    @Override
+    
     public void AgregarFila(int id) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        javax.swing.table.DefaultTableModel modelo = (javax.swing.table.DefaultTableModel) dataTableProducto.getModel();
+        modelo.addRow(ProductoControladora.RequestObjectIndex(id));
+        dataTableProducto.setModel(modelo);
     }
 
-    @Override
+    
+    public void EliminarFila(int id) {
+        int columna = 0;
+        String IDString = String.valueOf(id);
+        javax.swing.table.DefaultTableModel modelo = (javax.swing.table.DefaultTableModel) dataTableProducto.getModel();
+        for (int i = 0; i < modelo.getRowCount(); i++) {
+            
+            if (modelo.getValueAt(i, columna).toString().equals(IDString)) {
+                modelo.removeRow(i);
+            }
+        }
+        dataTableProducto.setModel(modelo);
+    }
+
     public void ModificarFila(int id) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
-    @Override
-    public void EliminarFila(int id) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
 
-    
 
 }

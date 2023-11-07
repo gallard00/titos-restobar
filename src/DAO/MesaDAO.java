@@ -112,7 +112,7 @@ public class MesaDAO implements IDAO {
                 mesa = clone;
             }
         } catch (SQLException ex) {
-            Logger.getLogger(ProductoDAO.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(MesaDAO.class.getName()).log(Level.SEVERE, null, ex);
             JOptionPane.showMessageDialog(null, "Error en seleccion de ID");
         }finally {
              ConnectorController.CloseConnection();
@@ -133,7 +133,7 @@ public class MesaDAO implements IDAO {
                 return mesa;
             }
         } catch (SQLException ex) {
-            Logger.getLogger(ProductoDAO.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(MesaDAO.class.getName()).log(Level.SEVERE, null, ex);
             JOptionPane.showMessageDialog(null, "Error en seleccion de ID");
         }finally {
              ConnectorController.CloseConnection();

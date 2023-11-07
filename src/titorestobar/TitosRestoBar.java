@@ -1,5 +1,4 @@
 package titorestobar;
-
 import View.FormMesa;
 import View.FormProducto;
 import java.lang.System.Logger;
@@ -13,7 +12,7 @@ public class TitosRestoBar {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 try {
-                    new FormMesa().setVisible(true);
+                    new FormProducto().setVisible(true);
                 } catch (SQLException ex) {
                 }
             }

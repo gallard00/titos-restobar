@@ -5,13 +5,13 @@ public class ProductoNoElaboradoDTO extends ProductoDTO {
     
     private int stock;
 
-    public ProductoNoElaboradoDTO(int id, String nombre, String descripcion, float costo, PrecioDTO precio, int stock) {
-        super(id, nombre, descripcion, costo, precio);
+    public ProductoNoElaboradoDTO(int id, String nombre, String descripcion, float costo, int stock) {
+        super(id, nombre, descripcion, costo);
         this.stock = stock;
     }
     
-    public ProductoNoElaboradoDTO(String nombre, String descripcion, float costo, PrecioDTO precio, int stock) {
-        super(nombre, descripcion, costo, precio);
+    public ProductoNoElaboradoDTO(String nombre, String descripcion, float costo, int stock) {
+        super(nombre, descripcion, costo);
         this.stock = stock;
     }
 

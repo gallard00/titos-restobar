@@ -17,19 +17,17 @@ public class ProductoDTO {
         this.id = id;
     }
 
-    public ProductoDTO(String nombre, String descripcion, float costo, PrecioDTO precio) {
+    public ProductoDTO(String nombre, String descripcion, float costo) {
         this.nombre = nombre;
         this.descripcion = descripcion;
         this.costo = costo;
-        this.precio = precio;
     }
 
-    public ProductoDTO(int id, String nombre, String descripcion, float costo, PrecioDTO precio) {
+    public ProductoDTO(int id, String nombre, String descripcion, float costo) {
         this.id = id;
         this.nombre = nombre;
         this.descripcion = descripcion;
         this.costo = costo;
-        this.precio = precio;
     }
 
     public float getCosto() {
