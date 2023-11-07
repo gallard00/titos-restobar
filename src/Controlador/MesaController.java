@@ -26,19 +26,18 @@ public class MesaController {
     
     //<editor-fold defaultstate="collapsed" desc=" CRUD "> 
      
-    public int CrearMesa (String nombre) {
+    public Boolean CrearMesa (String nombre) {
         MesaDTO crearMesa = new MesaDTO(nombre);
-        int id = MesaDAO.crear(crearMesa);
-        return id;
+        return MesaDAO.crear(crearMesa);
     }
     
     public List ReadMesa(){
         return MesaDAO.mostrar();
     }
     
-    public void UpdateMesa (int id, String nombre) {
+    public Boolean UpdateMesa (int id, String nombre) {
         MesaDTO actMesa = new MesaDTO(id , nombre);
-        MesaDAO.actualizar(actMesa);
+        return MesaDAO.actualizar(actMesa);
     }
     
     public void DeleteMesa (int id) {
@@ -84,9 +83,9 @@ public class MesaController {
         ListaMesa.remove(borrarPedido);
     }
     
-    public Boolean SiMesaExiste(String name)
+    public Boolean SiMesaExiste(String nombre)
     {
-        MesaDTO mesa = (MesaDTO)MesaDAO.porNombre(name);
+        MesaDTO mesa = (MesaDTO)MesaDAO.porNombre(nombre);
         if(mesa != null)
         {
             return true;

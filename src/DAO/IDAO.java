@@ -4,11 +4,11 @@ import java.util.List;
 
 public interface IDAO {
     
-    abstract int crear(Object e); //Devuelo la ID del objecto ingresado en la BD para la vista 
+    abstract Boolean crear(Object e); //Devuelo la ID del objecto ingresado en la BD para la vista 
 
     abstract List mostrar();
 
-    abstract void actualizar(Object e);
+    abstract Boolean actualizar(Object e);
 
     public abstract void borrar(Object e);
 

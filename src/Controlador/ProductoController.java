@@ -3,6 +3,7 @@ package Controlador;
 import DAO.ProductoDAO;
 import Modelo.PrecioDTO;
 import Modelo.ProductoDTO;
+import Modelo.ProductoNoElaboradoDTO;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +28,11 @@ public class ProductoController {
     
     public void CreateProducto(String nombre, String descripcion, float costo, PrecioDTO precio) {
         ProductoDTO prod = new ProductoDTO(nombre, descripcion, costo, precio);
+        ProductoDAO.crear(prod);
+    }
+    
+    public void CreateProducto(String nombre, String descripcion, float costo, PrecioDTO precio, int stock) {
+        ProductoNoElaboradoDTO prod = new ProductoNoElaboradoDTO(nombre, descripcion, costo, precio, stock);
         ProductoDAO.crear(prod);
     }
     

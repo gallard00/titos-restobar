@@ -18,8 +18,8 @@ public class FormMesa extends javax.swing.JFrame {
     public FormMesa() throws SQLException {
         MesaControladora = MesaController.GetInstance();
         initComponents();
-        ResetTableMesa();
-        //nullCheckMesas();
+        //ResetTableMesa();
+        nullCheckMesas();
     }
     
     public void nullCheckMesas() //Verifica si la lista de mesas tiene algo
@@ -193,24 +193,43 @@ public class FormMesa extends javax.swing.JFrame {
         if (evt.getSource() == btnGuardar) {
             if (validarDatos() == false) {
             } else {
+                
                 String nombre = txtNombreMesa.getText();
-                if(MesaControladora.SiMesaExiste(nombre))
+                String rowName = "";
+                Object selectedRowValue = DataTableMesa.getModel().getValueAt(selectedRow(), 1);
+                
+                if(selectedRowValue != null)
+                {
+                    rowName = (String) selectedRowValue;
+                }
+                
+                if(!rowName.equals("") && MesaControladora.SiMesaExiste(rowName))
                 {
                     int i = DataTableMesa.getSelectedRow();
                     int id = (int) DataTableMesa.getModel().getValueAt(i, 0);
-                    MesaControladora.UpdateMesa(id, nombre);
-                    JOptionPane.showMessageDialog(null, "Mesa Modificada");
-                    
+                    if(MesaControladora.UpdateMesa(id, nombre))
+                        JOptionPane.showMessageDialog(null, "Mesa Modificada");
                 }
                 else{
-                    int id = MesaControladora.CrearMesa(nombre);
-                    JOptionPane.showMessageDialog(null, "Mesa Guardada");
-                    
+                    if(MesaControladora.CrearMesa(nombre))
+                        JOptionPane.showMessageDialog(null, "Mesa Guardada");
                 }
             }
+            this.ResetTableMesa();
         }
     }//GEN-LAST:event_btnGuardarActionPerformed
 
+    private int selectedRow()
+    {
+        int i = DataTableMesa.getSelectedRow();
+        
+        if(i > -1)
+        {
+            return i;
+        }
+        return -1;
+    }
+    
     private void DataTableMesaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_DataTableMesaMouseClicked
        int i = DataTableMesa.getSelectedRow();
         String nombre = (String) DataTableMesa.getModel().getValueAt(i, 1);

@@ -22,9 +22,8 @@ public class MesaDAO implements IDAO {
     }
 
     @Override
-    public int crear(Object e) {
+    public Boolean crear(Object e) {
         MesaDTO mesa = (MesaDTO) e;
-        int id = 0;
         String sql = "insert into mesas (id_mesas, nombre) value (?, ?);";
         try {
             PreparedStatement st = ConnectorController.getConnection().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
@@ -33,14 +32,15 @@ public class MesaDAO implements IDAO {
             st.executeUpdate();
             ResultSet rs = st.getGeneratedKeys();
             if (rs.next()) {
-            id = rs.getInt(1);
+            rs.getInt(1);
             }
+            return true;
         } catch (SQLException ex) {
             Logger.getLogger(MesaDAO.class.getName()).log(Level.SEVERE, null, ex);
         }finally {
              ConnectorController.CloseConnection();
         }
-        return id;
+        return false;
     }
 
     @Override
@@ -63,7 +63,7 @@ public class MesaDAO implements IDAO {
     }
 
     @Override
-    public void actualizar(Object e) {
+    public Boolean actualizar(Object e) {
         MesaDTO mesa = (MesaDTO) e;
         String sql = "update mesas set nombre = ? where id_mesas = ?;";
         try {
@@ -72,11 +72,13 @@ public class MesaDAO implements IDAO {
             //st.setString(4, String.valueOf(mesa.getPedido()));
             st.setString(2, String.valueOf(mesa.getId()));
             st.executeUpdate();
+            return true;
         } catch (SQLException ex) {
             Logger.getLogger(MesaDAO.class.getName()).log(Level.SEVERE, null, ex);
         }finally {
              ConnectorController.CloseConnection();
         }
+        return false;
     }
 
     @Override
