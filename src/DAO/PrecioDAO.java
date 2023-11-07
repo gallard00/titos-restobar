@@ -20,27 +20,26 @@ public class PrecioDAO implements IDAO {
     }
 
     @Override
-    public int crear(Object e) {
+    public Boolean crear(Object e) {
         PrecioDTO pre = (PrecioDTO) e;
-        int id = 0;
         String sql = "insert into Precios(id_precios, valor,fecha) value (?, ?, ?);";
         try {
             PreparedStatement st = ConnectorController.getConnection().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             st.setString(1, String.valueOf(pre.getId()));
             st.setString(2, String.valueOf(pre.getValor()));
             st.setString(3, String.valueOf(pre.getFecha()));
-           
             st.execute();
             ResultSet rs = st.getGeneratedKeys();
             if (rs.next()) {
-            id = rs.getInt(1);
+            rs.getInt(1);
             }
+            return true;
         } catch (SQLException ex) {
             Logger.getLogger(PrecioDAO.class.getName()).log(Level.SEVERE, null, ex);
         }finally {
              ConnectorController.CloseConnection();
         }
-        return id;
+        return false;
     }
 
     @Override
@@ -63,7 +62,7 @@ public class PrecioDAO implements IDAO {
     }
 
     @Override
-    public void actualizar(Object e) {
+    public Boolean actualizar(Object e) {
         PrecioDTO pre = (PrecioDTO) e;
         String sql = "update Precios set valor = ?, fecha = ?,where id_precio = ?;";
         try {
@@ -71,12 +70,13 @@ public class PrecioDAO implements IDAO {
             st.setString(1, String.valueOf(pre.getValor()));
             st.setString(2, String.valueOf(pre.getFecha()));
             st.setString(3, String.valueOf(pre.getId()));
-          
+            return true;
         } catch (SQLException ex) {
             Logger.getLogger(PrecioDAO.class.getName()).log(Level.SEVERE, null, ex);
         }finally {
              ConnectorController.CloseConnection();
         }
+        return false;
     }
 
     @Override

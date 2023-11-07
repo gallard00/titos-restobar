@@ -15,7 +15,6 @@ import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 
 
-
 public class ProductoDAO implements IDAO{
     
     ControladoraConnector ConnectorController;
@@ -25,9 +24,8 @@ public class ProductoDAO implements IDAO{
     }
 
     @Override
-    public int crear(Object e) {
+    public Boolean crear(Object e) {
         ProductoDTO prod = (ProductoDTO) e;
-        int id = 0;
         String sql = "insert into ProductoDTO(id_productos, nombre, descripcion, costo, id_precios) value (?, ?, ?, ?, ?);";
         try {
             PreparedStatement st = ConnectorController.getConnection().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
@@ -39,14 +37,15 @@ public class ProductoDAO implements IDAO{
             st.execute();
             ResultSet rs = st.getGeneratedKeys();
             if (rs.next()) {
-            id = rs.getInt(1);
+            rs.getInt(1);
             }
+            return true;
         } catch (SQLException ex) {
             Logger.getLogger(ProductoDAO.class.getName()).log(Level.SEVERE, null, ex);
         }finally {
              ConnectorController.CloseConnection();
         }
-        return id;
+        return false;
     }
 
     @Override
@@ -69,7 +68,7 @@ public class ProductoDAO implements IDAO{
     }
 
     @Override
-    public void actualizar(Object e) {
+    public Boolean actualizar(Object e) {
         ProductoDTO prod = (ProductoDTO) e;
         String sql = "update Productos set nombre = ?, descripcion = ?, costo = ?, id_precios = ? where id_productos = ?;";
         try {
@@ -80,11 +79,13 @@ public class ProductoDAO implements IDAO{
             st.setString(4, String.valueOf(prod.getPrecio()));
             st.setString(5, String.valueOf(prod.getId()));
             st.executeUpdate();
+            return true;
         } catch (SQLException ex) {
             Logger.getLogger(ProductoDAO.class.getName()).log(Level.SEVERE, null, ex);
         }finally {
              ConnectorController.CloseConnection();
         }
+        return false;
     }
 
     @Override

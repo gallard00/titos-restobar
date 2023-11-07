@@ -8,7 +8,7 @@ import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 
 
-public class FormProducto extends javax.swing.JFrame {
+public class FormProducto extends javax.swing.JFrame implements ITableFilas {
     
     ProductoController ProductoControladora;
     PrecioController PrecioControladora;
@@ -292,6 +292,21 @@ public class FormProducto extends javax.swing.JFrame {
     private javax.swing.JTextPane txtDescripcion;
     private javax.swing.JTextPane txtNombreProducto;
     // End of variables declaration//GEN-END:variables
+
+    @Override
+    public void AgregarFila(int id) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public void ModificarFila(int id) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public void EliminarFila(int id) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
 
     
 

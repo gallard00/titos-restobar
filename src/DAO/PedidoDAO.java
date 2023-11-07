@@ -24,9 +24,8 @@ public class PedidoDAO implements IDAO {
     }
 
     @Override
-    public int crear(Object e) {
+    public Boolean crear(Object e) {
         PedidoDTO ped = (PedidoDTO) e;
-        int id = 0;
         String sql = "insert into Pedidos(id_pedidos, fecha_apertura, fecha_cierre, descuento, costo_total, id_items) value (?, ?, ?, ?, ?, ?);";
         try {
             PreparedStatement st = ConnectorController.getConnection().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
@@ -39,14 +38,15 @@ public class PedidoDAO implements IDAO {
             st.execute();
             ResultSet rs = st.getGeneratedKeys();
             if (rs.next()) {
-            id = rs.getInt(1);
+            rs.getInt(1);
             }
+            return true;
         } catch (SQLException ex) {
             Logger.getLogger(PedidoDAO.class.getName()).log(Level.SEVERE, null, ex);
         }finally {
              ConnectorController.CloseConnection();
         }
-        return id;
+        return false;
     }
 
     @Override
@@ -69,7 +69,7 @@ public class PedidoDAO implements IDAO {
     }
 
     @Override
-    public void actualizar(Object e) {
+    public Boolean actualizar(Object e) {
         PedidoDTO ped = (PedidoDTO) e;
         String sql = "update Pedidos set fecha_apertura = ?, fecha_cierre = ?, descuento = ?, costo_total = ?, id_items = ? where id_pedidos = ?;";
         try {
@@ -80,11 +80,13 @@ public class PedidoDAO implements IDAO {
             st.setString(4, String.valueOf(ped.getCostoTotal()));
             st.setString(5, String.valueOf(ped.getProducto()));
             st.executeUpdate();
+            return true;
         } catch (SQLException ex) {
             Logger.getLogger(PedidoDAO.class.getName()).log(Level.SEVERE, null, ex);
         }finally {
              ConnectorController.CloseConnection();
         }
+        return false;
     }
 
     @Override
