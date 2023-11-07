@@ -11,14 +11,15 @@ import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 
-public class FormMesa extends javax.swing.JFrame implements ITableFilas {
+public class FormMesa extends javax.swing.JFrame {
 
     MesaController MesaControladora;
     
     public FormMesa() throws SQLException {
         MesaControladora = MesaController.GetInstance();
         initComponents();
-        nullCheckMesas();
+        ResetTableMesa();
+        //nullCheckMesas();
     }
     
     public void nullCheckMesas() //Verifica si la lista de mesas tiene algo
@@ -199,12 +200,12 @@ public class FormMesa extends javax.swing.JFrame implements ITableFilas {
                     int id = (int) DataTableMesa.getModel().getValueAt(i, 0);
                     MesaControladora.UpdateMesa(id, nombre);
                     JOptionPane.showMessageDialog(null, "Mesa Modificada");
-                    this.ResetTableMesa();
+                    
                 }
                 else{
                     int id = MesaControladora.CrearMesa(nombre);
                     JOptionPane.showMessageDialog(null, "Mesa Guardada");
-                    AgregarFila(id);
+                    
                 }
             }
         }
@@ -282,14 +283,14 @@ public class FormMesa extends javax.swing.JFrame implements ITableFilas {
     private javax.swing.JTextPane txtNombreMesa;
     // End of variables declaration//GEN-END:variables
 
-    @Override
+    
     public void AgregarFila(int id) {
         javax.swing.table.DefaultTableModel modelo = (javax.swing.table.DefaultTableModel) DataTableMesa.getModel();
         modelo.addRow(MesaControladora.RequestObjectIndex(id));
         DataTableMesa.setModel(modelo);
     }
 
-    @Override
+    
     public void EliminarFila(int id) {
         int columna = 0;
         String IDString = String.valueOf(id);
@@ -303,7 +304,6 @@ public class FormMesa extends javax.swing.JFrame implements ITableFilas {
         DataTableMesa.setModel(modelo);
     }
 
-    @Override
     public void ModificarFila(int id) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
