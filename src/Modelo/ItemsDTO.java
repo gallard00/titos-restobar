@@ -9,25 +9,31 @@ public class ItemsDTO {
     private int cantidad;
     private float costoTotal;
     private ProductoDTO producto;
-    private PedidoDTO pedido;
+
+    public ItemsDTO() {
+    }
 
     public ItemsDTO(int id) {
         this.id = id;
     }
 
-    public ItemsDTO(int cantidad, float costoTotal, ProductoDTO producto, PedidoDTO pedido) {
+    public ItemsDTO(int cantidad, float costoTotal, ProductoDTO producto) {
         this.cantidad = cantidad;
         this.costoTotal = costoTotal;
         this.producto = producto;
-        this.pedido = pedido;
     }
 
-    public ItemsDTO(int id, int cantidad, float costoTotal, ProductoDTO producto, PedidoDTO pedido) {
+    public ItemsDTO(int id, int cantidad, float costoTotal) {
+        this.id = id;
+        this.cantidad = cantidad;
+        this.costoTotal = costoTotal;
+    }
+
+    public ItemsDTO(int id, int cantidad, float costoTotal, ProductoDTO producto) {
         this.id = id;
         this.cantidad = cantidad;
         this.costoTotal = costoTotal;
         this.producto = producto;
-        this.pedido = pedido;
     }
 
     public int getId() {
@@ -63,27 +69,13 @@ public class ItemsDTO {
         this.producto = producto;
     }
 
-    public PedidoDTO getPedido() {
-        return pedido;
-    }
-
-    public void setPedido(PedidoDTO pedido) {
-        this.pedido = pedido;
-    }
-
-    private void calcularCostoTotal()
-    {
-        this.costoTotal = this.producto.getPrecio().getValor() * this.getCantidad();
-    }
-
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 97 * hash + this.id;
-        hash = 97 * hash + this.cantidad;
-        hash = 97 * hash + Float.floatToIntBits(this.costoTotal);
-        hash = 97 * hash + Objects.hashCode(this.producto);
-        hash = 97 * hash + Objects.hashCode(this.pedido);
+        hash = 83 * hash + this.id;
+        hash = 83 * hash + this.cantidad;
+        hash = 83 * hash + Float.floatToIntBits(this.costoTotal);
+        hash = 83 * hash + Objects.hashCode(this.producto);
         return hash;
     }
 
@@ -108,15 +100,13 @@ public class ItemsDTO {
         if (Float.floatToIntBits(this.costoTotal) != Float.floatToIntBits(other.costoTotal)) {
             return false;
         }
-        if (!Objects.equals(this.producto, other.producto)) {
-            return false;
-        }
-        return Objects.equals(this.pedido, other.pedido);
+        return Objects.equals(this.producto, other.producto);
     }
 
     @Override
     public String toString() {
-        return "ItemsDTO{" + "id=" + id + ", cantidad=" + cantidad + ", costoTotal=" + costoTotal + ", producto=" + producto + ", pedido=" + pedido + '}';
+        return "ItemsDTO{" + "id=" + id + ", cantidad=" + cantidad + ", costoTotal=" + costoTotal + ", producto=" + producto + '}';
     }
+
     
 }

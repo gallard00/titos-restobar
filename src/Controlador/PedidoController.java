@@ -15,7 +15,7 @@ public class PedidoController {
     private final PedidoDAO PedidoDAO;
     private final ItemsDAO ItemsDAO;
     
-       private PedidoController() throws SQLException {
+       PedidoController() throws SQLException {
         PedidoDAO = new PedidoDAO();
         ItemsDAO = new ItemsDAO();
     }
