@@ -69,7 +69,6 @@ public class MesaDAO implements IDAO {
         try {
             PreparedStatement st = ConnectorController.getConnection().prepareStatement(sql);
             st.setString(1, mesa.getNombre());
-            //st.setString(4, String.valueOf(mesa.getPedido()));
             st.setString(2, String.valueOf(mesa.getId()));
             st.executeUpdate();
             return true;
@@ -88,7 +87,6 @@ public class MesaDAO implements IDAO {
         try {
             PreparedStatement st = ConnectorController.getConnection().prepareStatement(sql);
             st.setInt(1, mesa.getId());
-            //JOptionPane.showMessageDialog(null, "ID : " + mesa.getId());
             st.executeUpdate();
         } catch (SQLException ex) {
             Logger.getLogger(MesaDAO.class.getName()).log(Level.SEVERE, null, ex);
@@ -106,7 +104,6 @@ public class MesaDAO implements IDAO {
             PreparedStatement st = ConnectorController.getConnection().prepareStatement(sql);
             st.setString(1, Integer.toString(id));
             ResultSet result = st.executeQuery();
-            //JOptionPane.showMessageDialog(null,"En Execute Query");
             if (result.next()) {
                 MesaDTO clone = new MesaDTO(result.getInt(1), result.getString(2));
                 mesa = clone;

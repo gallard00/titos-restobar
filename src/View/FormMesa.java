@@ -18,15 +18,14 @@ public class FormMesa extends javax.swing.JFrame {
     public FormMesa() throws SQLException {
         MesaControladora = MesaController.GetInstance();
         initComponents();
-        //ResetTableMesa();
-        nullCheckMesas();
+        verificarListaMesas();
     }
     
-    public void nullCheckMesas() //Verifica si la lista de mesas tiene algo
+    public void verificarListaMesas() //Verifica si la lista de mesas tiene algo
     {
-        if(MesaControladora.PedirListaMesas().size() > 0)
+        if(!MesaControladora.PedirListaMesas().isEmpty())
         {
-            ResetTableMesa();
+            reiniciarTablaMesa();
         }
     }
     
@@ -45,7 +44,7 @@ public class FormMesa extends javax.swing.JFrame {
         return true;
     }
     
-    public void ResetTableMesa() {
+    public void reiniciarTablaMesa() {
         DefaultTableModel modelo = new DefaultTableModel();
   
         List<? extends Object> ListaMesa = MesaControladora.PedirListaMesas();
@@ -60,9 +59,9 @@ public class FormMesa extends javax.swing.JFrame {
         {
              modelo.addRow(MesaControladora.RequestTableRow(i));
         }
-        DataTableMesa.setModel(modelo);
-        DataTableMesa.setCellSelectionEnabled(false);
-        DataTableMesa.setRowSelectionAllowed(true);
+        datosTablaMesa.setModel(modelo);
+        datosTablaMesa.setCellSelectionEnabled(false);
+        datosTablaMesa.setRowSelectionAllowed(true);
     } //DataTable valores iniciales
 
     @SuppressWarnings("unchecked")
@@ -78,7 +77,8 @@ public class FormMesa extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         jScrollPane3 = new javax.swing.JScrollPane();
-        DataTableMesa = new javax.swing.JTable();
+        datosTablaMesa = new javax.swing.JTable();
+        btnVolver = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -105,7 +105,7 @@ public class FormMesa extends javax.swing.JFrame {
 
         jLabel3.setText("Lista de mesas");
 
-        DataTableMesa.setModel(new javax.swing.table.DefaultTableModel(
+        datosTablaMesa.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null},
                 {null, null},
@@ -131,12 +131,19 @@ public class FormMesa extends javax.swing.JFrame {
                 return canEdit [columnIndex];
             }
         });
-        DataTableMesa.addMouseListener(new java.awt.event.MouseAdapter() {
+        datosTablaMesa.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                DataTableMesaMouseClicked(evt);
+                datosTablaMesaMouseClicked(evt);
             }
         });
-        jScrollPane3.setViewportView(DataTableMesa);
+        jScrollPane3.setViewportView(datosTablaMesa);
+
+        btnVolver.setText("VOLVER");
+        btnVolver.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnVolverActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -149,22 +156,24 @@ public class FormMesa extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap(127, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 456, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                 .addGroup(layout.createSequentialGroup()
                                     .addComponent(jLabel1)
                                     .addGap(2, 2, 2)
                                     .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addGroup(layout.createSequentialGroup()
                                     .addComponent(btnGuardar)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addGap(64, 64, 64)
                                     .addComponent(btnBorrar)))
                             .addGap(216, 216, 216))
                         .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                             .addComponent(jLabel3)
-                            .addGap(468, 468, 468)))))
+                            .addGap(468, 468, 468)))
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addComponent(btnVolver)
+                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 456, javax.swing.GroupLayout.PREFERRED_SIZE))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -178,7 +187,8 @@ public class FormMesa extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnGuardar)
-                    .addComponent(btnBorrar))
+                    .addComponent(btnBorrar)
+                    .addComponent(btnVolver))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel3)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -197,9 +207,9 @@ public class FormMesa extends javax.swing.JFrame {
                 String nombre = txtNombreMesa.getText();
                 
                 if(filaSeleccionada >=0 ){
-                    int id = (int) DataTableMesa.getModel().getValueAt(filaSeleccionada, 0);
+                    int id = (int) datosTablaMesa.getModel().getValueAt(filaSeleccionada, 0);
                     if (!MesaControladora.SiMesaExiste(nombre)) {
-                        if(MesaControladora.UpdateMesa(id, nombre)){
+                        if(MesaControladora.ActualizarMesa(id, nombre)){
                         JOptionPane.showMessageDialog(null, "Mesa Modificada.");
                         }
                     }else{
@@ -214,14 +224,14 @@ public class FormMesa extends javax.swing.JFrame {
                        JOptionPane.showMessageDialog(null, "Ya existe una mesa con el mismo nombre.");
                     }
                 }
-            this.ResetTableMesa();
+            this.reiniciarTablaMesa();
             }
         }
     }//GEN-LAST:event_btnGuardarActionPerformed
 
     private int seleccionarFila()
     {
-        int i = DataTableMesa.getSelectedRow();
+        int i = datosTablaMesa.getSelectedRow();
         
         if(i > -1)
         {
@@ -230,11 +240,11 @@ public class FormMesa extends javax.swing.JFrame {
         return -1;
     }
     
-    private void DataTableMesaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_DataTableMesaMouseClicked
-       int i = DataTableMesa.getSelectedRow();
-        String nombre = (String) DataTableMesa.getModel().getValueAt(i, 1);
+    private void datosTablaMesaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_datosTablaMesaMouseClicked
+       int i = datosTablaMesa.getSelectedRow();
+        String nombre = (String) datosTablaMesa.getModel().getValueAt(i, 1);
         txtNombreMesa.setText(nombre); //nombre
-    }//GEN-LAST:event_DataTableMesaMouseClicked
+    }//GEN-LAST:event_datosTablaMesaMouseClicked
 
     private void btnBorrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBorrarActionPerformed
          if (evt.getSource() == btnBorrar) {
@@ -243,12 +253,18 @@ public class FormMesa extends javax.swing.JFrame {
                 System.out.print("\n" + "Error");
             } else {
                 JOptionPane.showMessageDialog(null, "Mesa Eliminada");
-                int id = Integer.parseInt(DataTableMesa.getValueAt(DataTableMesa.getSelectedRow(), 0).toString()); //ID de Mesa a Borrar
-                MesaControladora.DeleteMesa(id);
+                int id = Integer.parseInt(datosTablaMesa.getValueAt(datosTablaMesa.getSelectedRow(), 0).toString()); //ID de Mesa a Borrar
+                MesaControladora.BorrarMesa(id);
                 EliminarFila(id);
             }
         }
     }//GEN-LAST:event_btnBorrarActionPerformed
+
+    private void btnVolverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVolverActionPerformed
+        this.setVisible(false);
+        FormIndex formIndex = new FormIndex();
+        formIndex.setVisible(true);
+    }//GEN-LAST:event_btnVolverActionPerformed
 
     /**
      * @param args the command line arguments
@@ -291,9 +307,10 @@ public class FormMesa extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JTable DataTableMesa;
     private javax.swing.JButton btnBorrar;
     private javax.swing.JButton btnGuardar;
+    private javax.swing.JButton btnVolver;
+    private javax.swing.JTable datosTablaMesa;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -304,23 +321,23 @@ public class FormMesa extends javax.swing.JFrame {
 
     
     public void AgregarFila(int id) {
-        javax.swing.table.DefaultTableModel modelo = (javax.swing.table.DefaultTableModel) DataTableMesa.getModel();
+        javax.swing.table.DefaultTableModel modelo = (javax.swing.table.DefaultTableModel) datosTablaMesa.getModel();
         modelo.addRow(MesaControladora.RequestObjectIndex(id));
-        DataTableMesa.setModel(modelo);
+        datosTablaMesa.setModel(modelo);
     }
 
     
     public void EliminarFila(int id) {
         int columna = 0;
         String IDString = String.valueOf(id);
-        javax.swing.table.DefaultTableModel modelo = (javax.swing.table.DefaultTableModel) DataTableMesa.getModel();
+        javax.swing.table.DefaultTableModel modelo = (javax.swing.table.DefaultTableModel) datosTablaMesa.getModel();
         for (int i = 0; i < modelo.getRowCount(); i++) {
             
             if (modelo.getValueAt(i, columna).toString().equals(IDString)) {
                 modelo.removeRow(i);
             }
         }
-        DataTableMesa.setModel(modelo);
+        datosTablaMesa.setModel(modelo);
     }
 
     public void ModificarFila(int id) {

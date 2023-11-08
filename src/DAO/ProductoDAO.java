@@ -108,7 +108,6 @@ public class ProductoDAO implements IDAO{
             PreparedStatement st = ConnectorController.getConnection().prepareStatement(sql);
             st.setString(1, Integer.toString(id));
             ResultSet result = st.executeQuery();
-            //JOptionPane.showMessageDialog(null,"En Execute Query");
             if (result.next()) {
                 ProductoDTO clone = new ProductoDTO(result.getInt(1), result.getString(2), result.getString(3), result.getFloat(4));
                 producto = clone;
