@@ -87,6 +87,7 @@ public class MesaDAO implements IDAO {
         try {
             PreparedStatement st = ConnectorController.getConnection().prepareStatement(sql);
             st.setInt(1, mesa.getId());
+            JOptionPane.showMessageDialog(null, "Mesa con ID : " + mesa.getId());
             st.executeUpdate();
         } catch (SQLException ex) {
             Logger.getLogger(MesaDAO.class.getName()).log(Level.SEVERE, null, ex);
