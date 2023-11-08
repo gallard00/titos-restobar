@@ -129,7 +129,7 @@ public class FormProducto extends javax.swing.JFrame {
         jLabel1.setFont(new java.awt.Font("Segoe UI", 0, 36)); // NOI18N
         jLabel1.setText("PRODUCTOS");
 
-        jLabel2.setText("ELABORADO / NO ELABORADO");
+        jLabel2.setText("ELABORADO");
 
         jLabel3.setText("NOMBRE: ");
 
@@ -181,35 +181,40 @@ public class FormProducto extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(34, 34, 34)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(86, 86, 86)
-                        .addComponent(jLabel1))
-                    .addGroup(layout.createSequentialGroup()
+                        .addGap(34, 34, 34)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel3)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(jLabel4, javax.swing.GroupLayout.Alignment.TRAILING)
-                                .addComponent(jLabel5)))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 170, Short.MAX_VALUE)
-                            .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jScrollPane4, javax.swing.GroupLayout.Alignment.LEADING)))
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                        .addComponent(jLabel7, javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(layout.createSequentialGroup()
-                            .addComponent(btnGuardar)
-                            .addGap(89, 89, 89)
-                            .addComponent(btnBorrar)))
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                        .addComponent(spnCantidadProducto, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGroup(layout.createSequentialGroup()
-                            .addComponent(jLabel2)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                            .addComponent(chkBox)))
-                    .addComponent(btnVolver, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel3)
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(jLabel4, javax.swing.GroupLayout.Alignment.TRAILING)
+                                        .addComponent(jLabel5)))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                    .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 170, Short.MAX_VALUE)
+                                    .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jScrollPane4, javax.swing.GroupLayout.Alignment.LEADING)))
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                .addGroup(layout.createSequentialGroup()
+                                    .addComponent(btnGuardar)
+                                    .addGap(89, 89, 89)
+                                    .addComponent(btnBorrar))
+                                .addGroup(layout.createSequentialGroup()
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(jLabel7)
+                                        .addComponent(jLabel2))
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(spnCantidadProducto, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(chkBox))
+                                    .addGap(74, 74, 74)))))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(20, 20, 20)
+                        .addComponent(btnVolver, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jLabel1)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 456, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
@@ -220,7 +225,9 @@ public class FormProducto extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addGap(19, 19, 19)
-                        .addComponent(jLabel1)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel1)
+                            .addComponent(btnVolver))
                         .addGap(31, 31, 31)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addGroup(layout.createSequentialGroup()
@@ -246,8 +253,6 @@ public class FormProducto extends javax.swing.JFrame {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(btnGuardar)
                             .addComponent(btnBorrar))
-                        .addGap(18, 18, 18)
-                        .addComponent(btnVolver)
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(30, 76, Short.MAX_VALUE)
@@ -259,7 +264,7 @@ public class FormProducto extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
-        if(evt.getSource() == btnGuardar){
+        if(evt.getSource() == btnGuardar && chkBox.isSelected()){
             if (validarDatos()== false) {
             }else{
                 int filaSeleccionada = seleccionarFila();
@@ -271,7 +276,7 @@ public class FormProducto extends javax.swing.JFrame {
                 
                 if (filaSeleccionada >=0) {
                     int id = (int) datosTablaProducto.getModel().getValueAt(filaSeleccionada, 0);
-                    if (!ProductoControladora.SiProductoExiste(nombre, descripcion)) {
+                    if (!ProductoControladora.SiProductoExiste(nombre, descripcion, costo)) {
                         if (ProductoControladora.ActualizarProducto(id, nombre, descripcion, costo)) {
                            JOptionPane.showMessageDialog(null, "Producto Modificado");
                        } 
@@ -279,7 +284,7 @@ public class FormProducto extends javax.swing.JFrame {
                         JOptionPane.showMessageDialog(null, "Ya existe un producto con el mismo nombre y descripción");
                     }
                 }else{
-                    if (!ProductoControladora.SiProductoExiste(nombre, descripcion)) {
+                    if (!ProductoControladora.SiProductoExiste(nombre, descripcion, costo)) {
                         if(ProductoControladora.CrearProducto(nombre, descripcion, costo)){
                         JOptionPane.showMessageDialog(null, "Producto Guardado");
                         }
@@ -290,6 +295,10 @@ public class FormProducto extends javax.swing.JFrame {
             this.reiniciarTablaProducto();
         }
     }//GEN-LAST:event_btnGuardarActionPerformed
+        else{
+           JOptionPane.showMessageDialog(null, "Por el momento no se puede guardar un producto no elaborado.");
+        }
+    
     }
      
     private void chkBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkBoxActionPerformed
@@ -306,7 +315,7 @@ public class FormProducto extends javax.swing.JFrame {
             if (filaSeleccionada >= 0) {
                 int id = (int) datosTablaProducto.getModel().getValueAt(filaSeleccionada, 0);
                 ProductoControladora.BorrarProducto(id);
-                reiniciarTablaProducto(); // Actualizar la tabla después de eliminar
+                reiniciarTablaProducto();
             }
             else{
                 JOptionPane.showMessageDialog(null, "Error al eliminar el producto");

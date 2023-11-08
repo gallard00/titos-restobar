@@ -150,7 +150,9 @@ public class FormMesa extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(284, 284, 284)
+                .addGap(35, 35, 35)
+                .addComponent(btnVolver)
+                .addGap(173, 173, 173)
                 .addComponent(jLabel2)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
@@ -171,15 +173,15 @@ public class FormMesa extends javax.swing.JFrame {
                         .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                             .addComponent(jLabel3)
                             .addGap(468, 468, 468)))
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                        .addComponent(btnVolver)
-                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 456, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 456, javax.swing.GroupLayout.PREFERRED_SIZE)))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(13, 13, 13)
-                .addComponent(jLabel2)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel2)
+                    .addComponent(btnVolver))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jScrollPane2)
@@ -187,8 +189,7 @@ public class FormMesa extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnGuardar)
-                    .addComponent(btnBorrar)
-                    .addComponent(btnVolver))
+                    .addComponent(btnBorrar))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel3)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -248,14 +249,14 @@ public class FormMesa extends javax.swing.JFrame {
 
     private void btnBorrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBorrarActionPerformed
          if (evt.getSource() == btnBorrar) {
-            System.out.print("Eliminado");
-            if (validarDatos() == false) {
-                System.out.print("\n" + "Error");
-            } else {
-                JOptionPane.showMessageDialog(null, "Mesa Eliminada");
-                int id = Integer.parseInt(datosTablaMesa.getValueAt(datosTablaMesa.getSelectedRow(), 0).toString()); //ID de Mesa a Borrar
+            int filaSeleccionada = seleccionarFila();
+            if (filaSeleccionada >= 0) {
+                int id = (int) datosTablaMesa.getModel().getValueAt(filaSeleccionada, 0);
                 MesaControladora.BorrarMesa(id);
-                EliminarFila(id);
+                reiniciarTablaMesa();
+            } 
+            else {
+                JOptionPane.showMessageDialog(null, "Error al elminar la mesa");
             }
         }
     }//GEN-LAST:event_btnBorrarActionPerformed

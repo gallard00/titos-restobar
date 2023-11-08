@@ -69,9 +69,9 @@ public class ProductoController {
         return null;
     }
     
-    public Boolean SiProductoExiste(String nombre, String descripcion)
+    public Boolean SiProductoExiste(String nombre, String descripcion, Float costo)
     {
-        ProductoDTO producto = (ProductoDTO)ProductoDAO.porNombre(nombre, descripcion);
+        ProductoDTO producto = (ProductoDTO)ProductoDAO.porNombre(nombre, descripcion, costo);
         if(producto != null)
         {
             return true;
