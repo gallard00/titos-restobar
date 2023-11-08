@@ -24,23 +24,23 @@ public class MesaController {
         return Instance;
     }
     
-    //<editor-fold defaultstate="collapsed" desc=" CRUD "> 
+    //<editor-fold defaultstate="collapsed" desc=" CRUD de Mesa "> 
      
     public Boolean CrearMesa (String nombre) {
         MesaDTO crearMesa = new MesaDTO(nombre);
         return MesaDAO.crear(crearMesa);
     }
     
-    public List ReadMesa(){
+    public List LeerMesa(){
         return MesaDAO.mostrar();
     }
     
-    public Boolean UpdateMesa (int id, String nombre) {
+    public Boolean ActualizarMesa (int id, String nombre) {
         MesaDTO actMesa = new MesaDTO(id , nombre);
         return MesaDAO.actualizar(actMesa);
     }
     
-    public void DeleteMesa (int id) {
+    public void BorrarMesa (int id) {
         MesaDTO borrarMesa = new MesaDTO(id);
         MesaDAO.borrar(borrarMesa);
         ListaMesa.remove(borrarMesa);
@@ -48,9 +48,9 @@ public class MesaController {
     
     //</editor-fold>
     
-    //<editor-fold defaultstate="collapsed" desc=" Class Methods & External Requests ">
+    //<editor-fold defaultstate="collapsed" desc=" Metodos de la Clase ">
     public List<MesaDTO> PedirListaMesas() {
-        ListaMesa = ReadMesa();
+        ListaMesa = LeerMesa();
         return ListaMesa;
     }
     
@@ -64,9 +64,19 @@ public class MesaController {
         }
         return null;
     }
+    
+    public Boolean SiMesaExiste(String nombre)
+    {
+        MesaDTO mesa = (MesaDTO)MesaDAO.porNombre(nombre);
+        if(mesa != null)
+        {
+            return true;
+        }
+        return false;
+    }
   //</editor-fold>  
     
-    
+    //<editor-fold defaultstate="collapsed" desc=" CRUD de Pedido "> 
     public void CrearPedido (Date fechaApertura, Date fechaCierre, float descuento, float costoTotal, List<ItemsDTO> producto) {
         PedidoDTO crearPedido = new PedidoDTO(fechaApertura, fechaCierre, descuento, costoTotal, producto);
         /*PedidoDAO.crear(crearPedido);*/
@@ -82,19 +92,9 @@ public class MesaController {
        /* PedidoDAO.borrar(borrarPedido);*/
         ListaMesa.remove(borrarPedido);
     }
+    //</editor-fold>
     
-    public Boolean SiMesaExiste(String nombre)
-    {
-        MesaDTO mesa = (MesaDTO)MesaDAO.porNombre(nombre);
-        if(mesa != null)
-        {
-            return true;
-        }
-        return false;
-    }
-   
-    
-    //<editor-fold defaultstate="collapsed" desc=" DataTable Rows&Index">
+    //<editor-fold defaultstate="collapsed" desc=" Datos de la tabla de Mesa">
     
     public Object[] RequestTableRow(int i)
     {

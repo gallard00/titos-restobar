@@ -17,8 +17,16 @@ public class FormProducto extends javax.swing.JFrame {
     public FormProducto() throws SQLException {
         ProductoControladora = ProductoController.GetInstance();
         initComponents();
+        verificarListaProductos();
     }
-
+    
+    public void verificarListaProductos() //Verifica si la lista de mesas tiene algo
+    {
+        if(!ProductoControladora.PedirListaProducto().isEmpty())
+        {
+            reiniciarTablaProducto();
+        }
+    }
     private boolean validarDatos() {
         {
             try {
@@ -31,8 +39,8 @@ public class FormProducto extends javax.swing.JFrame {
             }
             try{
                 if(!chkBox.isSelected()){
-                    int spnValue = (int) spnCantidadProducto.getValue();
-                    if(spnValue < 1){
+                    int spnValor = (int) spnCantidadProducto.getValue();
+                    if(spnValor < 1){
                         throw new Exception();
                     }
                 }
@@ -43,7 +51,7 @@ public class FormProducto extends javax.swing.JFrame {
         }
         return true;
     }
-    public void ResetTablaProducto() {
+    public void reiniciarTablaProducto() {
         DefaultTableModel modelo = new DefaultTableModel();
   
         List<? extends Object> ListaProducto = ProductoControladora.PedirListaProducto();
@@ -65,6 +73,16 @@ public class FormProducto extends javax.swing.JFrame {
         datosTablaProducto.setCellSelectionEnabled(false);
         datosTablaProducto.setRowSelectionAllowed(true);
     } //Datos de la Tabla, valores iniciales.
+    
+    private int seleccionarFila(){
+        int i = datosTablaProducto.getSelectedRow();
+        
+        if(i > -1)
+        {
+            return i;
+        }
+        return -1;
+    }
     
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -89,6 +107,7 @@ public class FormProducto extends javax.swing.JFrame {
         jScrollPane6 = new javax.swing.JScrollPane();
         datosTablaProducto = new javax.swing.JTable();
         spnCantidadProducto = new javax.swing.JSpinner();
+        btnVolver = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setAutoRequestFocus(false);
@@ -110,7 +129,7 @@ public class FormProducto extends javax.swing.JFrame {
         jLabel1.setFont(new java.awt.Font("Segoe UI", 0, 36)); // NOI18N
         jLabel1.setText("PRODUCTOS");
 
-        jLabel2.setText("ELABORADO / NO ELABORADO");
+        jLabel2.setText("ELABORADO");
 
         jLabel3.setText("NOMBRE: ");
 
@@ -143,41 +162,59 @@ public class FormProducto extends javax.swing.JFrame {
                 "ID", "Nombre", "Descripcion", "Costo", "Cantidad"
             }
         ));
+        datosTablaProducto.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                datosTablaProductoMouseClicked(evt);
+            }
+        });
         jScrollPane6.setViewportView(datosTablaProducto);
+
+        btnVolver.setText("VOLVER");
+        btnVolver.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnVolverActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(34, 34, 34)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(86, 86, 86)
-                        .addComponent(jLabel1))
-                    .addGroup(layout.createSequentialGroup()
+                        .addGap(34, 34, 34)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel3)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(jLabel4, javax.swing.GroupLayout.Alignment.TRAILING)
-                                .addComponent(jLabel5)))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 170, Short.MAX_VALUE)
-                            .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jScrollPane4, javax.swing.GroupLayout.Alignment.LEADING)))
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                        .addComponent(jLabel7, javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(layout.createSequentialGroup()
-                            .addComponent(btnGuardar)
-                            .addGap(89, 89, 89)
-                            .addComponent(btnBorrar)))
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                        .addComponent(spnCantidadProducto, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGroup(layout.createSequentialGroup()
-                            .addComponent(jLabel2)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                            .addComponent(chkBox))))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel3)
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(jLabel4, javax.swing.GroupLayout.Alignment.TRAILING)
+                                        .addComponent(jLabel5)))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                    .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 170, Short.MAX_VALUE)
+                                    .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jScrollPane4, javax.swing.GroupLayout.Alignment.LEADING)))
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                .addGroup(layout.createSequentialGroup()
+                                    .addComponent(btnGuardar)
+                                    .addGap(89, 89, 89)
+                                    .addComponent(btnBorrar))
+                                .addGroup(layout.createSequentialGroup()
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(jLabel7)
+                                        .addComponent(jLabel2))
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(spnCantidadProducto, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(chkBox))
+                                    .addGap(74, 74, 74)))))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(20, 20, 20)
+                        .addComponent(btnVolver, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jLabel1)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 456, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
@@ -188,7 +225,9 @@ public class FormProducto extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addGap(19, 19, 19)
-                        .addComponent(jLabel1)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel1)
+                            .addComponent(btnVolver))
                         .addGap(31, 31, 31)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addGroup(layout.createSequentialGroup()
@@ -203,9 +242,9 @@ public class FormProducto extends javax.swing.JFrame {
                             .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(jScrollPane4))
                         .addGap(18, 18, 18)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel2)
-                            .addComponent(chkBox))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(chkBox)
+                            .addComponent(jLabel2))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -225,7 +264,7 @@ public class FormProducto extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
-        if(evt.getSource() == btnGuardar){
+        if(evt.getSource() == btnGuardar && chkBox.isSelected()){
             if (validarDatos()== false) {
             }else{
                 int filaSeleccionada = seleccionarFila();
@@ -237,7 +276,7 @@ public class FormProducto extends javax.swing.JFrame {
                 
                 if (filaSeleccionada >=0) {
                     int id = (int) datosTablaProducto.getModel().getValueAt(filaSeleccionada, 0);
-                    if (!ProductoControladora.SiProductoExiste(nombre, descripcion)) {
+                    if (!ProductoControladora.SiProductoExiste(nombre, descripcion, costo)) {
                         if (ProductoControladora.ActualizarProducto(id, nombre, descripcion, costo)) {
                            JOptionPane.showMessageDialog(null, "Producto Modificado");
                        } 
@@ -245,7 +284,7 @@ public class FormProducto extends javax.swing.JFrame {
                         JOptionPane.showMessageDialog(null, "Ya existe un producto con el mismo nombre y descripción");
                     }
                 }else{
-                    if (!ProductoControladora.SiProductoExiste(nombre, descripcion)) {
+                    if (!ProductoControladora.SiProductoExiste(nombre, descripcion, costo)) {
                         if(ProductoControladora.CrearProducto(nombre, descripcion, costo)){
                         JOptionPane.showMessageDialog(null, "Producto Guardado");
                         }
@@ -253,21 +292,14 @@ public class FormProducto extends javax.swing.JFrame {
                        JOptionPane.showMessageDialog(null, "Ya existe un producto con el mismo nombre y descripción");
                     }
             }
-            this.ResetTablaProducto();
+            this.reiniciarTablaProducto();
         }
     }//GEN-LAST:event_btnGuardarActionPerformed
-    }
-    
-    private int seleccionarFila(){
-        int i = datosTablaProducto.getSelectedRow();
-        
-        if(i > -1)
-        {
-            return i;
+        else{
+           JOptionPane.showMessageDialog(null, "Por el momento no se puede guardar un producto no elaborado.");
         }
-        return -1;
+    
     }
-     
      
     private void chkBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkBoxActionPerformed
         if(!evt.equals(chkBox.isSelected())){
@@ -279,23 +311,39 @@ public class FormProducto extends javax.swing.JFrame {
 
     private void btnBorrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBorrarActionPerformed
         if (evt.getSource() == btnBorrar) {
-        int filaSeleccionada = seleccionarFila();
-        if (filaSeleccionada >= 0) {
-            int id = (int) datosTablaProducto.getModel().getValueAt(filaSeleccionada, 0);
-            ProductoControladora.BorrarProducto(id);
-            ResetTablaProducto(); // Actualizar la tabla después de eliminar
-            } else {
-                JOptionPane.showMessageDialog(null, "Error al eliminar el producto");
+            int filaSeleccionada = seleccionarFila();
+            if (filaSeleccionada >= 0) {
+                int id = (int) datosTablaProducto.getModel().getValueAt(filaSeleccionada, 0);
+                ProductoControladora.BorrarProducto(id);
+                reiniciarTablaProducto();
             }
+            else{
+                JOptionPane.showMessageDialog(null, "Error al eliminar el producto");
+            }   
         }
-    
     }//GEN-LAST:event_btnBorrarActionPerformed
 
-    /**
-     * @param args the command line arguments
-     */
+    private void datosTablaProductoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_datosTablaProductoMouseClicked
+        int i = datosTablaProducto.getSelectedRow();
+        String nombre = (String) datosTablaProducto.getModel().getValueAt(i, 1);
+        String descripcion = (String) datosTablaProducto.getModel().getValueAt(i, 2);
+        Float costo = (Float) datosTablaProducto.getModel().getValueAt(i, 3);
+        String costoStr = String.valueOf(costo);
+
+        txtNombreProducto.setText(nombre); 
+        txtDescripcion.setText(descripcion);
+        txtCosto.setText(String.valueOf(costoStr));
+    }//GEN-LAST:event_datosTablaProductoMouseClicked
+
+    private void btnVolverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVolverActionPerformed
+        this.setVisible(false);
+        FormIndex formIndex = new FormIndex();
+        formIndex.setVisible(true);
+    }//GEN-LAST:event_btnVolverActionPerformed
+
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
+        
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
          * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
@@ -333,6 +381,7 @@ public class FormProducto extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnBorrar;
     private javax.swing.JButton btnGuardar;
+    private javax.swing.JButton btnVolver;
     private javax.swing.JCheckBox chkBox;
     private javax.swing.JTable datosTablaProducto;
     private javax.swing.JLabel jLabel1;

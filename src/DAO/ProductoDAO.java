@@ -108,7 +108,6 @@ public class ProductoDAO implements IDAO{
             PreparedStatement st = ConnectorController.getConnection().prepareStatement(sql);
             st.setString(1, Integer.toString(id));
             ResultSet result = st.executeQuery();
-            //JOptionPane.showMessageDialog(null,"En Execute Query");
             if (result.next()) {
                 ProductoDTO clone = new ProductoDTO(result.getInt(1), result.getString(2), result.getString(3), result.getFloat(4));
                 producto = clone;
@@ -122,18 +121,20 @@ public class ProductoDAO implements IDAO{
         return null;
     }
     
-    public Object porNombre(String nombre, String descripcion) {
+    public Object porNombre(String nombre, String descripcion, Float costo) {
         ProductoDTO producto = new ProductoDTO();
-        String sql = "select id_productos, nombre, descripcion from productos WHERE nombre = ? AND descripcion = ?";
+        String sql = "select id_productos, nombre, descripcion, costo from productos WHERE nombre = ? AND descripcion = ? AND costo = ?";
         try {
             PreparedStatement st = ConnectorController.getConnection().prepareStatement(sql);
             st.setString(1, nombre);
             st.setString(2, descripcion);
+            st.setFloat(3, costo);
             ResultSet result = st.executeQuery();
             if (result.next()) {
                 producto.setId(result.getInt(1));
                 producto.setNombre(result.getString(2));
                 producto.setDescripcion(result.getString(3));
+                producto.setCosto(result.getFloat(4));
                 return producto;
             }
         } catch (SQLException ex) {
@@ -144,10 +145,5 @@ public class ProductoDAO implements IDAO{
         }
         return null;
     }
-
     
-    
-    
-    
-
 }

@@ -1,20 +1,22 @@
 package titorestobar;
-import View.FormMesa;
-import View.FormProducto;
-import java.lang.System.Logger;
-import java.lang.System.Logger.Level;
-import java.sql.SQLException;
+import View.FormIndex;
 
+/*
 
+-- Alumnos: ZUBIRI Nahuel, SANCHEZ Nicolas, GALLARDO Nahuel. -- 
+-- Profesor: SANTINI Estaban. --
+-- Programación Orientada a Objetos --
+
+//Comentario: Cuando agregas un "Producto" elaborado no tiene un stock/cantidad, pero un "ProductoNoElaborado"
+//            si lo tiene, nosotros todavia no implementamos el poder guardar "ProductoNoElaborado", solo el Producto.
+
+*/
 public class TitosRestoBar {
 
     public static void main(String[] args) {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                try {
-                    new FormProducto().setVisible(true);
-                } catch (SQLException ex) {
-                }
+                new FormIndex().setVisible(true);
             }
         });
     }

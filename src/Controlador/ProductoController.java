@@ -58,7 +58,7 @@ public class ProductoController {
         return ListaProducto;
     }
     
-    public ProductoDTO getProductoFromList(int id){
+    public ProductoDTO obtenerProductoLista(int id){
         for (ProductoDTO producto : PedirListaProducto())
         {
             if(producto.getId() == id)
@@ -68,20 +68,19 @@ public class ProductoController {
         }
         return null;
     }
-  //</editor-fold> 
     
-    
-    
-    public Boolean SiProductoExiste(String nombre, String descripcion)
+    public Boolean SiProductoExiste(String nombre, String descripcion, Float costo)
     {
-        ProductoDTO producto = (ProductoDTO)ProductoDAO.porNombre(nombre, descripcion);
+        ProductoDTO producto = (ProductoDTO)ProductoDAO.porNombre(nombre, descripcion, costo);
         if(producto != null)
         {
             return true;
         }
         return false;
     }
-//<editor-fold defaultstate="collapsed" desc=" Datos de la Tabla Rows&Index">
+  //</editor-fold> 
+    
+//<editor-fold defaultstate="collapsed" desc=" Datos de la Tabla de Producto">
     
     public Object[] RequestTableRow(int i)//solocitar fila de la tabla
     {
@@ -101,7 +100,7 @@ public class ProductoController {
     public Object[] RequestObjectIndex(int id)
     {
         Object datosfila[] = new Object[4];
-        ProductoDTO producto = getProductoFromList(id);
+        ProductoDTO producto = obtenerProductoLista(id);
         if(producto != null)
         {
             datosfila[0] =  producto.getId();
@@ -112,7 +111,8 @@ public class ProductoController {
         return datosfila;
     }
 //</editor-fold>
-    //<editor-fold defaultstate="collapsed" desc=" Datos de la Tabla Rows&Index">
+    
+//<editor-fold defaultstate="collapsed" desc=" Datos de la Tabla de ProductosNoElaborados">
     /*
     public Object[] RequestTableRow(int i)
     {
