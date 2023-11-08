@@ -23,7 +23,7 @@ public class ProductoController {
         return Instance;
     }
      
-     //<editor-fold defaultstate="collapsed" desc=" CRUD ">
+//<editor-fold defaultstate="collapsed" desc=" CRUD ">
     
     public Boolean CrearProducto(String nombre, String descripcion, float costo) {
         ProductoDTO prod = new ProductoDTO(nombre, descripcion, costo);

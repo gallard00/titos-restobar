@@ -43,7 +43,7 @@ public class FormProducto extends javax.swing.JFrame {
         }
         return true;
     }
-    public void ResetTableProducto() {
+    public void ResetTablaProducto() {
         DefaultTableModel modelo = new DefaultTableModel();
   
         List<? extends Object> ListaProducto = ProductoControladora.PedirListaProducto();
@@ -61,9 +61,9 @@ public class FormProducto extends javax.swing.JFrame {
         {
              modelo.addRow(ProductoControladora.RequestTableRow(i));
         }
-        dataTableProducto.setModel(modelo);
-        dataTableProducto.setCellSelectionEnabled(false);
-        dataTableProducto.setRowSelectionAllowed(true);
+        datosTablaProducto.setModel(modelo);
+        datosTablaProducto.setCellSelectionEnabled(false);
+        datosTablaProducto.setRowSelectionAllowed(true);
     } //Datos de la Tabla, valores iniciales.
     
     @SuppressWarnings("unchecked")
@@ -87,7 +87,7 @@ public class FormProducto extends javax.swing.JFrame {
         jLabel7 = new javax.swing.JLabel();
         chkBox = new javax.swing.JCheckBox();
         jScrollPane6 = new javax.swing.JScrollPane();
-        dataTableProducto = new javax.swing.JTable();
+        datosTablaProducto = new javax.swing.JTable();
         spnCantidadProducto = new javax.swing.JSpinner();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -132,7 +132,7 @@ public class FormProducto extends javax.swing.JFrame {
             }
         });
 
-        dataTableProducto.setModel(new javax.swing.table.DefaultTableModel(
+        datosTablaProducto.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null, null},
                 {null, null, null, null, null},
@@ -143,7 +143,7 @@ public class FormProducto extends javax.swing.JFrame {
                 "ID", "Nombre", "Descripcion", "Costo", "Cantidad"
             }
         ));
-        jScrollPane6.setViewportView(dataTableProducto);
+        jScrollPane6.setViewportView(datosTablaProducto);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -228,15 +228,15 @@ public class FormProducto extends javax.swing.JFrame {
         if(evt.getSource() == btnGuardar){
             if (validarDatos()== false) {
             }else{
-                int seleccionadaRow = seleccionarRow();
+                int filaSeleccionada = seleccionarFila();
                 String nombre = txtNombreProducto.getText();
                 String descripcion = txtDescripcion.getText();
                 float costo = Float.parseFloat(txtCosto.getText());
                 
                 
                 
-                if (seleccionadaRow >=0) {
-                    int id = (int) dataTableProducto.getModel().getValueAt(seleccionadaRow, 0);
+                if (filaSeleccionada >=0) {
+                    int id = (int) datosTablaProducto.getModel().getValueAt(filaSeleccionada, 0);
                     if (!ProductoControladora.SiProductoExiste(nombre, descripcion)) {
                         if (ProductoControladora.ActualizarProducto(id, nombre, descripcion, costo)) {
                            JOptionPane.showMessageDialog(null, "Producto Modificado");
@@ -253,13 +253,13 @@ public class FormProducto extends javax.swing.JFrame {
                        JOptionPane.showMessageDialog(null, "Ya existe un producto con el mismo nombre y descripción");
                     }
             }
-            this.ResetTableProducto();
+            this.ResetTablaProducto();
         }
     }//GEN-LAST:event_btnGuardarActionPerformed
     }
     
-    private int seleccionarRow(){
-        int i = dataTableProducto.getSelectedRow();
+    private int seleccionarFila(){
+        int i = datosTablaProducto.getSelectedRow();
         
         if(i > -1)
         {
@@ -279,11 +279,11 @@ public class FormProducto extends javax.swing.JFrame {
 
     private void btnBorrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBorrarActionPerformed
         if (evt.getSource() == btnBorrar) {
-        int selectedRow = seleccionarRow();
-        if (selectedRow >= 0) {
-            int id = (int) dataTableProducto.getModel().getValueAt(selectedRow, 0);
+        int filaSeleccionada = seleccionarFila();
+        if (filaSeleccionada >= 0) {
+            int id = (int) datosTablaProducto.getModel().getValueAt(filaSeleccionada, 0);
             ProductoControladora.BorrarProducto(id);
-            ResetTableProducto(); // Actualizar la tabla después de eliminar
+            ResetTablaProducto(); // Actualizar la tabla después de eliminar
             } else {
                 JOptionPane.showMessageDialog(null, "Error al eliminar el producto");
             }
@@ -334,7 +334,7 @@ public class FormProducto extends javax.swing.JFrame {
     private javax.swing.JButton btnBorrar;
     private javax.swing.JButton btnGuardar;
     private javax.swing.JCheckBox chkBox;
-    private javax.swing.JTable dataTableProducto;
+    private javax.swing.JTable datosTablaProducto;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -354,23 +354,23 @@ public class FormProducto extends javax.swing.JFrame {
 
     
     public void AgregarFila(int id) {
-        javax.swing.table.DefaultTableModel modelo = (javax.swing.table.DefaultTableModel) dataTableProducto.getModel();
+        javax.swing.table.DefaultTableModel modelo = (javax.swing.table.DefaultTableModel) datosTablaProducto.getModel();
         modelo.addRow(ProductoControladora.RequestObjectIndex(id));
-        dataTableProducto.setModel(modelo);
+        datosTablaProducto.setModel(modelo);
     }
 
     
     public void EliminarFila(int id) {
         int columna = 0;
         String IDString = String.valueOf(id);
-        javax.swing.table.DefaultTableModel modelo = (javax.swing.table.DefaultTableModel) dataTableProducto.getModel();
+        javax.swing.table.DefaultTableModel modelo = (javax.swing.table.DefaultTableModel) datosTablaProducto.getModel();
         for (int i = 0; i < modelo.getRowCount(); i++) {
             
             if (modelo.getValueAt(i, columna).toString().equals(IDString)) {
                 modelo.removeRow(i);
             }
         }
-        dataTableProducto.setModel(modelo);
+        datosTablaProducto.setModel(modelo);
     }
 
     public void ModificarFila(int id) {
