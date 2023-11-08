@@ -1,10 +1,15 @@
 package Controlador;
 
+import DAO.ItemsDAO;
+import Modelo.ItemsDTO;
+import java.util.ArrayList;
+import java.util.List;
+
 
 public class ItemsController 
 {
+   private List<ItemsDTO> ListaItems = new ArrayList<>();
    static ItemsController Instance; 
-   public void ItemsController(){}
    
    public static ItemsController getInstance() 
    {
@@ -16,5 +21,4 @@ public class ItemsController
        return null;
    }
   
-   
 }
