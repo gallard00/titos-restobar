@@ -208,7 +208,7 @@ public class FormMesa extends javax.swing.JFrame {
                 }else{
                     if (!MesaControladora.SiMesaExiste(nombre)) {
                         if(MesaControladora.CrearMesa(nombre)){
-                        JOptionPane.showMessageDialog(null, "Mesa Guardado");
+                        JOptionPane.showMessageDialog(null, "Mesa Guardada");
                         }
                     }else{
                        JOptionPane.showMessageDialog(null, "Ya existe una mesa con el mismo nombre.");
