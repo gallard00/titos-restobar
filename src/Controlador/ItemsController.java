@@ -18,7 +18,6 @@ public class ItemsController
         ItemsDAO = new ItemsDAO();
     }
    
-   
    public static ItemsController getInstance() throws SQLException 
    {
        if(Instance == null)

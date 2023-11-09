@@ -1,6 +1,7 @@
 package DAO;
 
 import Modelo.ItemsDTO;
+import Modelo.ProductoDTO;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -23,12 +24,13 @@ public class ItemsDAO implements IDAO {
     @Override
     public Boolean crear(Object e) {
         ItemsDTO items = (ItemsDTO) e;
-        String sql = "insert into items(id_items, cantidad, costo_total) value (?, ?, ?, );";
+        String sql = "insert into items(id_items, cantidad, costo_total, id_productos) value (?, ?, ?, ?);";
         try {
             PreparedStatement st = ConnectorController.getConnection().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             st.setString(1, String.valueOf(items.getId()));
             st.setString(2, String.valueOf(items.getCantidad()));
             st.setString(3, String.valueOf(items.getCostoTotal()));
+            st.setString(4, String.valueOf(items.getProducto()));
             st.execute();
             ResultSet rs = st.getGeneratedKeys();
             if (rs.next()) {
@@ -46,13 +48,16 @@ public class ItemsDAO implements IDAO {
     @Override
     public List<ItemsDTO> mostrar() {
         List Salida = new ArrayList();
-        String sql = "select id_items, cantidad, costo_total from items;";
+        String sql = "SELECT  prod.id_productos, prod.nombre, prod.descripcion, prod.costo, it.id_items, it.cantidad, it.costo_total, it.id_productos, from items as it INNER JOIN productos as prod ON it.id_productos=prod.id_productos";
         try {
             PreparedStatement state = ConnectorController.getConnection().prepareStatement(sql);
             ResultSet result = state.executeQuery(sql);
             while (result.next()) {
-                ItemsDTO items = new ItemsDTO(result.getInt(1), result.getInt(2), result.getFloat(3));      
+                ProductoDTO prductos = new ProductoDTO(result.getInt(1), result.getString(2), result.getString(3), result.getInt(4));
+                ItemsDTO items = new ItemsDTO(result.getInt(5), result.getInt(6), result.getFloat(7),(ProductoDTO) result.getObject(8));      
                 Salida.add(items);
+                prductos = null;
+                items = null;
             }
         } catch (SQLException ex) {
             Logger.getLogger(ItemsDAO.class.getName()).log(Level.SEVERE, null, ex);
@@ -102,14 +107,16 @@ public class ItemsDAO implements IDAO {
     @Override
     public Object porId(int id) {
         ItemsDTO items = new ItemsDTO();
-        String sql = "select id_items, cantidad, costo_total, id_productos from items WHERE id_items = ?";
+        String sql = "SELECT  prod.id_productos, prod.nombre, prod.descripcion, prod.costo, it.id_items, it.cantidad, it.costo_total, it.id_productos, from items as it INNER JOIN productos as prod ON it.id_productos=prod.id_productos WHERE id_items = ?";
         try {
             PreparedStatement st = ConnectorController.getConnection().prepareStatement(sql);
             st.setString(1, Integer.toString(id));
             ResultSet result = st.executeQuery();
             if (result.next()) {
-                ItemsDTO clone = new ItemsDTO(result.getInt(1), result.getInt(2), result.getFloat(3));
+                ProductoDTO prductos = new ProductoDTO(result.getInt(1), result.getString(2), result.getString(3), result.getInt(4));
+                ItemsDTO clone = new ItemsDTO(result.getInt(5), result.getInt(6), result.getFloat(7),(ProductoDTO) result.getObject(8));
                 items = clone;
+                prductos = null;
             }
         } catch (SQLException ex) {
             Logger.getLogger(ItemsDAO.class.getName()).log(Level.SEVERE, null, ex);
@@ -117,7 +124,7 @@ public class ItemsDAO implements IDAO {
         }finally {
              ConnectorController.CloseConnection();
         }
-        return null;
+        return items;
     }
 
 }
