@@ -61,8 +61,6 @@ public class PedidoDTO {
         this.producto = producto;
     }
 
-  
-
     public Date getFechaApertura() {
         return fechaApertura;
     }

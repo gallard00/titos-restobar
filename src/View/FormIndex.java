@@ -124,6 +124,8 @@ public class FormIndex extends javax.swing.JFrame {
             ventanaActual = formProducto;
             // Oculta el FormIndex al abrir FormProducto
             this.setVisible(false);
+            ventanaActual.toFront();
+            ventanaActual.requestFocus();
         } catch (SQLException ex) {
             // Captura cualquier excepción SQLException que ocurra durante este proceso
             Logger.getLogger(FormIndex.class.getName()).log(Level.SEVERE, null, ex);

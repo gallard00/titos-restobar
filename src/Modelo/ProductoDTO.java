@@ -107,9 +107,13 @@ public class ProductoDTO {
         }
         return Objects.equals(this.precio, other.precio);
     }
-
+    
     @Override
     public String toString() {
+        return id + " " + nombre + " " + descripcion;
+    } 
+    
+    public String toAllString() {
         return "ProductoDTO{" + "id=" + id + ", nombre=" + nombre + ", descripcion=" + descripcion + ", costo=" + costo + ", precio=" + precio + '}';
     }
 

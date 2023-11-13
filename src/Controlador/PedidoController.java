@@ -4,6 +4,7 @@ import DAO.ItemsDAO;
 import DAO.PedidoDAO;
 import Modelo.ItemsDTO;
 import Modelo.PedidoDTO;
+import Modelo.ProductoDTO;
 import java.util.ArrayList;
 import java.sql.SQLException;
 import java.util.Date;
@@ -47,6 +48,33 @@ public class PedidoController {
         PedidoDTO borrped = new PedidoDTO(id);
         PedidoDAO.borrar(borrped);
         ListaPedido.remove(borrped);
+    }
+    
+    public void CrearItems (int cantidad, Object producto) {
+        ProductoDTO thisProduct = (ProductoDTO) producto;
+        ItemsDTO crearItem = new ItemsDTO(cantidad, thisProduct);
+        crearItem.setCostoTotal(cantidad, thisProduct);
+        if(ItemsDAO.crear(crearItem))
+        {
+            PedidoDAO.
+        }
+        
+    }
+    
+    public List LeerItems()
+    {
+        return ItemsDAO.mostrar();
+    }
+    
+    public void ActualizarItems (int id, int cantidad, float costoTotal) {
+        ItemsDTO actItems = new ItemsDTO(id, cantidad, costoTotal);
+        ItemsDAO.actualizar(actItems);
+    }
+    
+    public void BorrarItems (int id){
+        ItemsDTO borrarItems = new ItemsDTO(id);
+        ItemsDAO.borrar(borrarItems);
+        ListaPedido.remove(borrarItems);
     }
     
     //</editor-fold>

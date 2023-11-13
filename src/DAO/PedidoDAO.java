@@ -1,9 +1,10 @@
 
 package DAO;
 
+import ControladoraConnector.ControladoraConnector;
 import Modelo.ItemsDTO;
-import Modelo.MesaDTO;
 import Modelo.PedidoDTO;
+import Modelo.ProductoDTO;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -51,21 +52,24 @@ public class PedidoDAO implements IDAO {
 
     @Override
     public List<PedidoDTO> mostrar() {
-        List Salida = new ArrayList();
-        String sql = "select id_pedidos, fecha_apertura, fecha_cierre, descuento, costo_total, id_items;";
+        List listaPedido = new ArrayList();
+        String sql = "select it.id_items, it.cantidad, it.costo_total, it.id_productos, ped.id_pedidos, ped.fecha_apertura, ped.fecha_cierre, ped.descuento, ped.costo_total, ped.id_items FROM pedidos as ped INNER JOIN items as it on it.id_items = ped.id_items;";
         try {
             PreparedStatement state = ConnectorController.getConnection().prepareStatement(sql);
             ResultSet result = state.executeQuery(sql);
             while (result.next()) {
-                PedidoDTO ped = new PedidoDTO(result.getInt(1), result.getDate(2), result.getDate(3), result.getFloat(4), result.getFloat(5), (List<ItemsDTO>) result.getObject(6));      
-                Salida.add(ped);
+                ItemsDTO it = new ItemsDTO(result.getInt(1), result.getInt(2), result.getFloat(3), (ProductoDTO) result.getObject(4));
+                PedidoDTO ped = new PedidoDTO(result.getInt(5), result.getDate(6), result.getDate(7), result.getFloat(8), result.getFloat(9), (List<ItemsDTO>) result.getObject(10));      
+                listaPedido.add(ped);
+                it = null;
+                ped = null;
             }
         } catch (SQLException ex) {
             Logger.getLogger(PedidoDAO.class.getName()).log(Level.SEVERE, null, ex);
         }finally {
              ConnectorController.CloseConnection();
         }
-        return Salida;
+        return listaPedido;
     }
 
     @Override
@@ -109,15 +113,17 @@ public class PedidoDAO implements IDAO {
     @Override
     public Object porId(int id) {
         PedidoDTO ped = new PedidoDTO();
-        String sql = "select id_pedidos, fecha_apertura, fecha_cierre, descuento, costo_total, id_items from Pedidos WHERE id_pedidos = ?";
+        String sql = "select it.id_items, it.cantidad, it.costo_total, it.id_pedidos, ped.id_pedidos, ped.fecha_apertura, ped.fecha_cierre, ped.descuento, ped.costo_total, ped.id_items from pedidos as ped INNER JOIN items as it ON ped.id_items = it.id_items WHERE id_pedidos = ?";
         try {
             PreparedStatement st = ConnectorController.getConnection().prepareStatement(sql);
             st.setString(1, Integer.toString(id));
             ResultSet result = st.executeQuery();
             //JOptionPane.showMessageDialog(null,"En Execute Query");
             if (result.next()) {
-                PedidoDTO clone = new PedidoDTO(result.getInt(1), result.getDate(2), result.getDate(3), result.getFloat(4), result.getFloat(5), (List<ItemsDTO>) result.getObject(6));
+                ItemsDTO it = new ItemsDTO(result.getInt(1), result.getInt(2), result.getFloat(3), (ProductoDTO) result.getObject(4));
+                PedidoDTO clone = new PedidoDTO(result.getInt(5), result.getDate(6), result.getDate(7), result.getFloat(8), result.getFloat(9), (List<ItemsDTO>) result.getObject(10));
                 ped = clone;
+                it = null;
             }
         } catch (SQLException ex) {
             Logger.getLogger(PedidoDAO.class.getName()).log(Level.SEVERE, null, ex);

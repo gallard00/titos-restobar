@@ -28,6 +28,11 @@ public class ItemsDTO {
         this.cantidad = cantidad;
         this.costoTotal = costoTotal;
     }
+    
+    public ItemsDTO(int cantidad, ProductoDTO producto) {
+        this.cantidad = cantidad;
+        this.producto = producto;
+    }
 
     public ItemsDTO(int id, int cantidad, float costoTotal, ProductoDTO producto) {
         this.id = id;
@@ -57,8 +62,8 @@ public class ItemsDTO {
         return costoTotal;
     }
 
-    public void setCostoTotal(float costoTotal) {
-        this.costoTotal = costoTotal;
+    public void setCostoTotal(int cantidad, ProductoDTO producto) {
+        this.costoTotal = producto.getPrecio().getValor();
     }
 
     public ProductoDTO getProducto() {

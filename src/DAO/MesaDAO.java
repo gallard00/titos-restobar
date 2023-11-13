@@ -1,5 +1,6 @@
 package DAO;
 
+import ControladoraConnector.ControladoraConnector;
 import Modelo.MesaDTO;
 import Modelo.PedidoDTO;
 import java.sql.PreparedStatement;

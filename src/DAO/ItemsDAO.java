@@ -1,5 +1,6 @@
 package DAO;
 
+import ControladoraConnector.ControladoraConnector;
 import Modelo.ItemsDTO;
 import Modelo.ProductoDTO;
 import java.sql.PreparedStatement;
@@ -47,24 +48,22 @@ public class ItemsDAO implements IDAO {
 
     @Override
     public List<ItemsDTO> mostrar() {
-        List Salida = new ArrayList();
+        List listaItems = new ArrayList();
         String sql = "SELECT  prod.id_productos, prod.nombre, prod.descripcion, prod.costo, it.id_items, it.cantidad, it.costo_total, it.id_productos, from items as it INNER JOIN productos as prod ON it.id_productos=prod.id_productos";
         try {
             PreparedStatement state = ConnectorController.getConnection().prepareStatement(sql);
             ResultSet result = state.executeQuery(sql);
             while (result.next()) {
                 ProductoDTO prductos = new ProductoDTO(result.getInt(1), result.getString(2), result.getString(3), result.getInt(4));
-                ItemsDTO items = new ItemsDTO(result.getInt(5), result.getInt(6), result.getFloat(7),(ProductoDTO) result.getObject(8));      
-                Salida.add(items);
-                prductos = null;
-                items = null;
+                ItemsDTO items = new ItemsDTO(result.getInt(5), result.getInt(6), result.getFloat(7),prductos);      
+                listaItems.add(items);
             }
         } catch (SQLException ex) {
             Logger.getLogger(ItemsDAO.class.getName()).log(Level.SEVERE, null, ex);
         }finally {
              ConnectorController.CloseConnection();
         }
-        return Salida;
+        return listaItems;
     }
 
     @Override
