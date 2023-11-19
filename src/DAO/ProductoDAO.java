@@ -1,6 +1,7 @@
 package DAO;
 
 import ControladoraConnector.ControladoraConnector;
+import Modelo.PrecioDTO;
 import Modelo.ProductoDTO;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -10,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.lang.model.util.Types;
 import javax.swing.JOptionPane;
 
 
@@ -24,13 +26,21 @@ public class ProductoDAO implements IDAO{
     @Override
     public Boolean crear(Object e) {
         ProductoDTO prod = (ProductoDTO) e;
-        String sql = "insert into productos(id_productos, nombre, descripcion, costo) value (?, ?, ?, ?);";
+        String sql = "insert into productos(id_productos, nombre, descripcion, costo, id_precios) value (?, ?, ?, ?,?);";
         try {
             PreparedStatement st = ConnectorController.getConnection().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             st.setString(1, String.valueOf(prod.getId()));
             st.setString(2, prod.getNombre());
             st.setString(3, prod.getDescripcion());
             st.setString(4, String.valueOf(prod.getCosto()));
+            // Insertar el precio y obtener su ID generado
+            PrecioDTO precio = prod.getPrecio();
+            if (precio != null) {
+                st.setFloat(5, precio.getId());
+            } else {
+                st.setNull(5, java.sql.Types.INTEGER);
+            }
+
             st.execute();
             ResultSet rs = st.getGeneratedKeys();
             if (rs.next()) {
@@ -67,13 +77,20 @@ public class ProductoDAO implements IDAO{
     @Override
     public Boolean actualizar(Object e) {
         ProductoDTO prod = (ProductoDTO) e;
-        String sql = "update productos set nombre = ?, descripcion = ?, costo = ? where id_productos = ?;";
+        String sql = "update productos set nombre = ?, descripcion = ?, costo = ?, id_precios = ? where id_productos = ?;";
         try {
             PreparedStatement st = ConnectorController.getConnection().prepareStatement(sql);
             st.setString(1, prod.getNombre());
             st.setString(2, prod.getDescripcion());
             st.setString(3, String.valueOf(prod.getCosto()));
-            st.setString(4, String.valueOf(prod.getId()));
+            // Actualizar el precio
+            PrecioDTO precio = prod.getPrecio();
+            if (precio != null) {
+                st.setFloat(4, precio.getId());
+            } else {
+                st.setNull(4, java.sql.Types.INTEGER);
+            }
+            st.setString(5, String.valueOf(prod.getId()));
             st.executeUpdate();
             return true;
         } catch (SQLException ex) {
@@ -119,7 +136,7 @@ public class ProductoDAO implements IDAO{
         }finally {
              ConnectorController.CloseConnection();
         }
-        return null;
+        return producto;
     }
     
     public Object porNombre(String nombre, String descripcion, Float costo) {

@@ -83,7 +83,11 @@ public class PrecioDTO {
 
     @Override
     public String toString() {
-        return "PrecioDTO{" + "id=" + id + ", valor=" + valor + ", fecha=" + fecha + '}';
+        return "PrecioDTO{" + 
+                "id=" + id + 
+                ", valor=" + valor + 
+                ", fecha=" + fecha + 
+                '}';
     }
     
     

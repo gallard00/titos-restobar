@@ -110,15 +110,13 @@ public class ProductoDTO {
     
     @Override
     public String toString() {
-        return id + " " + nombre + " " + descripcion;
+        return "ProductoDTO{" + 
+                "id=" + id + 
+                ", nombre='" + nombre + '\'' + 
+                ", descripcion='" + descripcion + '\'' + 
+                ", costo=" + costo + 
+                ", precio=" + (precio != null ? precio.toString() : "null") + 
+                '}';
     } 
-    
-    public String toAllString() {
-        return "ProductoDTO{" + "id=" + id + ", nombre=" + nombre + ", descripcion=" + descripcion + ", costo=" + costo + ", precio=" + precio + '}';
-    }
-
-   
-    
-    
        
 }
