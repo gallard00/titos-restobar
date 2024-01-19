@@ -1,6 +1,7 @@
 package View;
 
 import Controlador.ProductoController;
+import Modelo.PrecioDTO;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -30,11 +31,11 @@ public class FormProducto extends javax.swing.JFrame {
     private boolean validarDatos() {
         {
             try {
-                if (txtNombreProducto.getText().equals("") || txtDescripcion.getText().equals("") || txtCosto.getText().equals("")) {
+                if (txtNombreProducto.getText().equals("") || txtDescripcion.getText().equals("") || txtCosto.getText().equals("") || txtPorcentajeAumento.getText().equals("")) {
                     throw new Exception();
                 }
             } catch (Exception e) {
-                 JOptionPane.showMessageDialog(null, "Nombre, Descripción y Costo no pueden estar vacios, Reingrese:");
+                 JOptionPane.showMessageDialog(null, "Nombre, descripción, costo y aumento no pueden estar vacios. Reingrese:");
                 return false;
             }
             try{
@@ -438,7 +439,19 @@ public class FormProducto extends javax.swing.JFrame {
     public void ModificarFila(int id) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
-
+    
+    public void aplicarAumentoPrecio(float porcentajeAumento, ProductoControladora producto) {
+        float costo = producto.getCosto();
+        float aumento = (porcentajeAumento * costo) / 100;
+        float nuevoCosto = costo + aumento;
+        
+        // Crear un nuevo objeto PrecioDTO con el nuevo costo
+        PrecioDTO nuevoPrecio = new PrecioDTO();
+        nuevoPrecio.setCosto(nuevoCosto);
+        
+        // Establecer el nuevo precio en el producto
+        producto.setPrecio(nuevoPrecio);
+    }
 
 
 }
