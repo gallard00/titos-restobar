@@ -1,10 +1,12 @@
 package Controlador;
 
 import DAO.ProductoDAO;
+import Modelo.PrecioDTO;
 import Modelo.ProductoDTO;
 import Modelo.ProductoNoElaboradoDTO;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class ProductoController {
@@ -22,6 +24,31 @@ public class ProductoController {
         }
         return Instance;
     }
+    
+//<editor-fold defaultstate="collapsed" desc=" Precio en base al costo. ">
+    private float costo;  // Agrega un campo para el costo
+
+    public float getCosto() {
+        return costo;
+    }
+
+    public void setCosto(float costo) {
+        this.costo = costo;
+    }
+    public PrecioDTO getPrecio() {
+        // Aquí deberías devolver un objeto PrecioDTO que represente el precio del producto.
+        // Implementa esta función de acuerdo a tus necesidades.
+        // Por ejemplo, podrías crear un nuevo objeto PrecioDTO y asignarle el costo como valor.
+        return new PrecioDTO(this.costo, new Date());
+    }
+
+    public void setPrecio(PrecioDTO precio) {
+        // Aquí deberías implementar la lógica para actualizar el costo y otras propiedades
+        // según los valores en el objeto PrecioDTO.
+        this.costo = precio.getValor();
+        // También podrías actualizar la fecha, si es necesario.
+    }
+//</editor-fold>
      
 //<editor-fold defaultstate="collapsed" desc=" CRUD ">
     
@@ -39,8 +66,8 @@ public class ProductoController {
         return ProductoDAO.mostrar();
     }
     
-    public Boolean ActualizarProducto(int id, String nombre, String descripcion, float costo) {
-        ProductoDTO actualizarProducto = new ProductoDTO(id, nombre, descripcion, costo);
+    public Boolean ActualizarProducto(int id, String nombre, String descripcion, float costo, PrecioDTO nuevoPrecio) {
+        ProductoDTO actualizarProducto = new ProductoDTO(id, nombre, descripcion, costo, nuevoPrecio);
         return ProductoDAO.actualizar(actualizarProducto);
     }
 

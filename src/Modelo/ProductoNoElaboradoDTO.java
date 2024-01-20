@@ -4,7 +4,8 @@ package Modelo;
 public class ProductoNoElaboradoDTO extends ProductoDTO {
     
     private int stock;
-
+    private PrecioDTO precio;
+    
     public ProductoNoElaboradoDTO(int id, String nombre, String descripcion, float costo, int stock) {
         super(id, nombre, descripcion, costo);
         this.stock = stock;
@@ -22,6 +23,17 @@ public class ProductoNoElaboradoDTO extends ProductoDTO {
     public void setStock(int stock) {
         this.stock = stock;
     }
+    
+    @Override
+    public PrecioDTO getPrecio() {
+        return precio;
+    }
+
+    @Override
+    public void setPrecio(PrecioDTO precio) {
+        this.precio = precio;
+    }
+    
         @Override
     public int hashCode() {
         int hash = 7;

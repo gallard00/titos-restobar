@@ -10,24 +10,23 @@ import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
-
 public class FormProducto extends javax.swing.JFrame {
-    
+
     ProductoController ProductoControladora;
-    
+
     public FormProducto() throws SQLException {
         ProductoControladora = ProductoController.GetInstance();
         initComponents();
         verificarListaProductos();
     }
-    
+
     public void verificarListaProductos() //Verifica si la lista de mesas tiene algo
     {
-        if(!ProductoControladora.PedirListaProducto().isEmpty())
-        {
+        if (!ProductoControladora.PedirListaProducto().isEmpty()) {
             reiniciarTablaProducto();
         }
     }
+
     private boolean validarDatos() {
         {
             try {
@@ -35,26 +34,27 @@ public class FormProducto extends javax.swing.JFrame {
                     throw new Exception();
                 }
             } catch (Exception e) {
-                 JOptionPane.showMessageDialog(null, "Nombre, descripción, costo y aumento no pueden estar vacios. Reingrese:");
+                JOptionPane.showMessageDialog(null, "Nombre, descripción, costo y aumento no pueden estar vacios. Reingrese:");
                 return false;
             }
-            try{
-                if(!chkBox.isSelected()){
+            try {
+                if (!chkBox.isSelected()) {
                     int spnValor = (int) spnCantidadProducto.getValue();
-                    if(spnValor < 1){
+                    if (spnValor < 1) {
                         throw new Exception();
                     }
                 }
-            } catch (Exception e){
-                JOptionPane.showMessageDialog(null, "El valor de la cantidad debe ser igual o mayor 1:" );
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(null, "El valor de la cantidad debe ser igual o mayor 1:");
                 return false;
             }
         }
         return true;
     }
+
     public void reiniciarTablaProducto() {
         DefaultTableModel modelo = new DefaultTableModel();
-  
+
         List<? extends Object> ListaProducto = ProductoControladora.PedirListaProducto();
         ArrayList<Object> nombrecolumna = new ArrayList<>();
         nombrecolumna.add("ID");
@@ -65,26 +65,24 @@ public class FormProducto extends javax.swing.JFrame {
         nombrecolumna.forEach(columna -> {
             modelo.addColumn(columna);
         });
-        
-        for(int i = 0; i<ListaProducto.size();i++)
-        {
-             modelo.addRow(ProductoControladora.RequestTableRow(i));
+
+        for (int i = 0; i < ListaProducto.size(); i++) {
+            modelo.addRow(ProductoControladora.RequestTableRow(i));
         }
         datosTablaProducto.setModel(modelo);
         datosTablaProducto.setCellSelectionEnabled(false);
         datosTablaProducto.setRowSelectionAllowed(true);
     } //Datos de la Tabla, valores iniciales.
-    
-    private int seleccionarFila(){
+
+    private int seleccionarFila() {
         int i = datosTablaProducto.getSelectedRow();
-        
-        if(i > -1)
-        {
+
+        if (i > -1) {
             return i;
         }
         return -1;
     }
-    
+
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -276,19 +274,8 @@ public class FormProducto extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
-    private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
-        if(evt.getSource() == btnGuardar){
-            if (validarDatos()== false) {
-            }else{
-                int filaSeleccionada = seleccionarFila();
-                String nombre = txtNombreProducto.getText();
-                String descripcion = txtDescripcion.getText();
-                float costo = Float.parseFloat(txtCosto.getText());
-                float porcentajeAumento = Float.parseFloat(txtPorcentajeAumento.getText());
-                
-                
-                if (filaSeleccionada >=0) {
+/*
+     if (filaSeleccionada >=0) {
                     int id = (int) datosTablaProducto.getModel().getValueAt(filaSeleccionada, 0);
                     if (!ProductoControladora.SiProductoExiste(nombre, descripcion, costo)) {
                         if (ProductoControladora.ActualizarProducto(id, nombre, descripcion, costo)) {
@@ -308,14 +295,47 @@ public class FormProducto extends javax.swing.JFrame {
             }
             this.reiniciarTablaProducto();
         }
+    }                                          
+
+    }*/
+    private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
+        if (evt.getSource() == btnGuardar) {
+            if (validarDatos() == false) {
+            } else {
+                int filaSeleccionada = seleccionarFila();
+                String nombre = txtNombreProducto.getText();
+                String descripcion = txtDescripcion.getText();
+                float costo = Float.parseFloat(txtCosto.getText());
+                float porcentajeAumento = Float.parseFloat(txtPorcentajeAumento.getText());
+
+                if (filaSeleccionada >= 0) {
+                    int id = (int) datosTablaProducto.getModel().getValueAt(filaSeleccionada, 0);
+                    if (!ProductoControladora.SiProductoExiste(nombre, descripcion, costo)) {
+                        if (ProductoControladora.ActualizarProducto(id, nombre, descripcion, costo)) {
+                            JOptionPane.showMessageDialog(null, "Producto Modificado");
+                        }
+                    } else {
+                        JOptionPane.showMessageDialog(null, "Ya existe un producto con el mismo nombre y descripción");
+                    }
+                } else {
+                    if (!ProductoControladora.SiProductoExiste(nombre, descripcion, costo)) {
+                        if (ProductoControladora.SiProductoExiste(nombre, descripcion, costo)) {
+                            JOptionPane.showMessageDialog(null, "Producto Guardado");
+                        }
+                    } else {
+                        JOptionPane.showMessageDialog(null, "Ya existe un producto con el mismo nombre y descripción");
+                    }
+                }
+                this.reiniciarTablaProducto();
+            }
     }//GEN-LAST:event_btnGuardarActionPerformed
 
     }
-     
+
     private void chkBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkBoxActionPerformed
-        if(!evt.equals(chkBox.isSelected())){
+        if (!evt.equals(chkBox.isSelected())) {
             spnCantidadProducto.setEnabled(true);
-        }else{
+        } else {
             spnCantidadProducto.setEnabled(false);
         }
     }//GEN-LAST:event_chkBoxActionPerformed
@@ -327,10 +347,9 @@ public class FormProducto extends javax.swing.JFrame {
                 int id = (int) datosTablaProducto.getModel().getValueAt(filaSeleccionada, 0);
                 ProductoControladora.BorrarProducto(id);
                 reiniciarTablaProducto();
-            }
-            else{
+            } else {
                 JOptionPane.showMessageDialog(null, "Error al eliminar el producto");
-            }   
+            }
         }
     }//GEN-LAST:event_btnBorrarActionPerformed
 
@@ -341,7 +360,7 @@ public class FormProducto extends javax.swing.JFrame {
         Float costo = (Float) datosTablaProducto.getModel().getValueAt(i, 3);
         String costoStr = String.valueOf(costo);
 
-        txtNombreProducto.setText(nombre); 
+        txtNombreProducto.setText(nombre);
         txtDescripcion.setText(descripcion);
         txtCosto.setText(String.valueOf(costoStr));
     }//GEN-LAST:event_datosTablaProductoMouseClicked
@@ -354,7 +373,7 @@ public class FormProducto extends javax.swing.JFrame {
 
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
-        
+
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
          * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
@@ -415,20 +434,18 @@ public class FormProducto extends javax.swing.JFrame {
     private javax.swing.JTextPane txtPorcentajeAumento;
     // End of variables declaration//GEN-END:variables
 
-    
     public void AgregarFila(int id) {
         javax.swing.table.DefaultTableModel modelo = (javax.swing.table.DefaultTableModel) datosTablaProducto.getModel();
         modelo.addRow(ProductoControladora.RequestObjectIndex(id));
         datosTablaProducto.setModel(modelo);
     }
 
-    
     public void EliminarFila(int id) {
         int columna = 0;
         String IDString = String.valueOf(id);
         javax.swing.table.DefaultTableModel modelo = (javax.swing.table.DefaultTableModel) datosTablaProducto.getModel();
         for (int i = 0; i < modelo.getRowCount(); i++) {
-            
+
             if (modelo.getValueAt(i, columna).toString().equals(IDString)) {
                 modelo.removeRow(i);
             }
@@ -439,19 +456,46 @@ public class FormProducto extends javax.swing.JFrame {
     public void ModificarFila(int id) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
-    
-    public void aplicarAumentoPrecio(float porcentajeAumento, ProductoControladora producto) {
-        float costo = producto.getCosto();
-        float aumento = (porcentajeAumento * costo) / 100;
-        float nuevoCosto = costo + aumento;
-        
-        // Crear un nuevo objeto PrecioDTO con el nuevo costo
-        PrecioDTO nuevoPrecio = new PrecioDTO();
-        nuevoPrecio.setCosto(nuevoCosto);
-        
-        // Establecer el nuevo precio en el producto
-        producto.setPrecio(nuevoPrecio);
-    }
 
+    public void aplicarAumentoPrecio(float porcentajeAumento, ProductoController productoController) {
+        // Obtener el precio actual del ProductoController
+        PrecioDTO precioActual = productoController.getPrecio();
+
+        // Obtener el costo actual del ProductoController
+        float costoActual = productoController.getCosto();
+
+        if (precioActual != null) {
+            // Verificar si el costo ha sido modificado
+            if (costoActual != precioActual.getValor()) {
+                // Calcular el aumento y el nuevo costo
+                float aumento = (porcentajeAumento * costoActual) / 100;
+                float nuevoCosto = costoActual + aumento;
+
+                // Crear un nuevo objeto PrecioDTO con el nuevo costo
+                PrecioDTO nuevoPrecio = new PrecioDTO();
+                nuevoPrecio.setValor(nuevoCosto);
+
+                // Establecer el nuevo precio en el ProductoController
+                productoController.setPrecio(nuevoPrecio);
+            }
+        } else {
+            // Si no hay un precio actual y el costo no es cero, aplicar el aumento
+            if (costoActual > 0) {
+                // Calcular el aumento y el nuevo costo
+                float aumento = (porcentajeAumento * costoActual) / 100;
+                float nuevoCosto = costoActual + aumento;
+
+                // Crear un nuevo objeto PrecioDTO con el nuevo costo
+                PrecioDTO nuevoPrecio = new PrecioDTO();
+                nuevoPrecio.setValor(nuevoCosto);
+
+                // Establecer el nuevo precio en el ProductoController
+                productoController.setPrecio(nuevoPrecio);
+            } else {
+                // Si no hay costo, lanzar una excepción
+                throw new IllegalArgumentException("El producto debe tener un costo para aplicar el aumento.");
+            }
+        }
+    }
 
 }

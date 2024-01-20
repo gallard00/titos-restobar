@@ -26,8 +26,12 @@ public class ProductoDAO implements IDAO{
     public Boolean crear(Object e) {
         ProductoDTO prod = (ProductoDTO) e;
         String sql = "insert into productos(id_productos, nombre, descripcion, costo, id_precios) value (?, ?, ?, ?,?);";
-        try {
-            PreparedStatement st = ConnectorController.getConnection().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+        /*
+        Se utiliza un try-with-resources (try) 
+        para asegurar que los recursos como las conexiones y
+        los resultados se cierren automáticamente después de su uso
+        */
+        try (PreparedStatement st = ConnectorController.getConnection().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)){
             st.setString(1, String.valueOf(prod.getId()));
             st.setString(2, prod.getNombre());
             st.setString(3, prod.getDescripcion());
@@ -58,9 +62,8 @@ public class ProductoDAO implements IDAO{
     public List<ProductoDTO> mostrar() {
         List Salida = new ArrayList();
         String sql = "select id_productos, nombre, descripcion, costo from productos;";
-        try {
-            PreparedStatement state = ConnectorController.getConnection().prepareStatement(sql);
-            ResultSet result = state.executeQuery(sql);
+        try (PreparedStatement state = ConnectorController.getConnection().prepareStatement(sql);
+            ResultSet result = state.executeQuery()){
             while (result.next()) {
                 ProductoDTO producto = new ProductoDTO(result.getInt(1), result.getString(2), result.getString(3), result.getFloat(4));      
                 Salida.add(producto);
@@ -77,8 +80,7 @@ public class ProductoDAO implements IDAO{
     public Boolean actualizar(Object e) {
         ProductoDTO prod = (ProductoDTO) e;
         String sql = "update productos set nombre = ?, descripcion = ?, costo = ?, id_precios = ? where id_productos = ?;";
-        try {
-            PreparedStatement st = ConnectorController.getConnection().prepareStatement(sql);
+        try (PreparedStatement st = ConnectorController.getConnection().prepareStatement(sql)){
             st.setString(1, prod.getNombre());
             st.setString(2, prod.getDescripcion());
             st.setString(3, String.valueOf(prod.getCosto()));
@@ -104,8 +106,7 @@ public class ProductoDAO implements IDAO{
     public void borrar(Object e) {
         ProductoDTO prod = (ProductoDTO) e;
         String sql = "DELETE FROM productos WHERE id_productos = ?";
-        try {
-            PreparedStatement st = ConnectorController.getConnection().prepareStatement(sql);
+        try (PreparedStatement st = ConnectorController.getConnection().prepareStatement(sql)){
             st.setInt(1, prod.getId());
             JOptionPane.showMessageDialog(null, "Producto con ID : " + prod.getId());
             st.executeUpdate();
@@ -121,8 +122,7 @@ public class ProductoDAO implements IDAO{
     public Object porId(int id) {
         ProductoDTO producto = new ProductoDTO();
         String sql = "select id_productos, nombre, descripcion, costo from productos WHERE id_productos = ?";
-        try {
-            PreparedStatement st = ConnectorController.getConnection().prepareStatement(sql);
+        try (PreparedStatement st = ConnectorController.getConnection().prepareStatement(sql)){
             st.setString(1, Integer.toString(id));
             ResultSet result = st.executeQuery();
             if (result.next()) {
@@ -141,8 +141,7 @@ public class ProductoDAO implements IDAO{
     public Object porNombre(String nombre, String descripcion, Float costo) {
         ProductoDTO producto = new ProductoDTO();
         String sql = "select id_productos, nombre, descripcion, costo from productos WHERE nombre = ? AND descripcion = ? AND costo = ?";
-        try {
-            PreparedStatement st = ConnectorController.getConnection().prepareStatement(sql);
+        try (PreparedStatement st = ConnectorController.getConnection().prepareStatement(sql)){
             st.setString(1, nombre);
             st.setString(2, descripcion);
             st.setFloat(3, costo);

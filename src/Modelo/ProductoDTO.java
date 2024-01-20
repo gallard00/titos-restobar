@@ -3,7 +3,7 @@ package Modelo;
 import java.util.Objects;
 
 public class ProductoDTO {
-    
+
     private int id;
     private String nombre;
     private String descripcion;
@@ -13,7 +13,7 @@ public class ProductoDTO {
     public ProductoDTO() {
     }
 
-     public ProductoDTO(int id) {
+    public ProductoDTO(int id) {
         this.id = id;
     }
 
@@ -28,6 +28,14 @@ public class ProductoDTO {
         this.nombre = nombre;
         this.descripcion = descripcion;
         this.costo = costo;
+    }
+
+    public ProductoDTO(int id, String nombre, String descripcion, float costo, PrecioDTO precio) {
+        this.id = id;
+        this.nombre = nombre;
+        this.descripcion = descripcion;
+        this.costo = costo;
+        this.precio = precio;
     }
 
     public float getCosto() {
@@ -107,16 +115,16 @@ public class ProductoDTO {
         }
         return Objects.equals(this.precio, other.precio);
     }
-    
+
     @Override
     public String toString() {
-        return "ProductoDTO{" + 
-                "id=" + id + 
-                ", nombre='" + nombre + '\'' + 
-                ", descripcion='" + descripcion + '\'' + 
-                ", costo=" + costo + 
-                ", precio=" + (precio != null ? precio.toString() : "null") + 
-                '}';
-    } 
-       
+        return "ProductoDTO{"
+                + "id=" + id
+                + ", nombre='" + nombre + '\''
+                + ", descripcion='" + descripcion + '\''
+                + ", costo=" + costo
+                + ", precio=" + (precio != null ? precio.toString() : "null")
+                + '}';
+    }
+
 }

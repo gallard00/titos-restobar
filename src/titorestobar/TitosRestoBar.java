@@ -18,14 +18,8 @@ import java.util.logging.Logger;
 public class TitosRestoBar {
 
     public static void main(String[] args) {
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                try {
-                    new FormIndex().setVisible(true);
-                } catch (SQLException ex) {
-                    Logger.getLogger(TitosRestoBar.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
+        java.awt.EventQueue.invokeLater(() -> {
+            new FormIndex().setVisible(true);
         });
     }
     
