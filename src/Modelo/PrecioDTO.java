@@ -8,6 +8,7 @@ public class PrecioDTO {
     private int id;
     private float valor;
     private Date fecha;
+    private int idProducto;
 
     public PrecioDTO() {
     }
@@ -26,7 +27,11 @@ public class PrecioDTO {
         this.valor = valor;
         this.fecha = fecha;
     }
-
+    public PrecioDTO(float valor, Date fecha, int idProducto) {
+        this.valor = valor;
+        this.fecha = fecha;
+        this.id = idProducto;
+    }
     public int getId() {
         return id;
     }
@@ -49,6 +54,14 @@ public class PrecioDTO {
 
     public void setFecha(Date fecha) {
         this.fecha = fecha;
+    }
+    
+    public int getIdProducto() {
+        return idProducto;
+    }
+
+    public void setIdProducto(int idProducto) {
+        this.idProducto = idProducto;
     }
 
     @Override

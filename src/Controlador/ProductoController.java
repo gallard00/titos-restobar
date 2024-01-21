@@ -1,73 +1,46 @@
 package Controlador;
 
 import DAO.ProductoDAO;
-import Modelo.PrecioDTO;
 import Modelo.ProductoDTO;
 import Modelo.ProductoNoElaboradoDTO;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 public class ProductoController {
+
     private List<ProductoDTO> ListaProducto = new ArrayList<>();
     private static ProductoController Instance;
     private final ProductoDAO ProductoDAO;
-    
+
     private ProductoController() throws SQLException {
         ProductoDAO = new ProductoDAO();
     }
-       
+
     public static ProductoController GetInstance() throws SQLException {
         if (Instance == null) {
             Instance = new ProductoController();
         }
         return Instance;
     }
-    
-//<editor-fold defaultstate="collapsed" desc=" Precio en base al costo. ">
-    private float costo;  // Agrega un campo para el costo
 
-    public float getCosto() {
-        return costo;
-    }
-
-    public void setCosto(float costo) {
-        this.costo = costo;
-    }
-    public PrecioDTO getPrecio() {
-        // Aquí deberías devolver un objeto PrecioDTO que represente el precio del producto.
-        // Implementa esta función de acuerdo a tus necesidades.
-        // Por ejemplo, podrías crear un nuevo objeto PrecioDTO y asignarle el costo como valor.
-        return new PrecioDTO(this.costo, new Date());
-    }
-
-    public void setPrecio(PrecioDTO precio) {
-        // Aquí deberías implementar la lógica para actualizar el costo y otras propiedades
-        // según los valores en el objeto PrecioDTO.
-        this.costo = precio.getValor();
-        // También podrías actualizar la fecha, si es necesario.
-    }
-//</editor-fold>
-     
 //<editor-fold defaultstate="collapsed" desc=" CRUD ">
-    
     public Boolean CrearProducto(String nombre, String descripcion, float costo) {
         ProductoDTO prod = new ProductoDTO(nombre, descripcion, costo);
         return ProductoDAO.crear(prod);
     }
-    
+
     public Boolean CrearProducto(String nombre, String descripcion, float costo, int stock) {
         ProductoNoElaboradoDTO prod = new ProductoNoElaboradoDTO(nombre, descripcion, costo, stock);
         return ProductoDAO.crear(prod);
     }
-    
+
     public List LeerProducto() {
         return ProductoDAO.mostrar();
     }
-    
-    public Boolean ActualizarProducto(int id, String nombre, String descripcion, float costo, PrecioDTO nuevoPrecio) {
-        ProductoDTO actualizarProducto = new ProductoDTO(id, nombre, descripcion, costo, nuevoPrecio);
+
+    public Boolean ActualizarProducto(int idProducto, String nombre, String descripcion, float costo) {
+        ProductoDTO actualizarProducto = new ProductoDTO(idProducto, nombre, descripcion, costo);
         return ProductoDAO.actualizar(actualizarProducto);
     }
 
@@ -76,46 +49,44 @@ public class ProductoController {
         ProductoDAO.borrar(borrarProducto);
         ListaProducto.remove(borrarProducto);
     }
-    
+
 //</editor-fold>
-    
 //<editor-fold defaultstate="collapsed" desc=" Metodos de las Clases ">
     public List<ProductoDTO> PedirListaProducto() {
         ListaProducto = LeerProducto();
         return ListaProducto;
     }
-    
-    public ProductoDTO obtenerProductoLista(int id){
-        for (ProductoDTO producto : PedirListaProducto())
-        {
-            if(producto.getId() == id)
-            {
+
+    public ProductoDTO obtenerProductoLista(int idProducto) {
+        for (ProductoDTO producto : PedirListaProducto()) {
+            if (producto.getIdProducto() == idProducto) {
                 return producto;
             }
         }
         return null;
     }
-    
-    public Boolean SiProductoExiste(String nombre, String descripcion, Float costo)
-    {
-        ProductoDTO producto = (ProductoDTO)ProductoDAO.porNombre(nombre, descripcion, costo);
-        if(producto != null)
-        {
+
+    public Boolean SiProductoExiste(String nombre, String descripcion, Float costo) {
+        ProductoDTO producto = (ProductoDTO) ProductoDAO.porNombre(nombre, descripcion, costo);
+        if (producto != null) {
             return true;
         }
         return false;
     }
-  //</editor-fold> 
+
+    public int obtenerUltimoIDProducto() {
+        return ProductoDAO.obtenerUltimoIDProducto();
+    }
+
+    //</editor-fold> 
     
 //<editor-fold defaultstate="collapsed" desc=" Datos de la Tabla de Producto">
-    
     public Object[] RequestTableRow(int i)//solocitar fila de la tabla
     {
         Object datosfila[] = new Object[4];//datos de fila
         ProductoDTO producto = PedirListaProducto().get(i);
-        if(producto != null)
-        {
-            datosfila[0] = PedirListaProducto().get(i).getId();
+        if (producto != null) {
+            datosfila[0] = PedirListaProducto().get(i).getIdProducto();
             datosfila[1] = PedirListaProducto().get(i).getNombre();
             datosfila[2] = PedirListaProducto().get(i).getDescripcion();
             datosfila[3] = PedirListaProducto().get(i).getCosto();
@@ -123,22 +94,20 @@ public class ProductoController {
         }
         return null;
     }
-    
-    public Object[] RequestObjectIndex(int id)
-    {
+
+    public Object[] RequestObjectIndex(int id) {
         Object datosfila[] = new Object[4];
         ProductoDTO producto = obtenerProductoLista(id);
-        if(producto != null)
-        {
-            datosfila[0] =  producto.getId();
-            datosfila[1] =  producto.getNombre();
-            datosfila[2] =  producto.getDescripcion();
-            datosfila[3] =  producto.getCosto();
+        if (producto != null) {
+            datosfila[0] = producto.getIdProducto();
+            datosfila[1] = producto.getNombre();
+            datosfila[2] = producto.getDescripcion();
+            datosfila[3] = producto.getCosto();
         }
         return datosfila;
     }
 //</editor-fold>
-    
+
 //<editor-fold defaultstate="collapsed" desc=" Datos de la Tabla de ProductosNoElaborados">
     /*
     public Object[] RequestTableRow(int i)
@@ -172,5 +141,4 @@ public class ProductoController {
         return rowdata;
     }*/
 //</editor-fold>
-
 }

@@ -23,12 +23,13 @@ public class PrecioDAO implements IDAO {
     @Override
     public Boolean crear(Object e) {
         PrecioDTO pre = (PrecioDTO) e;
-        String sql = "insert into precios(id_precios, valor,fecha) value (?, ?, ?);";
+        String sql = "insert into precios(id_precios, valor, fecha, id_productos) value (?, ?, ?, ?);";
         try {
             PreparedStatement st = ConnectorController.getConnection().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             st.setString(1, String.valueOf(pre.getId()));
             st.setString(2, String.valueOf(pre.getValor()));
             st.setString(3, String.valueOf(pre.getFecha()));
+            st.setString(4, String.valueOf(pre.getId()));
             st.execute();
             ResultSet rs = st.getGeneratedKeys();
             if (rs.next()) {

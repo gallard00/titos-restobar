@@ -26,8 +26,8 @@ public class PrecioController {
     
         //<editor-fold defaultstate="collapsed" desc=" CRUD "> 
     
-    public Boolean CrearPrecio(float valor, Date fecha) {
-        PrecioDTO crearPrecio = new PrecioDTO(valor, fecha);
+    public Boolean CrearPrecio(float valor, Date fecha, int idProducto) {
+        PrecioDTO crearPrecio = new PrecioDTO(valor, fecha, idProducto);
         return PrecioDAO.crear(crearPrecio);
     }
     
@@ -48,5 +48,11 @@ public class PrecioController {
     
     //</editor-fold>
     
-    
+    public float calcularPrecio(float costo, float porcentajeAumento) {
+        // Calcular el aumento y el nuevo costo
+        float aumento = (porcentajeAumento * costo) / 100;
+        float nuevoCosto = costo + aumento;
+
+        return nuevoCosto;
+    }
 }

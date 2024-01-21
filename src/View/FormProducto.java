@@ -1,9 +1,10 @@
 package View;
 
+import Controlador.PrecioController;
 import Controlador.ProductoController;
-import Modelo.PrecioDTO;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -13,9 +14,11 @@ import javax.swing.table.DefaultTableModel;
 public class FormProducto extends javax.swing.JFrame {
 
     ProductoController ProductoControladora;
+    PrecioController PrecioControladora;
 
     public FormProducto() throws SQLException {
         ProductoControladora = ProductoController.GetInstance();
+        PrecioControladora = PrecioController.GetInstance();
         initComponents();
         verificarListaProductos();
     }
@@ -274,30 +277,7 @@ public class FormProducto extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-/*
-     if (filaSeleccionada >=0) {
-                    int id = (int) datosTablaProducto.getModel().getValueAt(filaSeleccionada, 0);
-                    if (!ProductoControladora.SiProductoExiste(nombre, descripcion, costo)) {
-                        if (ProductoControladora.ActualizarProducto(id, nombre, descripcion, costo)) {
-                           JOptionPane.showMessageDialog(null, "Producto Modificado");
-                       } 
-                   }else{
-                        JOptionPane.showMessageDialog(null, "Ya existe un producto con el mismo nombre y descripción");
-                    }
-                }else{
-                    if (!ProductoControladora.SiProductoExiste(nombre, descripcion, costo)) {
-                        if(ProductoControladora.CrearProducto(nombre, descripcion, costo)){
-                        JOptionPane.showMessageDialog(null, "Producto Guardado");
-                        }
-                    }else{
-                       JOptionPane.showMessageDialog(null, "Ya existe un producto con el mismo nombre y descripción");
-                    }
-            }
-            this.reiniciarTablaProducto();
-        }
-    }                                          
 
-    }*/
     private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
         if (evt.getSource() == btnGuardar) {
             if (validarDatos() == false) {
@@ -309,10 +289,11 @@ public class FormProducto extends javax.swing.JFrame {
                 float porcentajeAumento = Float.parseFloat(txtPorcentajeAumento.getText());
 
                 if (filaSeleccionada >= 0) {
-                    int id = (int) datosTablaProducto.getModel().getValueAt(filaSeleccionada, 0);
+                    int idProducto = (int) datosTablaProducto.getModel().getValueAt(filaSeleccionada, 0);
                     if (!ProductoControladora.SiProductoExiste(nombre, descripcion, costo)) {
-                        if (ProductoControladora.ActualizarProducto(id, nombre, descripcion, costo)) {
+                        if (ProductoControladora.ActualizarProducto(idProducto, nombre, descripcion, costo)) {
                             JOptionPane.showMessageDialog(null, "Producto Modificado");
+                            crearActualizarPrecio(idProducto, costo, porcentajeAumento);
                         }
                     } else {
                         JOptionPane.showMessageDialog(null, "Ya existe un producto con el mismo nombre y descripción");
@@ -321,17 +302,38 @@ public class FormProducto extends javax.swing.JFrame {
                     if (!ProductoControladora.SiProductoExiste(nombre, descripcion, costo)) {
                         if (ProductoControladora.SiProductoExiste(nombre, descripcion, costo)) {
                             JOptionPane.showMessageDialog(null, "Producto Guardado");
+                            // Crea un nuevo precio al guardar un nuevo producto
+                            int idProductoNuevo = ProductoControladora.obtenerUltimoIDProducto();
+                            crearActualizarPrecio(idProductoNuevo, costo, porcentajeAumento);
                         }
                     } else {
                         JOptionPane.showMessageDialog(null, "Ya existe un producto con el mismo nombre y descripción");
                     }
                 }
                 this.reiniciarTablaProducto();
-            }
     }//GEN-LAST:event_btnGuardarActionPerformed
+        }
+    }
+
+    private void crearActualizarPrecio(int idProducto, float costo, float porcentajeAumento) {
+        // Llama al método correspondiente en tu PrecioController para crear o actualizar el precio
+        int idPrecio = PrecioControladora.obtenerIdPrecioPorProducto(idProducto);
+        if (idPrecio != -1) {
+            // Si existe un precio, actualiza los datos
+            PrecioControladora.ActualizarPrecio(idPrecio, idProducto, calcularPrecio(costo, porcentajeAumento));
+        } else {
+            // Si no existe un precio, crea uno nuevo
+            PrecioControladora.CrearPrecio(idProducto, calcularPrecio(costo, porcentajeAumento));
+        }
 
     }
 
+    private float calcularPrecio(float costo, float porcentajeAumento) {
+        // Implementa tu lógica para calcular el precio
+        // Puedes hacer algo como esto (ajústalo según tus necesidades):
+        return costo + (costo * (porcentajeAumento / 100));
+    }
+    
     private void chkBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkBoxActionPerformed
         if (!evt.equals(chkBox.isSelected())) {
             spnCantidadProducto.setEnabled(true);
@@ -455,47 +457,6 @@ public class FormProducto extends javax.swing.JFrame {
 
     public void ModificarFila(int id) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    public void aplicarAumentoPrecio(float porcentajeAumento, ProductoController productoController) {
-        // Obtener el precio actual del ProductoController
-        PrecioDTO precioActual = productoController.getPrecio();
-
-        // Obtener el costo actual del ProductoController
-        float costoActual = productoController.getCosto();
-
-        if (precioActual != null) {
-            // Verificar si el costo ha sido modificado
-            if (costoActual != precioActual.getValor()) {
-                // Calcular el aumento y el nuevo costo
-                float aumento = (porcentajeAumento * costoActual) / 100;
-                float nuevoCosto = costoActual + aumento;
-
-                // Crear un nuevo objeto PrecioDTO con el nuevo costo
-                PrecioDTO nuevoPrecio = new PrecioDTO();
-                nuevoPrecio.setValor(nuevoCosto);
-
-                // Establecer el nuevo precio en el ProductoController
-                productoController.setPrecio(nuevoPrecio);
-            }
-        } else {
-            // Si no hay un precio actual y el costo no es cero, aplicar el aumento
-            if (costoActual > 0) {
-                // Calcular el aumento y el nuevo costo
-                float aumento = (porcentajeAumento * costoActual) / 100;
-                float nuevoCosto = costoActual + aumento;
-
-                // Crear un nuevo objeto PrecioDTO con el nuevo costo
-                PrecioDTO nuevoPrecio = new PrecioDTO();
-                nuevoPrecio.setValor(nuevoCosto);
-
-                // Establecer el nuevo precio en el ProductoController
-                productoController.setPrecio(nuevoPrecio);
-            } else {
-                // Si no hay costo, lanzar una excepción
-                throw new IllegalArgumentException("El producto debe tener un costo para aplicar el aumento.");
-            }
-        }
     }
 
 }

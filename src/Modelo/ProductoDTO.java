@@ -4,17 +4,16 @@ import java.util.Objects;
 
 public class ProductoDTO {
 
-    private int id;
+    private int idProducto;
     private String nombre;
     private String descripcion;
     private float costo;
-    private PrecioDTO precio;
 
     public ProductoDTO() {
     }
 
-    public ProductoDTO(int id) {
-        this.id = id;
+    public ProductoDTO(int idProducto) {
+        this.idProducto = idProducto;
     }
 
     public ProductoDTO(String nombre, String descripcion, float costo) {
@@ -23,19 +22,11 @@ public class ProductoDTO {
         this.costo = costo;
     }
 
-    public ProductoDTO(int id, String nombre, String descripcion, float costo) {
-        this.id = id;
+    public ProductoDTO(int idProducto, String nombre, String descripcion, float costo) {
+        this.idProducto = idProducto;
         this.nombre = nombre;
         this.descripcion = descripcion;
         this.costo = costo;
-    }
-
-    public ProductoDTO(int id, String nombre, String descripcion, float costo, PrecioDTO precio) {
-        this.id = id;
-        this.nombre = nombre;
-        this.descripcion = descripcion;
-        this.costo = costo;
-        this.precio = precio;
     }
 
     public float getCosto() {
@@ -46,12 +37,12 @@ public class ProductoDTO {
         this.costo = costo;
     }
 
-    public int getId() {
-        return id;
+    public int getIdProducto() {
+        return idProducto;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setIdProducto(int idProducto) {
+        this.idProducto = idProducto;
     }
 
     public String getNombre() {
@@ -70,22 +61,13 @@ public class ProductoDTO {
         this.descripcion = descripcion;
     }
 
-    public PrecioDTO getPrecio() {
-        return precio;
-    }
-
-    public void setPrecio(PrecioDTO precio) {
-        this.precio = precio;
-    }
-
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 17 * hash + this.id;
+        hash = 17 * hash + this.idProducto;
         hash = 17 * hash + Objects.hashCode(this.nombre);
         hash = 17 * hash + Objects.hashCode(this.descripcion);
         hash = 17 * hash + Float.floatToIntBits(this.costo);
-        hash = 17 * hash + Objects.hashCode(this.precio);
         return hash;
     }
 
@@ -101,7 +83,7 @@ public class ProductoDTO {
             return false;
         }
         final ProductoDTO other = (ProductoDTO) obj;
-        if (this.id != other.id) {
+        if (this.idProducto != other.idProducto) {
             return false;
         }
         if (Float.floatToIntBits(this.costo) != Float.floatToIntBits(other.costo)) {
@@ -113,17 +95,16 @@ public class ProductoDTO {
         if (!Objects.equals(this.descripcion, other.descripcion)) {
             return false;
         }
-        return Objects.equals(this.precio, other.precio);
+        return false;
     }
 
     @Override
     public String toString() {
         return "ProductoDTO{"
-                + "id=" + id
+                + "id=" + idProducto
                 + ", nombre='" + nombre + '\''
                 + ", descripcion='" + descripcion + '\''
                 + ", costo=" + costo
-                + ", precio=" + (precio != null ? precio.toString() : "null")
                 + '}';
     }
 
