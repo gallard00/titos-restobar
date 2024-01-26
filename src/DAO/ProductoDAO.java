@@ -23,7 +23,7 @@ public class ProductoDAO implements IDAO {
     @Override
     public Boolean crear(Object e) {
         ProductoDTO prod = (ProductoDTO) e;
-        String sql = "insert into productos(id_productos, nombre, descripcion, costo) value (?, ?, ?, ?,?);";
+        String sql = "insert into productos(id_productos, nombre, descripcion, costo) value (?, ?, ?, ?);";
         /*
         Se utiliza un try-with-resources (try) 
         para asegurar que los recursos como las conexiones y
@@ -147,7 +147,7 @@ public class ProductoDAO implements IDAO {
 
     public int obtenerUltimoIDProducto() {
         int ultimoID = 0;
-        String sql = "SELECT MAX(id_producto) FROM productos";
+        String sql = "SELECT MAX(id_productos) FROM productos";
 
         try {
             PreparedStatement statement = ConnectorController.getConnection().prepareStatement(sql);

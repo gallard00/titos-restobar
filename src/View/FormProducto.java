@@ -293,18 +293,18 @@ public class FormProducto extends javax.swing.JFrame {
                     if (!ProductoControladora.SiProductoExiste(nombre, descripcion, costo)) {
                         if (ProductoControladora.ActualizarProducto(idProducto, nombre, descripcion, costo)) {
                             JOptionPane.showMessageDialog(null, "Producto Modificado");
-                            crearActualizarPrecio(idProducto, costo, porcentajeAumento);
+                            PrecioControladora.crearActualizarPrecio(idProducto, costo, porcentajeAumento);
                         }
                     } else {
                         JOptionPane.showMessageDialog(null, "Ya existe un producto con el mismo nombre y descripción");
                     }
                 } else {
                     if (!ProductoControladora.SiProductoExiste(nombre, descripcion, costo)) {
-                        if (ProductoControladora.SiProductoExiste(nombre, descripcion, costo)) {
+                        if (ProductoControladora.CrearProducto(nombre, descripcion, costo)) {
                             JOptionPane.showMessageDialog(null, "Producto Guardado");
                             // Crea un nuevo precio al guardar un nuevo producto
                             int idProductoNuevo = ProductoControladora.obtenerUltimoIDProducto();
-                            crearActualizarPrecio(idProductoNuevo, costo, porcentajeAumento);
+                            PrecioControladora.crearActualizarPrecio(idProductoNuevo, costo, porcentajeAumento);
                         }
                     } else {
                         JOptionPane.showMessageDialog(null, "Ya existe un producto con el mismo nombre y descripción");
@@ -315,25 +315,6 @@ public class FormProducto extends javax.swing.JFrame {
         }
     }
 
-    private void crearActualizarPrecio(int idProducto, float costo, float porcentajeAumento) {
-        // Llama al método correspondiente en tu PrecioController para crear o actualizar el precio
-        int idPrecio = PrecioControladora.obtenerIdPrecioPorProducto(idProducto);
-        if (idPrecio != -1) {
-            // Si existe un precio, actualiza los datos
-            PrecioControladora.ActualizarPrecio(idPrecio, idProducto, calcularPrecio(costo, porcentajeAumento));
-        } else {
-            // Si no existe un precio, crea uno nuevo
-            PrecioControladora.CrearPrecio(idProducto, calcularPrecio(costo, porcentajeAumento));
-        }
-
-    }
-
-    private float calcularPrecio(float costo, float porcentajeAumento) {
-        // Implementa tu lógica para calcular el precio
-        // Puedes hacer algo como esto (ajústalo según tus necesidades):
-        return costo + (costo * (porcentajeAumento / 100));
-    }
-    
     private void chkBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkBoxActionPerformed
         if (!evt.equals(chkBox.isSelected())) {
             spnCantidadProducto.setEnabled(true);

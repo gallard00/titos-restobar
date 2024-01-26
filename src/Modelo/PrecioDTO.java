@@ -30,7 +30,13 @@ public class PrecioDTO {
     public PrecioDTO(float valor, Date fecha, int idProducto) {
         this.valor = valor;
         this.fecha = fecha;
-        this.id = idProducto;
+        this.idProducto = idProducto;
+    }
+    public PrecioDTO(int id, float valor, Date fecha, int idProducto) {
+        this.id = id;
+        this.valor = valor;
+        this.fecha = fecha;
+        this.idProducto = idProducto;
     }
     public int getId() {
         return id;
