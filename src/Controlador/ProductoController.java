@@ -1,6 +1,7 @@
 package Controlador;
 
 import DAO.ProductoDAO;
+import DAO.ProductoNoElaboradoDAO;
 import Modelo.ProductoDTO;
 import Modelo.ProductoNoElaboradoDTO;
 import java.sql.SQLException;
@@ -12,9 +13,11 @@ public class ProductoController {
     private List<ProductoDTO> ListaProducto = new ArrayList<>();
     private static ProductoController Instance;
     private final ProductoDAO ProductoDAO;
+    private final ProductoNoElaboradoDAO productoNoElaboradoDAO;
 
     private ProductoController() throws SQLException {
         ProductoDAO = new ProductoDAO();
+        productoNoElaboradoDAO = new ProductoNoElaboradoDAO();
     }
 
     public static ProductoController GetInstance() throws SQLException {
@@ -51,34 +54,27 @@ public class ProductoController {
     }
 
 //</editor-fold>
- 
 //<editor-fold defaultstate="collapsed" desc=" CRUD de Productos no Elaborados ">
-    public Boolean crearProductoNoElaborado(String nombre, String descripcion, float costo) {
-        ProductoDTO prod = new ProductoDTO(nombre, descripcion, costo);
-        return ProductoDAO.crear(prod);
+    public Boolean crearProductoNoElaborado(int idProducto, int stock) {
+        ProductoNoElaboradoDTO productoNoElaborado = new ProductoNoElaboradoDTO(idProducto, stock);
+        return productoNoElaboradoDAO.crear(productoNoElaborado);
     }
-
-    public Boolean crearProductoNoElaborado(String nombre, String descripcion, float costo, int stock) {
-        ProductoNoElaboradoDTO prod = new ProductoNoElaboradoDTO(nombre, descripcion, costo, stock);
-        return ProductoDAO.crear(prod);
+    public List<ProductoNoElaboradoDTO> leerProductosNoElaborados() {
+        return productoNoElaboradoDAO.mostrarProductosNoElaborados();
     }
-
-    public List leerProductoNoElaborado() {
-        return ProductoDAO.mostrar();
-    }
-
+/*
     public Boolean actualizarProductoNoElaborado(int idProducto, String nombre, String descripcion, float costo) {
         ProductoDTO actualizarProducto = new ProductoDTO(idProducto, nombre, descripcion, costo);
-        return ProductoDAO.actualizar(actualizarProducto);
+        return ProductoNoElaboradoDAO.actualizarProductoNoElaborado(actualizarProducto);
     }
 
     public void borrarProductoNoElaborado(int id) {
         ProductoDTO borrarProducto = new ProductoDTO(id);
-        ProductoDAO.borrar(borrarProducto);
+        ProductoNoElaboradoDAO.borrarProductoNoElaborado(borrarProducto);
         ListaProducto.remove(borrarProducto);
-    }
+    }*/
 //</editor-fold>   
-    
+
 //<editor-fold defaultstate="collapsed" desc=" Metodos de las Clases ">
     public List<ProductoDTO> PedirListaProducto() {
         ListaProducto = LeerProducto();
@@ -107,7 +103,6 @@ public class ProductoController {
     }
 
     //</editor-fold> 
-    
 //<editor-fold defaultstate="collapsed" desc=" Datos de la Tabla de Producto">
     public Object[] RequestTableRow(int i)//solocitar fila de la tabla
     {
