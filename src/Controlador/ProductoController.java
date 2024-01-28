@@ -24,7 +24,7 @@ public class ProductoController {
         return Instance;
     }
 
-//<editor-fold defaultstate="collapsed" desc=" CRUD ">
+//<editor-fold defaultstate="collapsed" desc=" CRUD de Productos ">
     public Boolean CrearProducto(String nombre, String descripcion, float costo) {
         ProductoDTO prod = new ProductoDTO(nombre, descripcion, costo);
         return ProductoDAO.crear(prod);
@@ -51,6 +51,34 @@ public class ProductoController {
     }
 
 //</editor-fold>
+ 
+//<editor-fold defaultstate="collapsed" desc=" CRUD de Productos no Elaborados ">
+    public Boolean crearProductoNoElaborado(String nombre, String descripcion, float costo) {
+        ProductoDTO prod = new ProductoDTO(nombre, descripcion, costo);
+        return ProductoDAO.crear(prod);
+    }
+
+    public Boolean crearProductoNoElaborado(String nombre, String descripcion, float costo, int stock) {
+        ProductoNoElaboradoDTO prod = new ProductoNoElaboradoDTO(nombre, descripcion, costo, stock);
+        return ProductoDAO.crear(prod);
+    }
+
+    public List leerProductoNoElaborado() {
+        return ProductoDAO.mostrar();
+    }
+
+    public Boolean actualizarProductoNoElaborado(int idProducto, String nombre, String descripcion, float costo) {
+        ProductoDTO actualizarProducto = new ProductoDTO(idProducto, nombre, descripcion, costo);
+        return ProductoDAO.actualizar(actualizarProducto);
+    }
+
+    public void borrarProductoNoElaborado(int id) {
+        ProductoDTO borrarProducto = new ProductoDTO(id);
+        ProductoDAO.borrar(borrarProducto);
+        ListaProducto.remove(borrarProducto);
+    }
+//</editor-fold>   
+    
 //<editor-fold defaultstate="collapsed" desc=" Metodos de las Clases ">
     public List<ProductoDTO> PedirListaProducto() {
         ListaProducto = LeerProducto();

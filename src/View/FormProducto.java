@@ -305,6 +305,11 @@ public class FormProducto extends javax.swing.JFrame {
                             // Crea un nuevo precio al guardar un nuevo producto
                             int idProductoNuevo = ProductoControladora.obtenerUltimoIDProducto();
                             PrecioControladora.crearActualizarPrecio(idProductoNuevo, costo, porcentajeAumento);
+                            if (!chkBox.isSelected()){
+                                int stock = (int) spnCantidadProducto.getValue();
+                                
+                                
+                            }
                         }
                     } else {
                         JOptionPane.showMessageDialog(null, "Ya existe un producto con el mismo nombre y descripción");

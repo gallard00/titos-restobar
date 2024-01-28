@@ -1,16 +1,22 @@
 package Modelo;
 
-
 public class ProductoNoElaboradoDTO extends ProductoDTO {
-    
+
     private int stock;
-    private PrecioDTO precio;
-    
-    public ProductoNoElaboradoDTO(int id, String nombre, String descripcion, float costo, int stock) {
-        super(id, nombre, descripcion, costo);
+
+    public ProductoNoElaboradoDTO(int stock) {
         this.stock = stock;
     }
-    
+
+    public ProductoNoElaboradoDTO(int idProducto, int stock) {
+        this.stock = stock;
+    }
+
+    public ProductoNoElaboradoDTO(int idProducto, String nombre, String descripcion, float costo, int stock) {
+        super(idProducto, nombre, descripcion, costo);
+        this.stock = stock;
+    }
+
     public ProductoNoElaboradoDTO(String nombre, String descripcion, float costo, int stock) {
         super(nombre, descripcion, costo);
         this.stock = stock;
@@ -23,18 +29,8 @@ public class ProductoNoElaboradoDTO extends ProductoDTO {
     public void setStock(int stock) {
         this.stock = stock;
     }
-    
-    @Override
-    public PrecioDTO getPrecio() {
-        return precio;
-    }
 
     @Override
-    public void setPrecio(PrecioDTO precio) {
-        this.precio = precio;
-    }
-    
-        @Override
     public int hashCode() {
         int hash = 7;
         hash = 89 * hash + this.stock;
@@ -60,5 +56,5 @@ public class ProductoNoElaboradoDTO extends ProductoDTO {
     public String toString() {
         return "ProductoNoElaboradoDTO{" + "stock=" + stock + '}';
     }
-    
+
 }
