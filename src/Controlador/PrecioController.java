@@ -9,7 +9,7 @@ import java.util.Date;
 
 public class PrecioController {
 
-    private List<PrecioDTO> ListaPrecios = new ArrayList<>();
+    private List<PrecioDTO> listaPrecio = new ArrayList<>();
     private static PrecioController Instance;
     private final PrecioDAO PrecioDAO;
 
@@ -43,11 +43,23 @@ public class PrecioController {
     public void BorrarPrecio(int id) {
         PrecioDTO borrarPrecio = new PrecioDTO(id);
         PrecioDAO.borrar(borrarPrecio);
-        ListaPrecios.remove(borrarPrecio);
+        listaPrecio.remove(borrarPrecio);
     }
 
     //</editor-fold>
-    
+    public List<PrecioDTO> pedirListaPrecio() {
+        listaPrecio = LeerPrecio();
+        return listaPrecio;
+    }
+
+    public PrecioDTO obtenerPrecioLista(int id) {
+        for (PrecioDTO precio : pedirListaPrecio()) {
+            if (precio.getId() == id) {
+                return precio;
+            }
+        }
+        return null;
+    }
     public void crearActualizarPrecio(int idProducto, float costo, float porcentajeAumento) {
         // Siempre crea un nuevo precio
         float nuevoPrecio = calcularPrecio(costo, porcentajeAumento);
@@ -58,5 +70,29 @@ public class PrecioController {
     private float calcularPrecio(float costo, float porcentajeAumento) {
         return costo + (costo * (porcentajeAumento / 100));
     }
-
+//<editor-fold defaultstate="collapsed" desc=" Datos de la Tabla de Precios">
+    
+    public Object[] filaTablaPrecio(int i)
+    {
+        Object datoFila[] = new Object[1];
+        PrecioDTO precio = pedirListaPrecio().get(i);
+        if(precio != null)
+        {
+            datoFila[0] = pedirListaPrecio().get(i).getValor();
+            return datoFila;
+        }
+        return null;
+    }
+    
+    public Object[] indicePrecio(int id)
+    {
+        Object datoFila[] = new Object[1];
+        PrecioDTO precio = obtenerPrecioLista(id);
+        if(precio != null)
+        {
+            datoFila[0] =  precio.getValor();
+        }
+        return datoFila;
+    }
+//</editor-fold>
 }

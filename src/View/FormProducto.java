@@ -23,7 +23,7 @@ public class FormProducto extends javax.swing.JFrame {
         verificarListaProductos();
     }
 
-    public void verificarListaProductos() //Verifica si la lista de mesas tiene algo
+    public void verificarListaProductos() //Verifica si la lista de productos tiene algo
     {
         if (!ProductoControladora.PedirListaProducto().isEmpty()) {
             reiniciarTablaProducto();
@@ -59,6 +59,9 @@ public class FormProducto extends javax.swing.JFrame {
         DefaultTableModel modelo = new DefaultTableModel();
 
         List<? extends Object> ListaProducto = ProductoControladora.PedirListaProducto();
+        List<? extends Object> listaPrecio = PrecioControladora.pedirListaPrecio();
+        List<? extends Object> listaProductosNoElaborados = ProductoControladora.pedirListaProductoNoElaborado();
+
         ArrayList<Object> nombrecolumna = new ArrayList<>();
         nombrecolumna.add("ID");
         nombrecolumna.add("Nombre");
@@ -72,6 +75,12 @@ public class FormProducto extends javax.swing.JFrame {
 
         for (int i = 0; i < ListaProducto.size(); i++) {
             modelo.addRow(ProductoControladora.RequestTableRow(i));
+        }
+        for (int i = 0; i< listaPrecio.size(); i++){
+            modelo.addRow(PrecioControladora.filaTablaPrecio(i));
+        }
+        for (int i = 0; i< listaProductosNoElaborados.size(); i++){
+            modelo.addRow(ProductoControladora.filaTablaProductoNoElaborado(i));
         }
         datosTablaProducto.setModel(modelo);
         datosTablaProducto.setCellSelectionEnabled(false);
@@ -303,15 +312,15 @@ public class FormProducto extends javax.swing.JFrame {
                 } else {
                     if (!ProductoControladora.SiProductoExiste(nombre, descripcion, costo)) {
                         if (ProductoControladora.CrearProducto(nombre, descripcion, costo)) {
-                            
+
                             // Crea un nuevo precio al guardar un nuevo producto
                             int idProductoNuevo = ProductoControladora.obtenerUltimoIDProducto();
                             PrecioControladora.crearActualizarPrecio(idProductoNuevo, costo, porcentajeAumento);
-                            if (!chkBox.isSelected()){
+                            if (!chkBox.isSelected()) {
                                 int stock = (int) spnCantidadProducto.getValue();
                                 ProductoControladora.crearProductoNoElaborado(idProductoNuevo, stock);
-                              JOptionPane.showMessageDialog(null, "Producto no Elaborado Guardado");  
-                            }else{
+                                JOptionPane.showMessageDialog(null, "Producto no Elaborado Guardado");
+                            } else {
                                 JOptionPane.showMessageDialog(null, "Producto Guardado");
                             }
                         }
@@ -426,36 +435,23 @@ public class FormProducto extends javax.swing.JFrame {
     private javax.swing.JTextPane txtPorcentajeAumento;
     // End of variables declaration//GEN-END:variables
 
-    public void AgregarFila(int id) {
+    public void agregarFila(int id) {
         javax.swing.table.DefaultTableModel modelo = (javax.swing.table.DefaultTableModel) datosTablaProducto.getModel();
         modelo.addRow(ProductoControladora.RequestObjectIndex(id));
         datosTablaProducto.setModel(modelo);
     }
 
-    public void EliminarFila(int id) {
+    public void eliminarFila(int id) {
         int columna = 0;
         String IDString = String.valueOf(id);
         javax.swing.table.DefaultTableModel modelo = (javax.swing.table.DefaultTableModel) datosTablaProducto.getModel();
         for (int i = 0; i < modelo.getRowCount(); i++) {
-
             if (modelo.getValueAt(i, columna).toString().equals(IDString)) {
                 modelo.removeRow(i);
+                break;
             }
         }
         datosTablaProducto.setModel(modelo);
     }
-
-    public void eliminarFila(int id) {
-    int columna = 0;
-    String IDString = String.valueOf(id);
-    javax.swing.table.DefaultTableModel modelo = (javax.swing.table.DefaultTableModel) datosTablaProducto.getModel();
-    for (int i = 0; i < modelo.getRowCount(); i++) {
-        if (modelo.getValueAt(i, columna).toString().equals(IDString)) {
-            modelo.removeRow(i);
-            break;
-        }
-    }
-    datosTablaProducto.setModel(modelo);
-}
 
 }

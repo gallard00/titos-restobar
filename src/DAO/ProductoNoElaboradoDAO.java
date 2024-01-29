@@ -63,13 +63,13 @@ public class ProductoNoElaboradoDAO extends ProductoDAO {
         return listaProductosNoElaborados;
     }
 
-    @Override
-    public Boolean actualizar(Object e) {
+    
+    public Boolean actualizarProductoNoElaborado(Object e) {
         ProductoNoElaboradoDTO prod = (ProductoNoElaboradoDTO) e;
-        String sql = "UPDATE productos_no_elaborados set stock = ? where id_productos = ?;";
+        String sql = "UPDATE productos_no_elaborados set stock = ? where id_productos_no_elaborados = ?;";
         try (PreparedStatement st = ConnectorController.getConnection().prepareStatement(sql)) {
-            st.setString(2, String.valueOf(prod.getStock()));
-            st.setString(3, String.valueOf(prod.getIdProducto()));
+            st.setString(1, String.valueOf(prod.getStock()));
+            st.setString(2, String.valueOf(prod.getIdProducto()));
             st.executeUpdate();
             return true;
         } catch (SQLException ex) {
@@ -80,13 +80,12 @@ public class ProductoNoElaboradoDAO extends ProductoDAO {
         return false;
     }
 
-    @Override
-    public void borrar(Object e) {
+    public void borrarProductoNoElaborado(Object e) {
         ProductoNoElaboradoDTO prod = (ProductoNoElaboradoDTO) e;
-        String sql = "DELETE FROM productos WHERE id_productos = ?";
+        String sql = "DELETE FROM productos_no_elaborados WHERE id_productos_no_elaborados = ?";
         try (PreparedStatement st = ConnectorController.getConnection().prepareStatement(sql)) {
             st.setInt(1, prod.getIdProducto());
-            JOptionPane.showMessageDialog(null, "Producto no elaborado con ID : " + prod.getIdProducto());
+            JOptionPane.showMessageDialog(null, "Se elimino un producto no elaborado con ID : " + prod.getIdProducto());
             st.executeUpdate();
         } catch (SQLException ex) {
             Logger.getLogger(ProductoNoElaboradoDAO.class.getName()).log(Level.SEVERE, null, ex);

@@ -3,7 +3,7 @@ package Modelo;
 public class ProductoNoElaboradoDTO extends ProductoDTO {
 
     private int stock;
-
+    
     public ProductoNoElaboradoDTO(int stock) {
         this.stock = stock;
     }
