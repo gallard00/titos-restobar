@@ -76,10 +76,10 @@ public class FormProducto extends javax.swing.JFrame {
         for (int i = 0; i < ListaProducto.size(); i++) {
             modelo.addRow(ProductoControladora.RequestTableRow(i));
         }
-        for (int i = 0; i< listaPrecio.size(); i++){
+        for (int i = 0; i < listaPrecio.size(); i++) {
             modelo.addRow(PrecioControladora.filaTablaPrecio(i));
         }
-        for (int i = 0; i< listaProductosNoElaborados.size(); i++){
+        for (int i = 0; i < listaProductosNoElaborados.size(); i++) {
             modelo.addRow(ProductoControladora.filaTablaProductoNoElaborado(i));
         }
         datosTablaProducto.setModel(modelo);

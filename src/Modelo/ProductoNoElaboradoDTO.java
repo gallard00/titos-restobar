@@ -4,6 +4,9 @@ public class ProductoNoElaboradoDTO extends ProductoDTO {
 
     private int stock;
     
+    public ProductoNoElaboradoDTO(){
+        
+    }
     public ProductoNoElaboradoDTO(int stock) {
         this.stock = stock;
     }
