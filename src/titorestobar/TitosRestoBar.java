@@ -20,11 +20,7 @@ public class TitosRestoBar {
     public static void main(String[] args) {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                try {
-                    new FormPedido().setVisible(true);
-                } catch (SQLException ex) {
-                    Logger.getLogger(TitosRestoBar.class.getName()).log(Level.SEVERE, null, ex);
-                }
+                new FormIndex().setVisible(true);
             }
         });
     }
