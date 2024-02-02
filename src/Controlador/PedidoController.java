@@ -57,7 +57,7 @@ public class PedidoController {
         crearItem.setCostoTotal(cantidad, thisProduct);
         if(ItemsDAO.crear(crearItem))
         {
-            PedidoDAO.
+            
         }
         
     }

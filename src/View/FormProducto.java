@@ -1,89 +1,101 @@
 package View;
 
+import Controlador.PrecioController;
 import Controlador.ProductoController;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
-
 public class FormProducto extends javax.swing.JFrame {
-    
+
     ProductoController ProductoControladora;
-    
+    PrecioController PrecioControladora;
+
     public FormProducto() throws SQLException {
         ProductoControladora = ProductoController.GetInstance();
+        PrecioControladora = PrecioController.GetInstance();
         initComponents();
         verificarListaProductos();
     }
-    
-    public void verificarListaProductos() //Verifica si la lista de mesas tiene algo
+
+    public void verificarListaProductos() //Verifica si la lista de productos tiene algo
     {
-        if(!ProductoControladora.PedirListaProducto().isEmpty())
-        {
+        if (!ProductoControladora.PedirListaProducto().isEmpty()) {
             reiniciarTablaProducto();
         }
     }
+
     private boolean validarDatos() {
         {
             try {
-                if (txtNombreProducto.getText().equals("") || txtDescripcion.getText().equals("") || txtCosto.getText().equals("")) {
+                if (txtNombreProducto.getText().equals("") || txtDescripcion.getText().equals("") || txtCosto.getText().equals("") || txtPorcentajeAumento.getText().equals("")) {
                     throw new Exception();
                 }
             } catch (Exception e) {
-                 JOptionPane.showMessageDialog(null, "Nombre, Descripción y Costo no pueden estar vacios, Reingrese:");
+                JOptionPane.showMessageDialog(null, "Nombre, descripción, costo y aumento no pueden estar vacios. Reingrese:");
                 return false;
             }
-            try{
-                if(!chkBox.isSelected()){
+            try {
+                if (!chkBox.isSelected()) {
                     int spnValor = (int) spnCantidadProducto.getValue();
-                    if(spnValor < 1){
+                    if (spnValor < 1) {
                         throw new Exception();
                     }
                 }
-            } catch (Exception e){
-                JOptionPane.showMessageDialog(null, "El valor de la cantidad debe ser igual o mayor 1:" );
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(null, "El valor de la cantidad debe ser igual o mayor 1:");
                 return false;
             }
         }
         return true;
     }
+
     public void reiniciarTablaProducto() {
         DefaultTableModel modelo = new DefaultTableModel();
-  
+
         List<? extends Object> ListaProducto = ProductoControladora.PedirListaProducto();
+        List<? extends Object> listaPrecio = PrecioControladora.pedirListaPrecio();
+        List<? extends Object> listaProductosNoElaborados = ProductoControladora.pedirListaProductoNoElaborado();
+
         ArrayList<Object> nombrecolumna = new ArrayList<>();
         nombrecolumna.add("ID");
         nombrecolumna.add("Nombre");
         nombrecolumna.add("Descripcion");
         nombrecolumna.add("Costo");
+        nombrecolumna.add("Precio");
         nombrecolumna.add("Cantidad");
         nombrecolumna.forEach(columna -> {
             modelo.addColumn(columna);
         });
-        
-        for(int i = 0; i<ListaProducto.size();i++)
-        {
-             modelo.addRow(ProductoControladora.RequestTableRow(i));
+
+        for (int i = 0; i < ListaProducto.size(); i++) {
+            modelo.addRow(ProductoControladora.RequestTableRow(i));
+        }
+        for (int i = 0; i< listaPrecio.size(); i++){
+            modelo.addRow(PrecioControladora.filaTablaPrecio(i));
+        }
+        for (int i = 0; i< listaProductosNoElaborados.size(); i++){
+            modelo.addRow(ProductoControladora.filaTablaProductoNoElaborado(i));
         }
         datosTablaProducto.setModel(modelo);
         datosTablaProducto.setCellSelectionEnabled(false);
         datosTablaProducto.setRowSelectionAllowed(true);
     } //Datos de la Tabla, valores iniciales.
-    
-    private int seleccionarFila(){
+
+    private int seleccionarFila() {
         int i = datosTablaProducto.getSelectedRow();
-        
-        if(i > -1)
-        {
+
+        if (i > -1) {
             return i;
         }
         return -1;
     }
-    
+
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -156,13 +168,13 @@ public class FormProducto extends javax.swing.JFrame {
 
         datosTablaProducto.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null}
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null}
             },
             new String [] {
-                "ID", "Nombre", "Descripcion", "Costo", "Cantidad"
+                "ID", "Nombre", "Descripcion", "Costo", "Precio", "Cantidad"
             }
         ));
         datosTablaProducto.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -226,50 +238,51 @@ public class FormProducto extends javax.swing.JFrame {
                         .addComponent(btnVolver, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jLabel1)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 456, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 531, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(30, 76, Short.MAX_VALUE)
-                .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 348, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
-            .addGroup(layout.createSequentialGroup()
-                .addGap(19, 19, 19)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1)
-                    .addComponent(btnVolver))
-                .addGap(31, 31, 31)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jScrollPane2))
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 348, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(19, 19, 19)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel1)
+                            .addComponent(btnVolver))
+                        .addGap(31, 31, 31)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(jScrollPane2))
+                                .addGap(18, 18, 18)
+                                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(18, 18, 18)
-                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jScrollPane4))
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jScrollPane1)
-                    .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(chkBox)
-                    .addComponent(jLabel2))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(spnCantidadProducto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(53, 53, 53)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnGuardar)
-                    .addComponent(btnBorrar))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jScrollPane4))
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jScrollPane1)
+                            .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 21, Short.MAX_VALUE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(chkBox)
+                            .addComponent(jLabel2))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(spnCantidadProducto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(53, 53, 53)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(btnGuardar)
+                            .addComponent(btnBorrar))))
                 .addGap(16, 16, 16))
         );
 
@@ -277,44 +290,53 @@ public class FormProducto extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
-        if(evt.getSource() == btnGuardar){
-            if (validarDatos()== false) {
-            }else{
+        if (evt.getSource() == btnGuardar) {
+            if (validarDatos() == false) {
+            } else {
                 int filaSeleccionada = seleccionarFila();
                 String nombre = txtNombreProducto.getText();
                 String descripcion = txtDescripcion.getText();
                 float costo = Float.parseFloat(txtCosto.getText());
                 float porcentajeAumento = Float.parseFloat(txtPorcentajeAumento.getText());
-                
-                
-                if (filaSeleccionada >=0) {
-                    int id = (int) datosTablaProducto.getModel().getValueAt(filaSeleccionada, 0);
+
+                if (filaSeleccionada >= 0) {
+                    int idProducto = (int) datosTablaProducto.getModel().getValueAt(filaSeleccionada, 0);
                     if (!ProductoControladora.SiProductoExiste(nombre, descripcion, costo)) {
-                        if (ProductoControladora.ActualizarProducto(id, nombre, descripcion, costo)) {
-                           JOptionPane.showMessageDialog(null, "Producto Modificado");
-                       } 
-                   }else{
+                        if (ProductoControladora.ActualizarProducto(idProducto, nombre, descripcion, costo)) {
+                            JOptionPane.showMessageDialog(null, "Producto Modificado");
+                            PrecioControladora.crearActualizarPrecio(idProducto, costo, porcentajeAumento);
+                        }
+                    } else {
                         JOptionPane.showMessageDialog(null, "Ya existe un producto con el mismo nombre y descripción");
                     }
-                }else{
+                } else {
                     if (!ProductoControladora.SiProductoExiste(nombre, descripcion, costo)) {
-                        if(ProductoControladora.CrearProducto(nombre, descripcion, costo)){
-                        JOptionPane.showMessageDialog(null, "Producto Guardado");
-                        }
-                    }else{
-                       JOptionPane.showMessageDialog(null, "Ya existe un producto con el mismo nombre y descripción");
-                    }
-            }
-            this.reiniciarTablaProducto();
-        }
-    }//GEN-LAST:event_btnGuardarActionPerformed
+                        if (ProductoControladora.CrearProducto(nombre, descripcion, costo)) {
 
+                            // Crea un nuevo precio al guardar un nuevo producto
+                            int idProductoNuevo = ProductoControladora.obtenerUltimoIDProducto();
+                            PrecioControladora.crearActualizarPrecio(idProductoNuevo, costo, porcentajeAumento);
+                            if (!chkBox.isSelected()) {
+                                int stock = (int) spnCantidadProducto.getValue();
+                                ProductoControladora.crearProductoNoElaborado(idProductoNuevo, stock);
+                                JOptionPane.showMessageDialog(null, "Producto no Elaborado Guardado");
+                            } else {
+                                JOptionPane.showMessageDialog(null, "Producto Guardado");
+                            }
+                        }
+                    } else {
+                        JOptionPane.showMessageDialog(null, "Ya existe un producto con el mismo nombre y descripción");
+                    }
+                }
+                this.reiniciarTablaProducto();
+    }//GEN-LAST:event_btnGuardarActionPerformed
+        }
     }
-     
+
     private void chkBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkBoxActionPerformed
-        if(!evt.equals(chkBox.isSelected())){
+        if (!evt.equals(chkBox.isSelected())) {
             spnCantidadProducto.setEnabled(true);
-        }else{
+        } else {
             spnCantidadProducto.setEnabled(false);
         }
     }//GEN-LAST:event_chkBoxActionPerformed
@@ -326,10 +348,9 @@ public class FormProducto extends javax.swing.JFrame {
                 int id = (int) datosTablaProducto.getModel().getValueAt(filaSeleccionada, 0);
                 ProductoControladora.BorrarProducto(id);
                 reiniciarTablaProducto();
-            }
-            else{
+            } else {
                 JOptionPane.showMessageDialog(null, "Error al eliminar el producto");
-            }   
+            }
         }
     }//GEN-LAST:event_btnBorrarActionPerformed
 
@@ -340,7 +361,7 @@ public class FormProducto extends javax.swing.JFrame {
         Float costo = (Float) datosTablaProducto.getModel().getValueAt(i, 3);
         String costoStr = String.valueOf(costo);
 
-        txtNombreProducto.setText(nombre); 
+        txtNombreProducto.setText(nombre);
         txtDescripcion.setText(descripcion);
         txtCosto.setText(String.valueOf(costoStr));
     }//GEN-LAST:event_datosTablaProductoMouseClicked
@@ -353,7 +374,7 @@ public class FormProducto extends javax.swing.JFrame {
 
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
-        
+
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
          * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
@@ -414,31 +435,23 @@ public class FormProducto extends javax.swing.JFrame {
     private javax.swing.JTextPane txtPorcentajeAumento;
     // End of variables declaration//GEN-END:variables
 
-    
-    public void AgregarFila(int id) {
+    public void agregarFila(int id) {
         javax.swing.table.DefaultTableModel modelo = (javax.swing.table.DefaultTableModel) datosTablaProducto.getModel();
         modelo.addRow(ProductoControladora.RequestObjectIndex(id));
         datosTablaProducto.setModel(modelo);
     }
 
-    
-    public void EliminarFila(int id) {
+    public void eliminarFila(int id) {
         int columna = 0;
         String IDString = String.valueOf(id);
         javax.swing.table.DefaultTableModel modelo = (javax.swing.table.DefaultTableModel) datosTablaProducto.getModel();
         for (int i = 0; i < modelo.getRowCount(); i++) {
-            
             if (modelo.getValueAt(i, columna).toString().equals(IDString)) {
                 modelo.removeRow(i);
+                break;
             }
         }
         datosTablaProducto.setModel(modelo);
     }
-
-    public void ModificarFila(int id) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-
 
 }

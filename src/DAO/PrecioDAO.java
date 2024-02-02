@@ -7,6 +7,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -19,16 +20,40 @@ public class PrecioDAO implements IDAO {
     public PrecioDAO() throws SQLException {
         ConnectorController = ControladoraConnector.GetInstanceConnector();
     }
-
-    @Override
-    public Boolean crear(Object e) {
-        PrecioDTO pre = (PrecioDTO) e;
-        String sql = "insert into precios(id_precios, valor,fecha) value (?, ?, ?);";
+/*
+    String sql = "insert into precios(id_precios, valor, fecha, id_productos) value (?, ?, ?, ?);";
         try {
             PreparedStatement st = ConnectorController.getConnection().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             st.setString(1, String.valueOf(pre.getId()));
             st.setString(2, String.valueOf(pre.getValor()));
-            st.setString(3, String.valueOf(pre.getFecha()));
+            
+            //Formatear la fehca antes de guardarla
+            SimpleDateFormat fechaModificada = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            String fechaNueva = fechaModificada.format(pre.getFecha());
+            st.setString(3, fechaNueva);
+            
+            st.setString(4, String.valueOf(pre.getId()));
+            st.execute();
+            ResultSet rs = st.getGeneratedKeys();
+            if (rs.next()) {
+            rs.getInt(1);
+            }*/
+    @Override
+    public Boolean crear(Object e) {
+        PrecioDTO pre = (PrecioDTO) e;
+        String sql = "INSERT INTO precios(id_precios, valor, fecha, id_productos) VALUE (?, ?, ?, ?);";
+        try {
+            PreparedStatement st = ConnectorController.getConnection().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            st.setString(1, String.valueOf(pre.getId()));
+            st.setString(2, String.valueOf(pre.getValor()));
+            
+            //Formatear la fehca antes de guardarla
+            SimpleDateFormat fechaModificada = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            String fechaNueva = fechaModificada.format(pre.getFecha());
+            st.setString(3, fechaNueva);
+            
+            st.setString(4, String.valueOf(pre.getIdProducto()));
+            
             st.execute();
             ResultSet rs = st.getGeneratedKeys();
             if (rs.next()) {
@@ -46,7 +71,7 @@ public class PrecioDAO implements IDAO {
     @Override
     public List<PrecioDTO> mostrar() {
         List Salida = new ArrayList();
-        String sql = "select id_precios, valor, fecha;";
+        String sql = "SELECT id_precios, valor, fecha FROM precios;";
         try {
             PreparedStatement state = ConnectorController.getConnection().prepareStatement(sql);
             ResultSet result = state.executeQuery(sql);
@@ -65,7 +90,7 @@ public class PrecioDAO implements IDAO {
     @Override
     public Boolean actualizar(Object e) {
         PrecioDTO pre = (PrecioDTO) e;
-        String sql = "update Precios set valor = ?, fecha = ?,where id_precio = ?;";
+        String sql = "UPDATE precios SET valor = ?, fecha = ?, WHERE id_precios = ?;";
         try {
             PreparedStatement st = ConnectorController.getConnection().prepareStatement(sql);
             st.setString(1, String.valueOf(pre.getValor()));
@@ -83,7 +108,7 @@ public class PrecioDAO implements IDAO {
     @Override
     public void borrar(Object e) {
         PrecioDTO pre = (PrecioDTO) e;
-        String sql = "DELETE FROM Precios WHERE id_precios = ?";
+        String sql = "DELETE FROM precios WHERE id_precios = ?";
         try {
             PreparedStatement st = ConnectorController.getConnection().prepareStatement(sql);
             st.setInt(1, pre.getId());
@@ -159,28 +184,5 @@ public class PrecioDAO implements IDAO {
              ConnectorController.CloseConnection();
         }
         return ultimo;
-    }
-    
-    public int crearPrecio(Object e) {
-        PrecioDTO prec = (PrecioDTO) e;
-        int id = 0;
-        String sql = "insert into PrecioDTO(id_precios,valor,fecha, costo) value (?, ?, ?);";
-        try {
-            PreparedStatement st = ConnectorController.getConnection().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-            st.setString(1, String.valueOf(prec.getId()));
-            st.setString(2, String.valueOf(prec.getValor()));
-            st.setString(3, String.valueOf(prec.getFecha()));
-        
-            st.execute();
-            ResultSet rs = st.getGeneratedKeys();
-            if (rs.next()) {
-            id = rs.getInt(1);
-            }
-        } catch (SQLException ex) {
-            Logger.getLogger(PrecioDAO.class.getName()).log(Level.SEVERE, null, ex);
-        }finally {
-             ConnectorController.CloseConnection();
-        }
-        return id;
     }
 }
