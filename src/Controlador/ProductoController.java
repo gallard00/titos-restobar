@@ -51,12 +51,11 @@ public class ProductoController {
 
 //</editor-fold>
 //<editor-fold defaultstate="collapsed" desc=" CRUD de Productos no Elaborados ">
-    public Boolean crearProductoNoElaborado(int idProducto, int stock) {
-        ProductoNoElaboradoDTO productoNoElaborado = new ProductoNoElaboradoDTO(idProducto, stock);
-        return productoNoElaboradoDAO.crear(productoNoElaborado);
+  public Boolean crearProductoNoElaborado(int idProducto, int stock) {
+        return productoNoElaboradoDAO.crear(new ProductoNoElaboradoDTO(idProducto, stock));
     }
 
-    public List<ProductoNoElaboradoDTO> leerProductosNoElaborados() {
+    public List<ProductoNoElaboradoDTO> leerProductoNoElaborado() {
         return productoNoElaboradoDAO.mostrarProductosNoElaborados();
     }
 
@@ -92,7 +91,7 @@ public class ProductoController {
 //<editor-fold defaultstate="collapsed" desc=" Metodos de la clase ProductoNoElaborado ">
 
     public List<ProductoNoElaboradoDTO> pedirListaProductoNoElaborado() {
-        listaProductoNoElaborado = LeerProducto();
+        listaProductoNoElaborado = leerProductoNoElaborado();
         return listaProductoNoElaborado;
     }
 
@@ -104,6 +103,8 @@ public class ProductoController {
         }
         return null;
     }
+
+
 
 //</editor-fold>
 //<editor-fold defaultstate="collapsed" desc=" Metodos de la clase Producto ">
@@ -164,22 +165,22 @@ public class ProductoController {
 
 //<editor-fold defaultstate="collapsed" desc=" Datos de la Tabla de ProductosNoElaborados">
     public Object[] filaTablaProductoNoElaborado(int i) {
-        Object rowdata[] = new Object[1];
+        Object datosFila[] = new Object[1];
         ProductoNoElaboradoDTO productoNoElaborado = pedirListaProductoNoElaborado().get(i);
         if (productoNoElaborado != null) {
-            rowdata[0] = pedirListaProductoNoElaborado().get(i).getStock();
-            return rowdata;
+            datosFila[0] = pedirListaProductoNoElaborado().get(i).getStock();
+            return datosFila;
         }
         return null;
     }
 
     public Object[] indiceProductoNoElaborado(int id) {
-        Object rowdata[] = new Object[1];
+        Object datosFila[] = new Object[1];
         ProductoNoElaboradoDTO productoNoElaborado = obtenerProductoNoElaboradoLista(id);
         if (productoNoElaborado != null) {
-            rowdata[0] = productoNoElaborado.getStock();
+            datosFila[0] = productoNoElaborado.getStock();
         }
-        return rowdata;
+        return datosFila;
     }
 //</editor-fold>
 }

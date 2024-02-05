@@ -32,12 +32,9 @@ public class ProductoNoElaboradoDAO extends ProductoDAO {
         try (PreparedStatement st = ConnectorController.getConnection().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             st.setString(1, String.valueOf(prod.getStock()));
             st.setString(2, String.valueOf(prod.getIdProducto()));
-            ResultSet rs = st.getGeneratedKeys();
-            if (rs.next()) {
-                prod.setIdProducto(rs.getInt(1));
-            }
-            st.execute();
+            st.executeUpdate();
             return true;
+
         } catch (SQLException ex) {
             Logger.getLogger(ProductoNoElaboradoDAO.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
@@ -46,13 +43,12 @@ public class ProductoNoElaboradoDAO extends ProductoDAO {
         return false;
     }
 
-    
     public List<ProductoNoElaboradoDTO> mostrarProductosNoElaborados() {
         List<ProductoNoElaboradoDTO> listaProductosNoElaborados = new ArrayList<>();
         String sql = "SELECT id_productos_no_elaborados, stock FROM productos_no_elaborados;";
         try (PreparedStatement state = ConnectorController.getConnection().prepareStatement(sql); ResultSet result = state.executeQuery()) {
             while (result.next()) {
-                ProductoNoElaboradoDTO productoNoElaborado = new ProductoNoElaboradoDTO(result.getInt(1),result.getInt(2));
+                ProductoNoElaboradoDTO productoNoElaborado = new ProductoNoElaboradoDTO(result.getInt(1), result.getInt(2));
                 listaProductosNoElaborados.add(productoNoElaborado);
             }
         } catch (SQLException ex) {
@@ -63,7 +59,6 @@ public class ProductoNoElaboradoDAO extends ProductoDAO {
         return listaProductosNoElaborados;
     }
 
-    
     public Boolean actualizarProductoNoElaborado(Object e) {
         ProductoNoElaboradoDTO prod = (ProductoNoElaboradoDTO) e;
         String sql = "UPDATE productos_no_elaborados set stock = ? where id_productos_no_elaborados = ?;";
@@ -94,16 +89,16 @@ public class ProductoNoElaboradoDAO extends ProductoDAO {
             ConnectorController.CloseConnection();
         }
     }
-/*
+
     @Override
     public Object porId(int id) {
         ProductoNoElaboradoDTO productoNoElaborado = new ProductoNoElaboradoDTO();
-        String sql = "select id_productos, nombre, descripcion, costo from productos WHERE id_productos = ?";
+        String sql = "select id_productos_no_elaborados, stock WHERE id_productos_no_elaborados = ?";
         try (PreparedStatement st = ConnectorController.getConnection().prepareStatement(sql)) {
             st.setString(1, Integer.toString(id));
             ResultSet result = st.executeQuery();
             if (result.next()) {
-                ProductoNoElaboradoDTO clone = new ProductoNoElaboradoDTO(result.getInt(1), result.getString(2));
+                ProductoNoElaboradoDTO clone = new ProductoNoElaboradoDTO(result.getInt(1), result.getInt(2));
                 productoNoElaborado = clone;
             }
         } catch (SQLException ex) {
@@ -114,6 +109,5 @@ public class ProductoNoElaboradoDAO extends ProductoDAO {
         }
         return productoNoElaborado;
     }
-*/
-    
+
 }
