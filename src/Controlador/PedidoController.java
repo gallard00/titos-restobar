@@ -1,5 +1,3 @@
-package Controlador;
-
 import DAO.ItemsDAO;
 import DAO.PedidoDAO;
 import Modelo.ItemsDTO;
@@ -28,7 +26,7 @@ public class PedidoController {
         return Instance;
     }
      
-    //<editor-fold defaultstate="collapsed" desc=" CRUD "> 
+    //<editor-fold defaultstate="collapsed" desc=" CRUD PEDIDO "> 
      
     public void CrearPedido (Date fechaApertura, Date fechaCierre, float descuento, float costoTotal, List<ItemsDTO> producto) {
         PedidoDTO creped = new PedidoDTO(fechaApertura, fechaCierre, descuento, costoTotal, producto);
@@ -49,6 +47,9 @@ public class PedidoController {
         PedidoDAO.borrar(borrped);
         ListaPedido.remove(borrped);
     }
+    //</editor-fold>
+    
+    //<editor-fold defaultstate="collapsed" desc=" CRUD ITEMS "> 
     
     public void CrearItems (int cantidad, Object producto) {
         ProductoDTO thisProduct = (ProductoDTO) producto;
@@ -56,7 +57,7 @@ public class PedidoController {
         crearItem.setCostoTotal(cantidad, thisProduct);
         if(ItemsDAO.crear(crearItem))
         {
-            PedidoDAO.
+            
         }
         
     }

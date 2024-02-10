@@ -18,8 +18,11 @@ import java.util.logging.Logger;
 public class TitosRestoBar {
 
     public static void main(String[] args) {
-        java.awt.EventQueue.invokeLater(() -> {
-            new FormIndex().setVisible(true);
+
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                new FormIndex().setVisible(true);
+            }
         });
     }
     
