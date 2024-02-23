@@ -3,18 +3,21 @@ package Modelo;
 public class ProductoNoElaboradoDTO extends ProductoDTO {
 
     private int stock;
-    
-    public ProductoNoElaboradoDTO(){
-        
+    private int idProducto;
+
+    public ProductoNoElaboradoDTO() {
+
     }
+
     public ProductoNoElaboradoDTO(int stock) {
         this.stock = stock;
     }
-
+    
     public ProductoNoElaboradoDTO(int idProducto, int stock) {
         this.stock = stock;
+        this.idProducto = idProducto;
     }
-
+    
     public ProductoNoElaboradoDTO(int idProducto, String nombre, String descripcion, float costo, int stock) {
         super(idProducto, nombre, descripcion, costo);
         this.stock = stock;
@@ -31,6 +34,16 @@ public class ProductoNoElaboradoDTO extends ProductoDTO {
 
     public void setStock(int stock) {
         this.stock = stock;
+    }
+
+    @Override
+    public int getIdProducto() {
+        return idProducto;
+    }
+
+    @Override
+    public void setIdProducto(int idProducto) {
+        this.idProducto = idProducto;
     }
 
     @Override

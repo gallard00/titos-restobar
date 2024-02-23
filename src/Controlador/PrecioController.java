@@ -40,8 +40,8 @@ public class PrecioController {
         return PrecioDAO.actualizar(actualizarPrecio);
     }
 
-    public void BorrarPrecio(int id) {
-        PrecioDTO borrarPrecio = new PrecioDTO(id);
+    public void BorrarPrecio(int idProducto) {
+        PrecioDTO borrarPrecio = new PrecioDTO(idProducto);
         PrecioDAO.borrar(borrarPrecio);
         listaPrecio.remove(borrarPrecio);
     }

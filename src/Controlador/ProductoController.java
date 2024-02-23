@@ -2,16 +2,20 @@ package Controlador;
 
 import DAO.ProductoDAO;
 import DAO.ProductoNoElaboradoDAO;
+import Modelo.ProductoCompletoDTO;
 import Modelo.ProductoDTO;
 import Modelo.ProductoNoElaboradoDTO;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class ProductoController {
 
     private List<ProductoDTO> ListaProducto = new ArrayList<>();
     private List<ProductoNoElaboradoDTO> listaProductoNoElaborado = new ArrayList<>();
+    private List<ProductoCompletoDTO> listaProductoCompleto = new ArrayList<>();
     private static ProductoController Instance;
     private final ProductoDAO ProductoDAO;
     private final ProductoNoElaboradoDAO productoNoElaboradoDAO;
@@ -43,15 +47,19 @@ public class ProductoController {
         return ProductoDAO.actualizar(actualizarProducto);
     }
 
-    public void BorrarProducto(int id) {
-        ProductoDTO borrarProducto = new ProductoDTO(id);
-        ProductoDAO.borrar(borrarProducto);
-        ListaProducto.remove(borrarProducto);
+    public void BorrarProducto(int idProducto) throws SQLException {
+        ProductoDTO producto = obtenerProductoLista(idProducto);
+        if (producto instanceof ProductoNoElaboradoDTO) {
+            borrarProductoNoElaborado(idProducto);
+        }
+        ProductoDAO.borrar(producto);
+        ListaProducto.remove(producto);
+        PrecioController.GetInstance().BorrarPrecio(idProducto);
     }
 
 //</editor-fold>
 //<editor-fold defaultstate="collapsed" desc=" CRUD de Productos no Elaborados ">
-  public Boolean crearProductoNoElaborado(int idProducto, int stock) {
+    public Boolean crearProductoNoElaborado(int idProducto, int stock) {
         return productoNoElaboradoDAO.crear(new ProductoNoElaboradoDTO(idProducto, stock));
     }
 
@@ -84,7 +92,8 @@ public class ProductoController {
 
     public void borrarProductoNoElaborado(int idProducto) {
         ProductoNoElaboradoDTO productoNoElaborado = obtenerProductoNoElaboradoLista(idProducto);
-        productoNoElaboradoDAO.borrarProductoNoElaborado(idProducto);
+
+        productoNoElaboradoDAO.borrarProductoNoElaborado(productoNoElaborado);
         listaProductoNoElaborado.remove(productoNoElaborado);
     }
 //</editor-fold>   
@@ -104,9 +113,31 @@ public class ProductoController {
         return null;
     }
 
-
-
 //</editor-fold>
+    //<editor-fold defaultstate="collapsed" desc=" Metodos de la clase Producto Completo ">  
+    public List leerProducto() throws SQLException {
+        return ProductoDAO.obtenerProductosCompletos();
+    }
+
+    public List<ProductoCompletoDTO> pedirListaProductoCompleto() {
+        try {
+            listaProductoCompleto = leerProducto();
+        } catch (SQLException ex) {
+            Logger.getLogger(ProductoController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return listaProductoCompleto;
+    }
+
+    public ProductoCompletoDTO obtenerProductoCompletoLista(int idProducto) {
+        for (ProductoCompletoDTO productos : pedirListaProductoCompleto()) {
+            if (productos.getIdProducto() == idProducto) {
+                return productos;
+            }
+        }
+        return null;
+    }
+
+    //</editor-fold>
 //<editor-fold defaultstate="collapsed" desc=" Metodos de la clase Producto ">
     public List<ProductoDTO> PedirListaProducto() {
         ListaProducto = LeerProducto();
@@ -138,26 +169,33 @@ public class ProductoController {
 //<editor-fold defaultstate="collapsed" desc=" Datos de la Tabla de Producto">
     public Object[] RequestTableRow(int i)//solocitar fila de la tabla
     {
-        Object datosfila[] = new Object[4];//datos de fila
-        ProductoDTO producto = PedirListaProducto().get(i);
+        Object datosfila[] = new Object[6];//datos de fila
+        ProductoCompletoDTO producto = pedirListaProductoCompleto().get(i);
         if (producto != null) {
-            datosfila[0] = PedirListaProducto().get(i).getIdProducto();
-            datosfila[1] = PedirListaProducto().get(i).getNombre();
-            datosfila[2] = PedirListaProducto().get(i).getDescripcion();
-            datosfila[3] = PedirListaProducto().get(i).getCosto();
+            datosfila[0] = pedirListaProductoCompleto().get(i).getIdProducto();
+            datosfila[1] = pedirListaProductoCompleto().get(i).getNombre();
+            datosfila[2] = pedirListaProductoCompleto().get(i).getDescripcion();
+            datosfila[3] = pedirListaProductoCompleto().get(i).getCosto();
+            datosfila[4] = pedirListaProductoCompleto().get(i).getPrecio();
+            datosfila[5] = pedirListaProductoCompleto().get(i).getStock();
+
             return datosfila;
+
         }
         return null;
     }
 
     public Object[] RequestObjectIndex(int id) {
-        Object datosfila[] = new Object[4];
-        ProductoDTO producto = obtenerProductoLista(id);
+        Object datosfila[] = new Object[6];
+        ProductoCompletoDTO producto = obtenerProductoCompletoLista(id);
         if (producto != null) {
             datosfila[0] = producto.getIdProducto();
             datosfila[1] = producto.getNombre();
             datosfila[2] = producto.getDescripcion();
             datosfila[3] = producto.getCosto();
+            datosfila[4] = producto.getPrecio();
+            datosfila[5] = producto.getStock();
+
         }
         return datosfila;
     }
@@ -179,6 +217,8 @@ public class ProductoController {
         ProductoNoElaboradoDTO productoNoElaborado = obtenerProductoNoElaboradoLista(id);
         if (productoNoElaborado != null) {
             datosFila[0] = productoNoElaborado.getStock();
+        } else {
+            datosFila[0] = "N/A"; // Cantidad no disponible
         }
         return datosFila;
     }

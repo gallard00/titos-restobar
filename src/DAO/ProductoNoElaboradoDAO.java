@@ -77,7 +77,7 @@ public class ProductoNoElaboradoDAO extends ProductoDAO {
 
     public void borrarProductoNoElaborado(Object e) {
         ProductoNoElaboradoDTO prod = (ProductoNoElaboradoDTO) e;
-        String sql = "DELETE FROM productos_no_elaborados WHERE id_productos_no_elaborados = ?";
+        String sql = "DELETE FROM productos_no_elaborados WHERE id_productos = ?";
         try (PreparedStatement st = ConnectorController.getConnection().prepareStatement(sql)) {
             st.setInt(1, prod.getIdProducto());
             JOptionPane.showMessageDialog(null, "Se elimino un producto no elaborado con ID : " + prod.getIdProducto());
