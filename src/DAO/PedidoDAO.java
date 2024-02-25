@@ -4,7 +4,7 @@ package DAO;
 import ControladoraConnector.ControladoraConnector;
 import Modelo.ItemsDTO;
 import Modelo.PedidoDTO;
-import Modelo.ProductoDTO;
+import Modelo.ProductoCompletoDTO;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -58,7 +58,7 @@ public class PedidoDAO implements IDAO {
             PreparedStatement state = ConnectorController.getConnection().prepareStatement(sql);
             ResultSet result = state.executeQuery(sql);
             while (result.next()) {
-                ItemsDTO it = new ItemsDTO(result.getInt(1), result.getInt(2), result.getFloat(3), (ProductoDTO) result.getObject(4));
+                ItemsDTO it = new ItemsDTO(result.getInt(1), result.getInt(2), result.getFloat(3), (ProductoCompletoDTO) result.getObject(4));
                 PedidoDTO ped = new PedidoDTO(result.getInt(5), result.getDate(6), result.getDate(7), result.getFloat(8), result.getFloat(9), (List<ItemsDTO>) result.getObject(10));      
                 listaPedido.add(ped);
                 it = null;
@@ -120,7 +120,7 @@ public class PedidoDAO implements IDAO {
             ResultSet result = st.executeQuery();
             //JOptionPane.showMessageDialog(null,"En Execute Query");
             if (result.next()) {
-                ItemsDTO it = new ItemsDTO(result.getInt(1), result.getInt(2), result.getFloat(3), (ProductoDTO) result.getObject(4));
+                ItemsDTO it = new ItemsDTO(result.getInt(1), result.getInt(2), result.getFloat(3), (ProductoCompletoDTO) result.getObject(4));
                 PedidoDTO clone = new PedidoDTO(result.getInt(5), result.getDate(6), result.getDate(7), result.getFloat(8), result.getFloat(9), (List<ItemsDTO>) result.getObject(10));
                 ped = clone;
                 it = null;

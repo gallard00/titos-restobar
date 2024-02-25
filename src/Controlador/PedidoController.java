@@ -1,15 +1,17 @@
+package Controlador;
+
 import DAO.ItemsDAO;
 import DAO.PedidoDAO;
 import Modelo.ItemsDTO;
 import Modelo.PedidoDTO;
-import Modelo.ProductoDTO;
+import Modelo.ProductoCompletoDTO;
 import java.util.ArrayList;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
 
 public class PedidoController {
-    private  List<PedidoDTO> ListaPedido = new ArrayList<>();
+    private final  List<PedidoDTO> ListaPedido = new ArrayList<>();
     private static PedidoController Instance;
     private final PedidoDAO PedidoDAO;
     private final ItemsDAO ItemsDAO;
@@ -51,10 +53,10 @@ public class PedidoController {
     
     //<editor-fold defaultstate="collapsed" desc=" CRUD ITEMS "> 
     
-    public void CrearItems (int cantidad, Object producto) {
-        ProductoDTO thisProduct = (ProductoDTO) producto;
-        ItemsDTO crearItem = new ItemsDTO(cantidad, thisProduct);
-        crearItem.setCostoTotal(cantidad, thisProduct);
+    public void CrearItems (int cantidad, Object productos) {
+        ProductoCompletoDTO producto = (ProductoCompletoDTO) productos;
+        ItemsDTO crearItem = new ItemsDTO(cantidad, producto);
+        crearItem.setCostoTotal(cantidad, producto);
         if(ItemsDAO.crear(crearItem))
         {
             

@@ -4,6 +4,13 @@
  */
 package View;
 
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JFrame;
+
 /**
  *
  * @author Nahu
@@ -13,9 +20,19 @@ public class FormSelectedMesa extends javax.swing.JFrame {
     /**
      * Creates new form FormSelectedMesa
      */
+    private JFrame ventanaActual;
+    private String nombreMesa;
+    
     public FormSelectedMesa() {
         initComponents();
     }
+    public FormSelectedMesa(String nombreMesa) {
+        this.nombreMesa = nombreMesa;
+        initComponents();
+        // Configura el nombre de la mesa en el JLabel correspondiente
+        jLabel3.setText(nombreMesa);
+    }
+
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -30,7 +47,7 @@ public class FormSelectedMesa extends javax.swing.JFrame {
         jList1 = new javax.swing.JList<>();
         btnAgregarProducto = new javax.swing.JButton();
         btnCerrar = new javax.swing.JButton();
-        btnCancelar = new javax.swing.JButton();
+        btnBorrar = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
@@ -53,11 +70,16 @@ public class FormSelectedMesa extends javax.swing.JFrame {
         });
 
         btnCerrar.setText("CERRAR");
-
-        btnCancelar.setText("BORRAR");
-        btnCancelar.addActionListener(new java.awt.event.ActionListener() {
+        btnCerrar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnCancelarActionPerformed(evt);
+                btnCerrarActionPerformed(evt);
+            }
+        });
+
+        btnBorrar.setText("BORRAR");
+        btnBorrar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBorrarActionPerformed(evt);
             }
         });
 
@@ -71,6 +93,11 @@ public class FormSelectedMesa extends javax.swing.JFrame {
         jLabel3.setText("jLabel3");
 
         btnVolver.setText("VOLVER");
+        btnVolver.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnVolverActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -83,14 +110,13 @@ public class FormSelectedMesa extends javax.swing.JFrame {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                             .addComponent(btnAgregarProducto, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(btnCerrar, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(btnCancelar, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(btnBorrar, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addGap(59, 59, 59)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 317, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(layout.createSequentialGroup()
                                 .addGap(57, 57, 57)
-                                .addComponent(jLabel1)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 86, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                .addComponent(jLabel1))))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(34, 34, 34)
                         .addComponent(btnVolver)
@@ -118,7 +144,7 @@ public class FormSelectedMesa extends javax.swing.JFrame {
                         .addGap(18, 18, 18)
                         .addComponent(btnCerrar)
                         .addGap(18, 18, 18)
-                        .addComponent(btnCancelar)))
+                        .addComponent(btnBorrar)))
                 .addContainerGap(22, Short.MAX_VALUE))
         );
 
@@ -126,12 +152,42 @@ public class FormSelectedMesa extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnAgregarProductoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarProductoActionPerformed
-        // TODO add your handling code here:
+        try {
+            if (ventanaActual != null) {
+                ventanaActual.dispose();
+            }
+            FormPedido formPedido = new FormPedido();
+            formPedido.addWindowListener(new WindowAdapter() {
+                @Override
+                public void windowClosed(WindowEvent e) {
+                    setVisible(true); 
+                }
+            });
+            formPedido.setVisible(true);
+            ventanaActual = formPedido;
+            this.setVisible(false);
+        } catch (SQLException ex) {
+            Logger.getLogger(FormSelectedMesa.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_btnAgregarProductoActionPerformed
 
-    private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
+    private void btnBorrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBorrarActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_btnCancelarActionPerformed
+    }//GEN-LAST:event_btnBorrarActionPerformed
+
+    private void btnVolverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVolverActionPerformed
+        try {
+            this.setVisible(false);
+            FormMesa formMesa = new FormMesa();
+            formMesa.setVisible(true);
+        } catch (SQLException ex) {
+            Logger.getLogger(FormSelectedMesa.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_btnVolverActionPerformed
+
+    private void btnCerrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCerrarActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnCerrarActionPerformed
 
     /**
      * @param args the command line arguments
@@ -161,16 +217,14 @@ public class FormSelectedMesa extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new FormSelectedMesa().setVisible(true);
-            }
+        java.awt.EventQueue.invokeLater(() -> {
+            new FormSelectedMesa().setVisible(true);
         });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAgregarProducto;
-    private javax.swing.JButton btnCancelar;
+    private javax.swing.JButton btnBorrar;
     private javax.swing.JButton btnCerrar;
     private javax.swing.JButton btnVolver;
     private javax.swing.JLabel jLabel1;

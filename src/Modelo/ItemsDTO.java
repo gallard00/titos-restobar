@@ -8,7 +8,7 @@ public class ItemsDTO {
     private int id;
     private int cantidad;
     private float costoTotal;
-    private ProductoDTO producto;
+    private ProductoCompletoDTO producto;
 
     public ItemsDTO() {
     }
@@ -17,7 +17,7 @@ public class ItemsDTO {
         this.id = id;
     }
 
-    public ItemsDTO(int cantidad, float costoTotal, ProductoDTO producto) {
+    public ItemsDTO(int cantidad, float costoTotal, ProductoCompletoDTO producto) {
         this.cantidad = cantidad;
         this.costoTotal = costoTotal;
         this.producto = producto;
@@ -29,12 +29,12 @@ public class ItemsDTO {
         this.costoTotal = costoTotal;
     }
     
-    public ItemsDTO(int cantidad, ProductoDTO producto) {
+    public ItemsDTO(int cantidad, ProductoCompletoDTO producto) {
         this.cantidad = cantidad;
         this.producto = producto;
     }
 
-    public ItemsDTO(int id, int cantidad, float costoTotal, ProductoDTO producto) {
+    public ItemsDTO(int id, int cantidad, float costoTotal, ProductoCompletoDTO producto) {
         this.id = id;
         this.cantidad = cantidad;
         this.costoTotal = costoTotal;
@@ -62,15 +62,18 @@ public class ItemsDTO {
         return costoTotal;
     }
 
-    public void setCostoTotal(int cantidad, ProductoDTO producto) {
-        this.costoTotal = producto.getPrecio().getValor();
+    public void setCostoTotal(int cantidad, ProductoCompletoDTO producto) {
+        
+        if (producto != null) {
+            this.costoTotal = producto.getPrecio() * cantidad;
+        }
     }
 
-    public ProductoDTO getProducto() {
+    public ProductoCompletoDTO getProducto() {
         return producto;
     }
 
-    public void setProducto(ProductoDTO producto) {
+    public void setProducto(ProductoCompletoDTO producto) {
         this.producto = producto;
     }
 

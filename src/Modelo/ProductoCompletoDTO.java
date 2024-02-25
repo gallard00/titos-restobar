@@ -35,6 +35,13 @@ public class ProductoCompletoDTO {
         this.precio = precio;
         this.stock = stock;
     }
+    public ProductoCompletoDTO(String nombre, String descripcion, float precio, int stock) {
+
+        this.nombre = nombre;
+        this.descripcion = descripcion;
+        this.precio = precio;
+        this.stock = stock;
+    }
 
     // Getters y setters
     public int getIdProducto() {

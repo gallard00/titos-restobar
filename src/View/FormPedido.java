@@ -2,19 +2,26 @@ package View;
 
 import Controlador.PedidoController;
 import Controlador.ProductoController;
+import Modelo.ProductoCompletoDTO;
+import Modelo.ProductoDTO;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
 
 public class FormPedido extends javax.swing.JFrame {
-    
+
     PedidoController controladoraPedido;
     ProductoController controladoraProducto;
     Object productoSeleccionado;
-    
+
     /**
      * Creates new form FormPedido
+     *
+     * @throws java.sql.SQLException
      */
     public FormPedido() throws SQLException {
         controladoraPedido = PedidoController.GetInstance();
@@ -22,14 +29,19 @@ public class FormPedido extends javax.swing.JFrame {
         initComponents();
         PoblarComboBoxProductos();
     }
-    
-    public void PoblarComboBoxProductos(){
-        DefaultComboBoxModel combobox = new DefaultComboBoxModel();
-        for(Object producto : controladoraProducto.LeerProducto())
-        {
-            combobox.addElement(producto);
+
+    public void PoblarComboBoxProductos() {
+        List<ProductoCompletoDTO> listaProductos = controladoraProducto.pedirListaProductoCompleto();
+        List<String> nombresYDescripciones = new ArrayList<>();
+
+        for (ProductoCompletoDTO producto : listaProductos) {
+            // Concatenamos el nombre y la descripción para mostrar en el ComboBox
+            String nombreYDescripcion = producto.getNombre() + " - " + producto.getDescripcion();
+            nombresYDescripciones.add(nombreYDescripcion);
         }
-        jComboBoxProductos.setModel(combobox);
+
+        DefaultComboBoxModel<String> comboBoxModel = new DefaultComboBoxModel<>(nombresYDescripciones.toArray(new String[0]));
+        jComboBoxProductos.setModel(comboBoxModel);
     }
 
     /**
@@ -44,7 +56,7 @@ public class FormPedido extends javax.swing.JFrame {
         btnAsignarItemAPedido = new javax.swing.JButton();
         btnBorrar = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
-        jComboBoxProductos = new javax.swing.JComboBox<>();
+        jComboBoxProductos = new javax.swing.JComboBox();
         jSpinnerCantidad = new javax.swing.JSpinner();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
@@ -72,7 +84,6 @@ public class FormPedido extends javax.swing.JFrame {
         jLabel1.setFont(new java.awt.Font("Segoe UI", 0, 36)); // NOI18N
         jLabel1.setText("PEDIDO ");
 
-        jComboBoxProductos.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
         jComboBoxProductos.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
                 jComboBoxProductosItemStateChanged(evt);
@@ -93,8 +104,33 @@ public class FormPedido extends javax.swing.JFrame {
             new String [] {
                 "Nombre", "Descripcion", "Precio", "Cantidad"
             }
-        ));
+        ) {
+            Class[] types = new Class [] {
+                java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Integer.class
+            };
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
         jScrollPane2.setViewportView(datosTablaPedido);
+        if (datosTablaPedido.getColumnModel().getColumnCount() > 0) {
+            datosTablaPedido.getColumnModel().getColumn(0).setResizable(false);
+            datosTablaPedido.getColumnModel().getColumn(0).setPreferredWidth(110);
+            datosTablaPedido.getColumnModel().getColumn(1).setResizable(false);
+            datosTablaPedido.getColumnModel().getColumn(1).setPreferredWidth(110);
+            datosTablaPedido.getColumnModel().getColumn(2).setResizable(false);
+            datosTablaPedido.getColumnModel().getColumn(2).setPreferredWidth(60);
+            datosTablaPedido.getColumnModel().getColumn(3).setResizable(false);
+            datosTablaPedido.getColumnModel().getColumn(3).setPreferredWidth(40);
+        }
 
         btnLimpiar.setText("LIMPIAR");
         btnLimpiar.addActionListener(new java.awt.event.ActionListener() {
@@ -104,64 +140,79 @@ public class FormPedido extends javax.swing.JFrame {
         });
 
         btnVolver.setText("VOLVER");
+        btnVolver.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnVolverActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap(26, Short.MAX_VALUE)
+                .addGap(26, 26, 26)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 61, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel3))
-                        .addGap(18, 18, 18)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(btnVolver)
+                                .addGap(179, 179, 179)
+                                .addComponent(jLabel1))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel3)
+                                .addGap(13, 13, 13)
+                                .addComponent(jSpinnerCantidad, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 61, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(jComboBoxProductos, javax.swing.GroupLayout.PREFERRED_SIZE, 345, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jComboBoxProductos, javax.swing.GroupLayout.PREFERRED_SIZE, 157, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jSpinnerCantidad, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addComponent(btnVolver)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(btnAsignarItemAPedido, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                .addComponent(btnLimpiar, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(btnBorrar, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(89, 89, 89)))
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 456, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel1))
-                .addGap(42, 42, 42))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(73, 73, 73)
+                                .addComponent(btnLimpiar, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(27, 27, 27)
+                                .addComponent(btnAsignarItemAPedido, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(btnBorrar, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 9, Short.MAX_VALUE))))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(67, 67, 67)
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 517, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap(16, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnVolver))
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(32, 32, 32)
+                        .addGap(39, 39, 39)
+                        .addComponent(btnVolver)
+                        .addGap(26, 26, 26))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(btnAsignarItemAPedido)
+                            .addComponent(btnBorrar))
+                        .addGap(18, 18, 18)
+                        .addComponent(btnLimpiar))
+                    .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jComboBoxProductos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(18, 18, 18)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jSpinnerCantidad, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addGap(25, 25, 25)
-                        .addComponent(btnAsignarItemAPedido)
-                        .addGap(18, 18, 18)
-                        .addComponent(btnBorrar)
-                        .addGap(18, 18, 18)
-                        .addComponent(btnLimpiar)
-                        .addGap(122, 122, 122))
-                    .addGroup(layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 348, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                            .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 348, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18))
         );
 
         pack();
@@ -169,26 +220,40 @@ public class FormPedido extends javax.swing.JFrame {
 
     private void btnAsignarItemAPedidoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAsignarItemAPedidoActionPerformed
         try {
-            controladoraPedido.CrearItems((int)jSpinnerCantidad.getValue(), productoSeleccionado);
-        }catch(Exception e) {
-            
+            controladoraPedido.CrearItems((int) jSpinnerCantidad.getValue(), productoSeleccionado);
+        } catch (Exception e) {
+
         }
     }//GEN-LAST:event_btnAsignarItemAPedidoActionPerformed
 
     private void btnBorrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBorrarActionPerformed
-        
+
     }//GEN-LAST:event_btnBorrarActionPerformed
 
     private void jComboBoxProductosItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jComboBoxProductosItemStateChanged
-        if(jComboBoxProductos.getSelectedItem() != null)
-        {
-            productoSeleccionado = jComboBoxProductos.getSelectedItem();
+        if (evt.getStateChange() == java.awt.event.ItemEvent.SELECTED) {
+            // Obtener el índice seleccionado
+            int indiceSeleccionado = jComboBoxProductos.getSelectedIndex();
+            List<ProductoCompletoDTO> listaProductos = controladoraProducto.pedirListaProductoCompleto();
+            // Obtener el ProductoDTO correspondiente a partir del índice
+            ProductoCompletoDTO productoSeleccionado = listaProductos.get(indiceSeleccionado);
+
+            // Aquí puedes mostrar los detalles del producto en otros componentes de la interfaz de usuario
+            // Por ejemplo:
+            // jTextFieldNombre.setText(productoSeleccionado.getNombre());
+            // jTextFieldDescripcion.setText(productoSeleccionado.getDescripcion());
         }
     }//GEN-LAST:event_jComboBoxProductosItemStateChanged
 
     private void btnLimpiarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLimpiarActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_btnLimpiarActionPerformed
+
+    private void btnVolverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVolverActionPerformed
+        this.setVisible(false);
+        FormSelectedMesa formSelectedMesa = new FormSelectedMesa();
+        formSelectedMesa.setVisible(true);
+    }//GEN-LAST:event_btnVolverActionPerformed
 
     /**
      * @param args the command line arguments
@@ -218,13 +283,11 @@ public class FormPedido extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                try {
-                    new FormPedido().setVisible(true);
-                } catch (SQLException ex) {
-                    Logger.getLogger(FormPedido.class.getName()).log(Level.SEVERE, null, ex);
-                }
+        java.awt.EventQueue.invokeLater(() -> {
+            try {
+                new FormPedido().setVisible(true);
+            } catch (SQLException ex) {
+                Logger.getLogger(FormPedido.class.getName()).log(Level.SEVERE, null, ex);
             }
         });
     }
@@ -235,7 +298,7 @@ public class FormPedido extends javax.swing.JFrame {
     private javax.swing.JButton btnLimpiar;
     private javax.swing.JButton btnVolver;
     private javax.swing.JTable datosTablaPedido;
-    private javax.swing.JComboBox<String> jComboBoxProductos;
+    private javax.swing.JComboBox jComboBoxProductos;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;

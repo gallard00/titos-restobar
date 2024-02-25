@@ -30,7 +30,7 @@
                       <Group type="103" groupAlignment="1" max="-2" attributes="0">
                           <Component id="btnAgregarProducto" alignment="0" max="32767" attributes="0"/>
                           <Component id="btnCerrar" alignment="0" max="32767" attributes="0"/>
-                          <Component id="btnCancelar" alignment="0" max="32767" attributes="0"/>
+                          <Component id="btnBorrar" alignment="0" max="32767" attributes="0"/>
                       </Group>
                       <EmptySpace min="-2" pref="59" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
@@ -38,7 +38,6 @@
                           <Group type="102" alignment="0" attributes="0">
                               <EmptySpace min="-2" pref="57" max="-2" attributes="0"/>
                               <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace pref="86" max="-2" attributes="0"/>
                           </Group>
                       </Group>
                   </Group>
@@ -74,7 +73,7 @@
                       <EmptySpace type="separate" max="-2" attributes="0"/>
                       <Component id="btnCerrar" min="-2" max="-2" attributes="0"/>
                       <EmptySpace type="separate" max="-2" attributes="0"/>
-                      <Component id="btnCancelar" min="-2" max="-2" attributes="0"/>
+                      <Component id="btnBorrar" min="-2" max="-2" attributes="0"/>
                   </Group>
               </Group>
               <EmptySpace pref="22" max="32767" attributes="0"/>
@@ -120,13 +119,16 @@
       <Properties>
         <Property name="text" type="java.lang.String" value="CERRAR"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnCerrarActionPerformed"/>
+      </Events>
     </Component>
-    <Component class="javax.swing.JButton" name="btnCancelar">
+    <Component class="javax.swing.JButton" name="btnBorrar">
       <Properties>
         <Property name="text" type="java.lang.String" value="BORRAR"/>
       </Properties>
       <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnCancelarActionPerformed"/>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnBorrarActionPerformed"/>
       </Events>
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel1">
@@ -157,6 +159,9 @@
       <Properties>
         <Property name="text" type="java.lang.String" value="VOLVER"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnVolverActionPerformed"/>
+      </Events>
     </Component>
   </SubComponents>
 </Form>
