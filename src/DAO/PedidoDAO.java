@@ -1,4 +1,3 @@
-
 package DAO;
 
 import ControladoraConnector.ControladoraConnector;
@@ -15,11 +14,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 
-
 public class PedidoDAO implements IDAO {
-    
+
     ControladoraConnector ConnectorController;
-    
+
     public PedidoDAO() throws SQLException {
         ConnectorController = ControladoraConnector.GetInstanceConnector();
     }
@@ -39,35 +37,49 @@ public class PedidoDAO implements IDAO {
             st.execute();
             ResultSet rs = st.getGeneratedKeys();
             if (rs.next()) {
-            rs.getInt(1);
+                rs.getInt(1);
             }
             return true;
         } catch (SQLException ex) {
             Logger.getLogger(PedidoDAO.class.getName()).log(Level.SEVERE, null, ex);
-        }finally {
-             ConnectorController.CloseConnection();
+        } finally {
+            ConnectorController.CloseConnection();
         }
         return false;
     }
 
-    @Override
+   @Override
     public List<PedidoDTO> mostrar() {
-        List listaPedido = new ArrayList();
-        String sql = "select it.id_items, it.cantidad, it.costo_total, it.id_productos, ped.id_pedidos, ped.fecha_apertura, ped.fecha_cierre, ped.descuento, ped.costo_total, ped.id_items FROM pedidos as ped INNER JOIN items as it on it.id_items = ped.id_items;";
+        List<PedidoDTO> listaPedido = new ArrayList<>();
+        String sql = "SELECT ped.id_pedidos, ped.fecha_apertura, ped.fecha_cierre, ped.descuento, ped.costo_total, ped.estado_pedido, ped.id_items, ped.id_mesas,it.id_items, it.cantidad, it.costo_total, it.id_productos,  "
+                + "FROM pedidos AS ped INNER JOIN items AS it ON it.id_items = ped.id_items;";
         try {
             PreparedStatement state = ConnectorController.getConnection().prepareStatement(sql);
             ResultSet result = state.executeQuery(sql);
             while (result.next()) {
-                ItemsDTO it = new ItemsDTO(result.getInt(1), result.getInt(2), result.getFloat(3), (ProductoCompletoDTO) result.getObject(4));
-                PedidoDTO ped = new PedidoDTO(result.getInt(5), result.getDate(6), result.getDate(7), result.getFloat(8), result.getFloat(9), (List<ItemsDTO>) result.getObject(10));      
+                ItemsDTO it = new ItemsDTO(
+                        result.getInt(1),
+                        result.getInt(2),
+                        result.getFloat(3),
+                        (ProductoCompletoDTO) result.getObject(4));
+                PedidoDTO ped = new PedidoDTO(
+                        result.getInt(5),
+                        result.getDate(6),
+                        result.getDate(7),
+                        result.getFloat(8),
+                        result.getFloat(9),
+                        it,
+                        estadoPedido,
+                        result.getInt(11),
+                        result.getInt(12));
                 listaPedido.add(ped);
                 it = null;
                 ped = null;
             }
         } catch (SQLException ex) {
             Logger.getLogger(PedidoDAO.class.getName()).log(Level.SEVERE, null, ex);
-        }finally {
-             ConnectorController.CloseConnection();
+        } finally {
+            ConnectorController.CloseConnection();
         }
         return listaPedido;
     }
@@ -87,8 +99,8 @@ public class PedidoDAO implements IDAO {
             return true;
         } catch (SQLException ex) {
             Logger.getLogger(PedidoDAO.class.getName()).log(Level.SEVERE, null, ex);
-        }finally {
-             ConnectorController.CloseConnection();
+        } finally {
+            ConnectorController.CloseConnection();
         }
         return false;
     }
@@ -105,8 +117,8 @@ public class PedidoDAO implements IDAO {
         } catch (SQLException ex) {
             Logger.getLogger(PedidoDAO.class.getName()).log(Level.SEVERE, null, ex);
             JOptionPane.showMessageDialog(null, "Error, la base de datos no guardo los cambios");
-        }finally {
-             ConnectorController.CloseConnection();
+        } finally {
+            ConnectorController.CloseConnection();
         }
     }
 
@@ -128,8 +140,8 @@ public class PedidoDAO implements IDAO {
         } catch (SQLException ex) {
             Logger.getLogger(PedidoDAO.class.getName()).log(Level.SEVERE, null, ex);
             JOptionPane.showMessageDialog(null, "Error en seleccion de ID");
-        }finally {
-             ConnectorController.CloseConnection();
+        } finally {
+            ConnectorController.CloseConnection();
         }
         return ped;
     }

@@ -4,6 +4,7 @@
  */
 package View;
 
+import Controlador.PedidoController;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.sql.SQLException;
@@ -17,22 +18,21 @@ import javax.swing.JFrame;
  */
 public class FormSelectedMesa extends javax.swing.JFrame {
 
-    /**
-     * Creates new form FormSelectedMesa
-     */
+    
     private JFrame ventanaActual;
     private String nombreMesa;
-    
-    public FormSelectedMesa() {
+    PedidoController pedidoControladora;
+    public FormSelectedMesa() throws SQLException {
+        pedidoControladora = PedidoController.GetInstance();
         initComponents();
     }
+
     public FormSelectedMesa(String nombreMesa) {
         this.nombreMesa = nombreMesa;
         initComponents();
         // Configura el nombre de la mesa en el JLabel correspondiente
         jLabel3.setText(nombreMesa);
     }
-
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -52,6 +52,11 @@ public class FormSelectedMesa extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         btnVolver = new javax.swing.JButton();
+        jLabel4 = new javax.swing.JLabel();
+        txtDescuento = new javax.swing.JTextField();
+        jLabel5 = new javax.swing.JLabel();
+        jLabel6 = new javax.swing.JLabel();
+        txtPrecioFinal = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -99,6 +104,15 @@ public class FormSelectedMesa extends javax.swing.JFrame {
             }
         });
 
+        jLabel4.setText("DESCUENTO:");
+
+        jLabel5.setText("TOTAL:");
+
+        jLabel6.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+
+        txtPrecioFinal.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        txtPrecioFinal.setText("$$$");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -106,25 +120,36 @@ public class FormSelectedMesa extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(97, 97, 97)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(btnAgregarProducto, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(btnCerrar, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(btnBorrar, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addGap(59, 59, 59)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 317, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(57, 57, 57)
-                                .addComponent(jLabel1))))
-                    .addGroup(layout.createSequentialGroup()
                         .addGap(34, 34, 34)
                         .addComponent(btnVolver)
                         .addGap(57, 57, 57)
                         .addComponent(jLabel2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel3)))
-                .addContainerGap(31, Short.MAX_VALUE))
+                        .addComponent(jLabel3))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel4)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(txtDescuento)
+                                    .addComponent(btnAgregarProducto, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(btnCerrar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(btnBorrar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel5)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(txtPrecioFinal, javax.swing.GroupLayout.DEFAULT_SIZE, 83, Short.MAX_VALUE))))
+                        .addGap(59, 59, 59)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 317, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(57, 57, 57)
+                                .addComponent(jLabel1)))))
+                .addContainerGap(18, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -144,7 +169,17 @@ public class FormSelectedMesa extends javax.swing.JFrame {
                         .addGap(18, 18, 18)
                         .addComponent(btnCerrar)
                         .addGap(18, 18, 18)
-                        .addComponent(btnBorrar)))
+                        .addComponent(btnBorrar)
+                        .addGap(20, 20, 20)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel4)
+                            .addComponent(txtDescuento, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel5)
+                            .addComponent(txtPrecioFinal))
+                        .addGap(8, 8, 8)
+                        .addComponent(jLabel6)))
                 .addContainerGap(22, Short.MAX_VALUE))
         );
 
@@ -152,22 +187,11 @@ public class FormSelectedMesa extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnAgregarProductoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarProductoActionPerformed
-        try {
-            if (ventanaActual != null) {
-                ventanaActual.dispose();
-            }
-            FormPedido formPedido = new FormPedido();
-            formPedido.addWindowListener(new WindowAdapter() {
-                @Override
-                public void windowClosed(WindowEvent e) {
-                    setVisible(true); 
-                }
-            });
-            formPedido.setVisible(true);
-            ventanaActual = formPedido;
-            this.setVisible(false);
-        } catch (SQLException ex) {
-            Logger.getLogger(FormSelectedMesa.class.getName()).log(Level.SEVERE, null, ex);
+        
+        if (pedidoControladora.existePedidoActivo(idMesa)) {
+            ingresarFormPedido();
+        } else {
+            ingresarFormPedido();
         }
     }//GEN-LAST:event_btnAgregarProductoActionPerformed
 
@@ -186,8 +210,44 @@ public class FormSelectedMesa extends javax.swing.JFrame {
     }//GEN-LAST:event_btnVolverActionPerformed
 
     private void btnCerrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCerrarActionPerformed
-        // TODO add your handling code here:
+        // Calcular el total del pedido con descuento
+    float total = 0; // Debes calcular el total de los ítems
+    float descuentoPorcentaje = Float.parseFloat(txtDescuento.getText());
+    float totalDescuento = calcularDescuento(total, descuentoPorcentaje);
+    
+    // Cambiar el estado del pedido a cerrado
+    // Mostrar un mensaje de confirmación con el total del pedido
+    // Redirigir a la vista principal o realizar otras acciones necesarias
     }//GEN-LAST:event_btnCerrarActionPerformed
+
+
+
+    private float calcularDescuento(float total, float descuentoPorcentaje) {
+        float descuento = total * (descuentoPorcentaje / 100);
+        return total - descuento;
+    }
+
+    private void ingresarFormPedido() {
+
+        try {
+            if (ventanaActual != null) {
+                ventanaActual.dispose();
+            }
+            FormPedido formPedido = new FormPedido();
+            formPedido.addWindowListener(new WindowAdapter() {
+                @Override
+                public void windowClosed(WindowEvent e) {
+                    setVisible(true);
+                }
+            });
+            formPedido.setVisible(true);
+            ventanaActual = formPedido;
+            this.setVisible(false);
+        } catch (SQLException ex) {
+            Logger.getLogger(FormSelectedMesa.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+    }
 
     /**
      * @param args the command line arguments
@@ -230,7 +290,12 @@ public class FormSelectedMesa extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
     private javax.swing.JList<String> jList1;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTextField txtDescuento;
+    private javax.swing.JLabel txtPrecioFinal;
     // End of variables declaration//GEN-END:variables
 }

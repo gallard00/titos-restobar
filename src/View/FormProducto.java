@@ -58,9 +58,9 @@ public class FormProducto extends javax.swing.JFrame {
 
     public void reiniciarTablaProducto() {
         DefaultTableModel modeloProducto = new DefaultTableModel();
-        
+
         List<? extends Object> ListaProducto = ProductoControladora.pedirListaProductoCompleto();
-        
+
         modeloProducto.addColumn("Id");
         modeloProducto.addColumn("Nombre");
         modeloProducto.addColumn("Descripcion");
@@ -300,16 +300,20 @@ public class FormProducto extends javax.swing.JFrame {
                 String descripcion = txtDescripcion.getText();
                 float costo = Float.parseFloat(txtCosto.getText());
                 float porcentajeAumento = Float.parseFloat(txtPorcentajeAumento.getText());
+                int stock = (int) spnCantidadProducto.getValue();
 
                 if (filaSeleccionada >= 0) {
                     int idProducto = (int) datosTablaProducto.getModel().getValueAt(filaSeleccionada, 0);
+                    int cantidadActual = (int) datosTablaProducto.getModel().getValueAt(filaSeleccionada, 5);
+                    int nuevaCantidad = cantidadActual + stock;
+                    ProductoControladora.actualizarProductoNoElaborado(idProducto, nuevaCantidad);
                     if (!ProductoControladora.SiProductoExiste(nombre, descripcion, costo)) {
                         if (ProductoControladora.ActualizarProducto(idProducto, nombre, descripcion, costo)) {
                             JOptionPane.showMessageDialog(null, "Producto Modificado");
                             PrecioControladora.crearActualizarPrecio(idProducto, costo, porcentajeAumento);
                         }
                     } else {
-                        JOptionPane.showMessageDialog(null, "Ya existe un producto con el mismo nombre y descripción");
+                        JOptionPane.showMessageDialog(null, "Ya existe un producto con el mismo nombre y descripción. Solo se sumo la nueva cantidad. ");
                     }
                 } else {
                     if (!ProductoControladora.SiProductoExiste(nombre, descripcion, costo)) {
@@ -319,7 +323,6 @@ public class FormProducto extends javax.swing.JFrame {
                             int idProductoNuevo = ProductoControladora.obtenerUltimoIDProducto();
                             PrecioControladora.crearActualizarPrecio(idProductoNuevo, costo, porcentajeAumento);
                             if (!chkBox.isSelected()) {
-                                int stock = (int) spnCantidadProducto.getValue();
                                 ProductoControladora.crearProductoNoElaborado(idProductoNuevo, stock);
                                 JOptionPane.showMessageDialog(null, "Producto no Elaborado Guardado");
                             } else {
@@ -349,7 +352,12 @@ public class FormProducto extends javax.swing.JFrame {
             if (filaSeleccionada >= 0) {
                 int idProducto = (int) datosTablaProducto.getModel().getValueAt(filaSeleccionada, 0);
                 try {
-                    ProductoControladora.BorrarProducto(idProducto);
+                    int stock = (int) datosTablaProducto.getModel().getValueAt(filaSeleccionada, 5);
+                    if (stock > 0) {
+                        ProductoControladora.borrarProductoNoElaborado(idProducto);
+                    } else {
+                        ProductoControladora.BorrarProducto(idProducto);
+                    }
                 } catch (SQLException ex) {
                     Logger.getLogger(FormProducto.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -362,15 +370,14 @@ public class FormProducto extends javax.swing.JFrame {
 
     private void datosTablaProductoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_datosTablaProductoMouseClicked
         int i = datosTablaProducto.getSelectedRow();
-    String nombre = (String) datosTablaProducto.getModel().getValueAt(i, 1); // La primera columna es 0
-    String descripcion = (String) datosTablaProducto.getModel().getValueAt(i, 2); // La segunda columna es 1
-    Float costo = (Float) datosTablaProducto.getModel().getValueAt(i, 3); // La tercera columna es 2
-
-    txtNombreProducto.setText(nombre);
-    txtDescripcion.setText(descripcion);
-    txtCosto.setText(String.valueOf(costo)); // Método 1
-    // o
-    // txtCosto.setText("" + costo); // Método 2
+        String nombre = (String) datosTablaProducto.getModel().getValueAt(i, 1);
+        String descripcion = (String) datosTablaProducto.getModel().getValueAt(i, 2);
+        Float costo = (Float) datosTablaProducto.getModel().getValueAt(i, 3);
+        txtNombreProducto.setText(nombre);
+        txtDescripcion.setText(descripcion);
+        txtCosto.setText(String.valueOf(costo));
+        // o
+        // txtCosto.setText("" + costo); // Método 2
     }//GEN-LAST:event_datosTablaProductoMouseClicked
 
     private void btnVolverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVolverActionPerformed

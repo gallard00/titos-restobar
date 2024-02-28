@@ -48,13 +48,25 @@ public class ProductoController {
     }
 
     public void BorrarProducto(int idProducto) throws SQLException {
-        ProductoDTO producto = obtenerProductoLista(idProducto);
-        if (producto instanceof ProductoNoElaboradoDTO) {
-            borrarProductoNoElaborado(idProducto);
+        // Obtener el producto completo
+        ProductoCompletoDTO productoCompleto = obtenerProductoCompletoLista(idProducto);
+
+        // Verificar si se encontró el producto completo
+        if (productoCompleto != null) {
+            // Borrar el producto
+            ProductoDTO producto = new ProductoDTO(productoCompleto.getIdProducto(), productoCompleto.getNombre(), productoCompleto.getDescripcion(), productoCompleto.getCosto());
+            ProductoDAO.borrar(producto);
+
+            // Remover el producto completo de la lista
+            listaProductoCompleto.remove(productoCompleto);
+
+            // Borrar el precio relacionado con el producto
+            PrecioController.GetInstance().BorrarPrecio(idProducto);
+        } else {
+            // Manejar el caso en el que no se encuentra el producto
+            System.out.println("El producto con ID " + idProducto + " no se encontró.");
         }
-        ProductoDAO.borrar(producto);
-        ListaProducto.remove(producto);
-        PrecioController.GetInstance().BorrarPrecio(idProducto);
+
     }
 
 //</editor-fold>
@@ -67,34 +79,31 @@ public class ProductoController {
         return productoNoElaboradoDAO.mostrarProductosNoElaborados();
     }
 
-    /*
+    
     public Boolean actualizarProductoNoElaborado(int idProducto, int stock) {
         ProductoNoElaboradoDTO actualizarProducto = new ProductoNoElaboradoDTO(idProducto, stock);
         return productoNoElaboradoDAO.actualizarProductoNoElaborado(actualizarProducto);
     }
-     */
-    public Boolean actualizarProductoNoElaborado(int idProducto, int stock) {
-        // Aquí obtienes el ProductoDTO que deseas convertir
-        ProductoDTO productoDTO = obtenerProductoLista(idProducto);
+    public void borrarProductoNoElaborado(int idProducto) throws SQLException {
+        ProductoCompletoDTO productoCompleto = obtenerProductoCompletoLista(idProducto);
 
-        // Verifica que el ProductoDTO obtenido no sea nulo
-        if (productoDTO != null) {
-            // Creas un ProductoNoElaboradoDTO a partir del ProductoDTO y el stock proporcionado
-            ProductoNoElaboradoDTO productoNoElaboradoDTO = new ProductoNoElaboradoDTO(productoDTO.getIdProducto(), productoDTO.getNombre(), productoDTO.getDescripcion(), productoDTO.getCosto(), stock);
+        // Verificar si se encontró el producto completo
+        if (productoCompleto != null) {
+            // Borrar el producto
+            ProductoNoElaboradoDTO producto = new ProductoNoElaboradoDTO(productoCompleto.getIdProducto(), productoCompleto.getStock());
 
-            // Luego puedes realizar las operaciones necesarias con productoNoElaboradoDTO
-            return productoNoElaboradoDAO.actualizarProductoNoElaborado(productoNoElaboradoDTO);
+            productoNoElaboradoDAO.borrarProductoNoElaborado(producto);
+
+            // Remover el producto completo de la lista
+            listaProductoCompleto.remove(productoCompleto);
+
+            // Borrar el precio relacionado con el producto
+            BorrarProducto(idProducto);
         } else {
-            // Manejo de caso en el que no se encuentra el ProductoDTO con el ID proporcionado
-            return false;
+            // Manejar el caso en el que no se encuentra el producto
+            System.out.println("El producto con ID " + idProducto + " no se encontró.");
         }
-    }
 
-    public void borrarProductoNoElaborado(int idProducto) {
-        ProductoNoElaboradoDTO productoNoElaborado = obtenerProductoNoElaboradoLista(idProducto);
-
-        productoNoElaboradoDAO.borrarProductoNoElaborado(productoNoElaborado);
-        listaProductoNoElaborado.remove(productoNoElaborado);
     }
 //</editor-fold>   
 //<editor-fold defaultstate="collapsed" desc=" Metodos de la clase ProductoNoElaborado ">

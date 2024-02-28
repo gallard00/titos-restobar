@@ -9,6 +9,7 @@ public class ItemsDTO {
     private int cantidad;
     private float costoTotal;
     private ProductoCompletoDTO producto;
+    private int idPedido;
 
     public ItemsDTO() {
     }
@@ -34,11 +35,12 @@ public class ItemsDTO {
         this.producto = producto;
     }
 
-    public ItemsDTO(int id, int cantidad, float costoTotal, ProductoCompletoDTO producto) {
+    public ItemsDTO(int id, int cantidad, float costoTotal, ProductoCompletoDTO producto, int idPedido) {
         this.id = id;
         this.cantidad = cantidad;
         this.costoTotal = costoTotal;
         this.producto = producto;
+        this.idPedido = idPedido;
     }
 
     public int getId() {
@@ -75,6 +77,13 @@ public class ItemsDTO {
 
     public void setProducto(ProductoCompletoDTO producto) {
         this.producto = producto;
+    }
+    public int getIdPedido() {
+        return id;
+    }
+
+    public void setIdPedido(int idPedido) {
+        this.idPedido = idPedido;
     }
 
     @Override
