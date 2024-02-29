@@ -4,6 +4,7 @@ import DAO.ItemsDAO;
 import DAO.PedidoDAO;
 import Modelo.ItemsDTO;
 import Modelo.PedidoDTO;
+import Modelo.PedidoDTO.EstadoPedido;
 import Modelo.ProductoCompletoDTO;
 import java.util.ArrayList;
 import java.sql.SQLException;
@@ -30,9 +31,9 @@ public class PedidoController {
     }
 
     //<editor-fold defaultstate="collapsed" desc=" CRUD PEDIDO "> 
-    public void CrearPedido(Date fechaApertura, Date fechaCierre, float descuento, float costoTotal, List<ItemsDTO> producto) {
-        //PedidoDTO creped = new PedidoDTO(fechaApertura, fechaCierre, descuento, costoTotal, producto, estadoPedido, idMesa);
-        //PedidoDAO.crear(creped);
+    public void crearPedido(Date fechaApertura, Date fechaCierre, float descuento, float costoTotal, EstadoPedido estadoPedido, int idMesa) {
+        PedidoDTO pedido = new PedidoDTO(fechaApertura, fechaCierre, descuento, costoTotal, estadoPedido, idMesa);
+        PedidoDAO.crear(pedido);
     }
 
     public List ListaPedido() {
@@ -51,10 +52,10 @@ public class PedidoController {
     }
 
     //</editor-fold>
-    private boolean existePedidoActivo(int idMesa) {
+    public boolean existePedidoActivo(int idMesa) {
         List<PedidoDTO> pedidos = PedidoDAO.mostrar(); // Obtener la lista de todos los pedidos
         for (PedidoDTO pedido : pedidos) {
-            if (pedido.getIdMesa() == idMesa && pedido.getEstadoPedido().equals("Activo")) {
+            if (pedido.getIdMesa() == idMesa && pedido.getEstadoPedido() == EstadoPedido.ACTIVO) {
                 return true; // Si encuentra un pedido activo para la mesa, retorna true
             }
         }

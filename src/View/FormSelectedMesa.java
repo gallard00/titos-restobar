@@ -5,12 +5,15 @@
 package View;
 
 import Controlador.PedidoController;
+import Modelo.PedidoDTO.EstadoPedido;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.sql.SQLException;
+import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -18,17 +21,21 @@ import javax.swing.JFrame;
  */
 public class FormSelectedMesa extends javax.swing.JFrame {
 
-    
     private JFrame ventanaActual;
     private String nombreMesa;
+    private int idMesa;
+
     PedidoController pedidoControladora;
+
     public FormSelectedMesa() throws SQLException {
         pedidoControladora = PedidoController.GetInstance();
         initComponents();
     }
 
-    public FormSelectedMesa(String nombreMesa) {
+    public FormSelectedMesa(String nombreMesa, int idMesa) throws SQLException {
+        pedidoControladora = PedidoController.GetInstance();
         this.nombreMesa = nombreMesa;
+        this.idMesa = idMesa;
         initComponents();
         // Configura el nombre de la mesa en el JLabel correspondiente
         jLabel3.setText(nombreMesa);
@@ -187,10 +194,20 @@ public class FormSelectedMesa extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnAgregarProductoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarProductoActionPerformed
-        
+
         if (pedidoControladora.existePedidoActivo(idMesa)) {
+            JOptionPane.showMessageDialog(this, "¡Ya hay un pedido activo para esta mesa!");
             ingresarFormPedido();
         } else {
+            // Crear un nuevo pedido con fecha de apertura actual y otros valores predeterminados
+            Date fechaApertura = new Date(); // Obtener la fecha actual como fecha de apertura
+            Date fechaCierre = null; // La fecha de cierre se establecerá cuando se cierre el pedido
+            float descuento = 0; // Descuento inicialmente 0
+            float costoTotal = 0; // Costo total inicialmente 0
+            EstadoPedido estadoPedido = EstadoPedido.ACTIVO; // Estado del pedido inicialmente activo
+
+            // Llamar al método para crear el pedido
+            pedidoControladora.crearPedido(fechaApertura, fechaCierre, descuento, costoTotal, estadoPedido, idMesa);
             ingresarFormPedido();
         }
     }//GEN-LAST:event_btnAgregarProductoActionPerformed
@@ -211,16 +228,14 @@ public class FormSelectedMesa extends javax.swing.JFrame {
 
     private void btnCerrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCerrarActionPerformed
         // Calcular el total del pedido con descuento
-    float total = 0; // Debes calcular el total de los ítems
-    float descuentoPorcentaje = Float.parseFloat(txtDescuento.getText());
-    float totalDescuento = calcularDescuento(total, descuentoPorcentaje);
-    
-    // Cambiar el estado del pedido a cerrado
-    // Mostrar un mensaje de confirmación con el total del pedido
-    // Redirigir a la vista principal o realizar otras acciones necesarias
+        float total = 0; // Debes calcular el total de los ítems
+        float descuentoPorcentaje = Float.parseFloat(txtDescuento.getText());
+        float totalDescuento = calcularDescuento(total, descuentoPorcentaje);
+
+        // Cambiar el estado del pedido a cerrado
+        // Mostrar un mensaje de confirmación con el total del pedido
+        // Redirigir a la vista principal o realizar otras acciones necesarias
     }//GEN-LAST:event_btnCerrarActionPerformed
-
-
 
     private float calcularDescuento(float total, float descuentoPorcentaje) {
         float descuento = total * (descuentoPorcentaje / 100);
@@ -233,7 +248,7 @@ public class FormSelectedMesa extends javax.swing.JFrame {
             if (ventanaActual != null) {
                 ventanaActual.dispose();
             }
-            FormPedido formPedido = new FormPedido();
+            FormPedido formPedido = new FormPedido(nombreMesa, idMesa);
             formPedido.addWindowListener(new WindowAdapter() {
                 @Override
                 public void windowClosed(WindowEvent e) {
@@ -265,20 +280,20 @@ public class FormSelectedMesa extends javax.swing.JFrame {
                     break;
                 }
             }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(FormSelectedMesa.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(FormSelectedMesa.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(FormSelectedMesa.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(FormSelectedMesa.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
 
+        //</editor-fold>
+
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(() -> {
-            new FormSelectedMesa().setVisible(true);
+            try {
+                new FormSelectedMesa().setVisible(true);
+            } catch (SQLException ex) {
+                Logger.getLogger(FormSelectedMesa.class.getName()).log(Level.SEVERE, null, ex);
+            }
         });
     }
 

@@ -17,13 +17,22 @@ public class FormPedido extends javax.swing.JFrame {
     PedidoController controladoraPedido;
     ProductoController controladoraProducto;
     Object productoSeleccionado;
-
+    private String nombreMesa;
+    private int idMesa;
     /**
      * Creates new form FormPedido
      *
      * @throws java.sql.SQLException
      */
     public FormPedido() throws SQLException {
+        controladoraPedido = PedidoController.GetInstance();
+        controladoraProducto = ProductoController.GetInstance();
+        initComponents();
+    }
+    
+    public FormPedido(String nombreMesa, int idMesa) throws SQLException {
+        this.nombreMesa = nombreMesa;
+        this.idMesa = idMesa;
         controladoraPedido = PedidoController.GetInstance();
         controladoraProducto = ProductoController.GetInstance();
         initComponents();
@@ -250,8 +259,13 @@ public class FormPedido extends javax.swing.JFrame {
     }//GEN-LAST:event_btnLimpiarActionPerformed
 
     private void btnVolverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVolverActionPerformed
-        this.setVisible(false);
-        FormSelectedMesa formSelectedMesa = new FormSelectedMesa();
+        this.setVisible(false); 
+        FormSelectedMesa formSelectedMesa = null;
+        try {
+            formSelectedMesa = new FormSelectedMesa(nombreMesa, idMesa);
+        } catch (SQLException ex) {
+            Logger.getLogger(FormPedido.class.getName()).log(Level.SEVERE, null, ex);
+        }
         formSelectedMesa.setVisible(true);
     }//GEN-LAST:event_btnVolverActionPerformed
 
@@ -271,15 +285,11 @@ public class FormPedido extends javax.swing.JFrame {
                     break;
                 }
             }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(FormPedido.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(FormPedido.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(FormPedido.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(FormPedido.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
+        
         //</editor-fold>
 
         /* Create and display the form */

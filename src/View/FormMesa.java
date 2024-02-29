@@ -220,6 +220,7 @@ public class FormMesa extends javax.swing.JFrame {
             } else {
                 int filaSeleccionada = seleccionarFila();
                 String nombre = txtNombreMesa.getText();
+                
 
                 if (filaSeleccionada >= 0) {
                     int id = (int) datosTablaMesa.getModel().getValueAt(filaSeleccionada, 0);
@@ -282,14 +283,20 @@ public class FormMesa extends javax.swing.JFrame {
         
         int filaSeleccionada = seleccionarFila();
         if (filaSeleccionada != -1) {
-            String nombre = (String) datosTablaMesa.getModel().getValueAt(filaSeleccionada, 1);
+            String nombreMesa = (String) datosTablaMesa.getModel().getValueAt(filaSeleccionada, 1);
+            int idMesa = (int) datosTablaMesa.getModel().getValueAt(filaSeleccionada, 0);
             // Comprueba si hay una ventana previa abierta y la cierra si es el caso
             if (ventanaActual != null) {
                 ventanaActual.dispose();// Cierra el formulario actual si existe uno abierto
             }
            
             // Crea una nueva instancia de FormMesa
-            FormSelectedMesa formSelectedMesa = new FormSelectedMesa(nombre);
+            FormSelectedMesa formSelectedMesa = null;
+            try {
+                formSelectedMesa = new FormSelectedMesa(nombreMesa, idMesa);
+            } catch (SQLException ex) {
+                Logger.getLogger(FormMesa.class.getName()).log(Level.SEVERE, null, ex);
+            }
             // Añade un WindowListener para la ventana formMesa
             formSelectedMesa.addWindowListener(new WindowAdapter() {
                 @Override
