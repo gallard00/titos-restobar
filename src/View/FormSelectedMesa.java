@@ -4,17 +4,41 @@
  */
 package View;
 
+import Controlador.PedidoController;
+import Modelo.PedidoDTO.EstadoPedido;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.sql.SQLException;
+import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author Nahu
  */
 public class FormSelectedMesa extends javax.swing.JFrame {
 
-    /**
-     * Creates new form FormSelectedMesa
-     */
-    public FormSelectedMesa() {
+    private JFrame ventanaActual;
+    private String nombreMesa;
+    private int idMesa;
+
+    PedidoController pedidoControladora;
+
+    public FormSelectedMesa() throws SQLException {
+        pedidoControladora = PedidoController.GetInstance();
         initComponents();
+    }
+
+    public FormSelectedMesa(String nombreMesa, int idMesa) throws SQLException {
+        pedidoControladora = PedidoController.GetInstance();
+        this.nombreMesa = nombreMesa;
+        this.idMesa = idMesa;
+        initComponents();
+        // Configura el nombre de la mesa en el JLabel correspondiente
+        jLabel3.setText(nombreMesa);
     }
 
     /**
@@ -30,11 +54,16 @@ public class FormSelectedMesa extends javax.swing.JFrame {
         jList1 = new javax.swing.JList<>();
         btnAgregarProducto = new javax.swing.JButton();
         btnCerrar = new javax.swing.JButton();
-        btnCancelar = new javax.swing.JButton();
+        btnBorrar = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         btnVolver = new javax.swing.JButton();
+        jLabel4 = new javax.swing.JLabel();
+        txtDescuento = new javax.swing.JTextField();
+        jLabel5 = new javax.swing.JLabel();
+        jLabel6 = new javax.swing.JLabel();
+        txtPrecioFinal = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -53,11 +82,16 @@ public class FormSelectedMesa extends javax.swing.JFrame {
         });
 
         btnCerrar.setText("CERRAR");
-
-        btnCancelar.setText("BORRAR");
-        btnCancelar.addActionListener(new java.awt.event.ActionListener() {
+        btnCerrar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnCancelarActionPerformed(evt);
+                btnCerrarActionPerformed(evt);
+            }
+        });
+
+        btnBorrar.setText("BORRAR");
+        btnBorrar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBorrarActionPerformed(evt);
             }
         });
 
@@ -71,6 +105,20 @@ public class FormSelectedMesa extends javax.swing.JFrame {
         jLabel3.setText("jLabel3");
 
         btnVolver.setText("VOLVER");
+        btnVolver.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnVolverActionPerformed(evt);
+            }
+        });
+
+        jLabel4.setText("DESCUENTO:");
+
+        jLabel5.setText("TOTAL:");
+
+        jLabel6.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+
+        txtPrecioFinal.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        txtPrecioFinal.setText("$$$");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -79,26 +127,36 @@ public class FormSelectedMesa extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(97, 97, 97)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(btnAgregarProducto, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(btnCerrar, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(btnCancelar, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addGap(59, 59, 59)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 317, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(57, 57, 57)
-                                .addComponent(jLabel1)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 86, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                    .addGroup(layout.createSequentialGroup()
                         .addGap(34, 34, 34)
                         .addComponent(btnVolver)
                         .addGap(57, 57, 57)
                         .addComponent(jLabel2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel3)))
-                .addContainerGap(31, Short.MAX_VALUE))
+                        .addComponent(jLabel3))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel4)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(txtDescuento)
+                                    .addComponent(btnAgregarProducto, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(btnCerrar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(btnBorrar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel5)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(txtPrecioFinal, javax.swing.GroupLayout.DEFAULT_SIZE, 83, Short.MAX_VALUE))))
+                        .addGap(59, 59, 59)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 317, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(57, 57, 57)
+                                .addComponent(jLabel1)))))
+                .addContainerGap(18, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -118,7 +176,17 @@ public class FormSelectedMesa extends javax.swing.JFrame {
                         .addGap(18, 18, 18)
                         .addComponent(btnCerrar)
                         .addGap(18, 18, 18)
-                        .addComponent(btnCancelar)))
+                        .addComponent(btnBorrar)
+                        .addGap(20, 20, 20)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel4)
+                            .addComponent(txtDescuento, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel5)
+                            .addComponent(txtPrecioFinal))
+                        .addGap(8, 8, 8)
+                        .addComponent(jLabel6)))
                 .addContainerGap(22, Short.MAX_VALUE))
         );
 
@@ -126,12 +194,75 @@ public class FormSelectedMesa extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnAgregarProductoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarProductoActionPerformed
-        // TODO add your handling code here:
+
+        if (pedidoControladora.existePedidoActivo(idMesa)) {
+            JOptionPane.showMessageDialog(this, "¡Ya hay un pedido activo para esta mesa!");
+            ingresarFormPedido();
+        } else {
+            // Crear un nuevo pedido con fecha de apertura actual y otros valores predeterminados
+            Date fechaApertura = new Date(); // Obtener la fecha actual como fecha de apertura
+            Date fechaCierre = null; // La fecha de cierre se establecerá cuando se cierre el pedido
+            float descuento = 0; // Descuento inicialmente 0
+            float costoTotal = 0; // Costo total inicialmente 0
+            EstadoPedido estadoPedido = EstadoPedido.ACTIVO; // Estado del pedido inicialmente activo
+
+            // Llamar al método para crear el pedido
+            pedidoControladora.crearPedido(fechaApertura, fechaCierre, descuento, costoTotal, estadoPedido, idMesa);
+            ingresarFormPedido();
+        }
     }//GEN-LAST:event_btnAgregarProductoActionPerformed
 
-    private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
+    private void btnBorrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBorrarActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_btnCancelarActionPerformed
+    }//GEN-LAST:event_btnBorrarActionPerformed
+
+    private void btnVolverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVolverActionPerformed
+        try {
+            this.setVisible(false);
+            FormMesa formMesa = new FormMesa();
+            formMesa.setVisible(true);
+        } catch (SQLException ex) {
+            Logger.getLogger(FormSelectedMesa.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_btnVolverActionPerformed
+
+    private void btnCerrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCerrarActionPerformed
+        // Calcular el total del pedido con descuento
+        float total = 0; // Debes calcular el total de los ítems
+        float descuentoPorcentaje = Float.parseFloat(txtDescuento.getText());
+        float totalDescuento = calcularDescuento(total, descuentoPorcentaje);
+
+        // Cambiar el estado del pedido a cerrado
+        // Mostrar un mensaje de confirmación con el total del pedido
+        // Redirigir a la vista principal o realizar otras acciones necesarias
+    }//GEN-LAST:event_btnCerrarActionPerformed
+
+    private float calcularDescuento(float total, float descuentoPorcentaje) {
+        float descuento = total * (descuentoPorcentaje / 100);
+        return total - descuento;
+    }
+
+    private void ingresarFormPedido() {
+
+        try {
+            if (ventanaActual != null) {
+                ventanaActual.dispose();
+            }
+            FormPedido formPedido = new FormPedido(nombreMesa, idMesa);
+            formPedido.addWindowListener(new WindowAdapter() {
+                @Override
+                public void windowClosed(WindowEvent e) {
+                    setVisible(true);
+                }
+            });
+            formPedido.setVisible(true);
+            ventanaActual = formPedido;
+            this.setVisible(false);
+        } catch (SQLException ex) {
+            Logger.getLogger(FormSelectedMesa.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+    }
 
     /**
      * @param args the command line arguments
@@ -149,34 +280,37 @@ public class FormSelectedMesa extends javax.swing.JFrame {
                     break;
                 }
             }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(FormSelectedMesa.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(FormSelectedMesa.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(FormSelectedMesa.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(FormSelectedMesa.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
 
+        //</editor-fold>
+
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
+        java.awt.EventQueue.invokeLater(() -> {
+            try {
                 new FormSelectedMesa().setVisible(true);
+            } catch (SQLException ex) {
+                Logger.getLogger(FormSelectedMesa.class.getName()).log(Level.SEVERE, null, ex);
             }
         });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAgregarProducto;
-    private javax.swing.JButton btnCancelar;
+    private javax.swing.JButton btnBorrar;
     private javax.swing.JButton btnCerrar;
     private javax.swing.JButton btnVolver;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
     private javax.swing.JList<String> jList1;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTextField txtDescuento;
+    private javax.swing.JLabel txtPrecioFinal;
     // End of variables declaration//GEN-END:variables
 }

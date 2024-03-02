@@ -5,13 +5,19 @@ import java.util.List;
 import java.util.Objects;
 
 public class PedidoDTO {
-    
+
+    public enum EstadoPedido {
+        ACTIVO, CERRADO
+    }
+
     private int id;
     private Date fechaApertura;
     private Date fechaCierre;
     private float descuento;
     private float costoTotal;
     private List<ItemsDTO> producto;
+    private EstadoPedido estadoPedido;
+    private int idMesa;
 
     public PedidoDTO() {
     }
@@ -20,21 +26,42 @@ public class PedidoDTO {
         this.id = id;
     }
 
-    public PedidoDTO(Date fechaApertura, Date fechaCierre, float descuento, float costoTotal, List<ItemsDTO> producto) {
+    public PedidoDTO(Date fechaApertura, Date fechaCierre, float descuento, float costoTotal, EstadoPedido estadoPedido, int idMesa) {
+        this.fechaApertura = fechaApertura;
+        this.fechaCierre = fechaCierre;
+        this.descuento = descuento;
+        this.costoTotal = costoTotal;
+        this.estadoPedido = estadoPedido;
+        this.idMesa = idMesa;
+    }
+
+    public PedidoDTO(Date fechaApertura, Date fechaCierre, float descuento, float costoTotal, List<ItemsDTO> producto, EstadoPedido estadoPedido) {
         this.fechaApertura = fechaApertura;
         this.fechaCierre = fechaCierre;
         this.descuento = descuento;
         this.costoTotal = costoTotal;
         this.producto = producto;
+        this.estadoPedido = estadoPedido;
     }
-
-    public PedidoDTO(int id, Date fechaApertura, Date fechaCierre, float descuento, float costoTotal, List<ItemsDTO> producto) {
+ public PedidoDTO(int id, Date fechaApertura, Date fechaCierre, float descuento, float costoTotal, int idMesa, EstadoPedido estadoPedido) {
+        this.id = id;
+        this.fechaApertura = fechaApertura;
+        this.fechaCierre = fechaCierre;
+        this.descuento = descuento;
+        this.costoTotal = costoTotal;
+        this.idMesa = idMesa;
+        this.estadoPedido = estadoPedido;
+        
+    }
+    public PedidoDTO(int id, Date fechaApertura, Date fechaCierre, float descuento, float costoTotal, List<ItemsDTO> producto, EstadoPedido estadoPedido, int idMesa) {
         this.id = id;
         this.fechaApertura = fechaApertura;
         this.fechaCierre = fechaCierre;
         this.descuento = descuento;
         this.costoTotal = costoTotal;
         this.producto = producto;
+        this.estadoPedido = estadoPedido;
+        this.idMesa = idMesa;
     }
 
     public int getId() {
@@ -85,6 +112,22 @@ public class PedidoDTO {
         this.descuento = descuento;
     }
 
+    public EstadoPedido getEstadoPedido() {
+        return estadoPedido;
+    }
+
+    public void setEstadoPedido(EstadoPedido estadoPedido) {
+        this.estadoPedido = estadoPedido;
+    }
+
+    public int getIdMesa() {
+        return this.idMesa;
+    }
+
+    public void setIdMesas(int idMesa) {
+        this.idMesa = idMesa;
+    }
+
     @Override
     public int hashCode() {
         int hash = 7;
@@ -131,6 +174,5 @@ public class PedidoDTO {
     public String toString() {
         return "PedidoDTO{" + "id=" + id + ", fechaApertura=" + fechaApertura + ", fechaCierre=" + fechaCierre + ", descuento=" + descuento + ", costoTotal=" + costoTotal + ", producto=" + producto + '}';
     }
-    
-    
+
 }

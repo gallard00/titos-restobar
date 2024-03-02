@@ -61,7 +61,7 @@ public class ProductoNoElaboradoDAO extends ProductoDAO {
 
     public Boolean actualizarProductoNoElaborado(Object e) {
         ProductoNoElaboradoDTO prod = (ProductoNoElaboradoDTO) e;
-        String sql = "UPDATE productos_no_elaborados set stock = ? where id_productos_no_elaborados = ?;";
+        String sql = "UPDATE productos_no_elaborados set stock = ? WHERE id_productos = ?;";
         try (PreparedStatement st = ConnectorController.getConnection().prepareStatement(sql)) {
             st.setString(1, String.valueOf(prod.getStock()));
             st.setString(2, String.valueOf(prod.getIdProducto()));
@@ -77,10 +77,9 @@ public class ProductoNoElaboradoDAO extends ProductoDAO {
 
     public void borrarProductoNoElaborado(Object e) {
         ProductoNoElaboradoDTO prod = (ProductoNoElaboradoDTO) e;
-        String sql = "DELETE FROM productos_no_elaborados WHERE id_productos_no_elaborados = ?";
+        String sql = "DELETE FROM productos_no_elaborados WHERE id_productos = ?";
         try (PreparedStatement st = ConnectorController.getConnection().prepareStatement(sql)) {
             st.setInt(1, prod.getIdProducto());
-            JOptionPane.showMessageDialog(null, "Se elimino un producto no elaborado con ID : " + prod.getIdProducto());
             st.executeUpdate();
         } catch (SQLException ex) {
             Logger.getLogger(ProductoNoElaboradoDAO.class.getName()).log(Level.SEVERE, null, ex);
@@ -90,12 +89,13 @@ public class ProductoNoElaboradoDAO extends ProductoDAO {
         }
     }
 
-    @Override
-    public Object porId(int id) {
+    
+    public Object porId(int idProducto, int stock) {
         ProductoNoElaboradoDTO productoNoElaborado = new ProductoNoElaboradoDTO();
-        String sql = "select id_productos_no_elaborados, stock WHERE id_productos_no_elaborados = ?";
+        String sql = "select id_productos, stock FROM productos WHERE id_productos = ? AND stock = ?";
         try (PreparedStatement st = ConnectorController.getConnection().prepareStatement(sql)) {
-            st.setString(1, Integer.toString(id));
+            st.setString(1, Integer.toString(idProducto));
+            st.setString(2, Integer.toString(stock));
             ResultSet result = st.executeQuery();
             if (result.next()) {
                 ProductoNoElaboradoDTO clone = new ProductoNoElaboradoDTO(result.getInt(1), result.getInt(2));

@@ -1,34 +1,35 @@
-
 package View;
 
 import Controlador.MesaController;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
-
 public class FormMesa extends javax.swing.JFrame {
-
-    MesaController MesaControladora;
     
+    private JFrame ventanaActual;
+    MesaController MesaControladora;
+
     public FormMesa() throws SQLException {
         MesaControladora = MesaController.GetInstance();
         initComponents();
         verificarListaMesas();
     }
-    
+
     public void verificarListaMesas() //Verifica si la lista de mesas tiene algo
     {
-        if(!MesaControladora.PedirListaMesas().isEmpty())
-        {
+        if (!MesaControladora.PedirListaMesas().isEmpty()) {
             reiniciarTablaMesa();
         }
     }
-    
+
     private boolean validarDatos() {
         {
             try {
@@ -36,17 +37,17 @@ public class FormMesa extends javax.swing.JFrame {
                     throw new Exception();
                 }
             } catch (Exception e) {
-                 JOptionPane.showMessageDialog(null ,"Ningun campo puede estar vacio, Reingrese:");
+                JOptionPane.showMessageDialog(null, "El nombre no puede estar vacio:");
                 return false;
             }
 
         }
         return true;
     }
-    
+
     public void reiniciarTablaMesa() {
         DefaultTableModel modelo = new DefaultTableModel();
-  
+
         List<? extends Object> ListaMesa = MesaControladora.PedirListaMesas();
         ArrayList<Object> nombrecolumna = new ArrayList<>();
         nombrecolumna.add("ID");
@@ -54,10 +55,9 @@ public class FormMesa extends javax.swing.JFrame {
         nombrecolumna.forEach(columna -> {
             modelo.addColumn(columna);
         });
-        
-        for(int i = 0; i<ListaMesa.size();i++)
-        {
-             modelo.addRow(MesaControladora.RequestTableRow(i));
+
+        for (int i = 0; i < ListaMesa.size(); i++) {
+            modelo.addRow(MesaControladora.RequestTableRow(i));
         }
         datosTablaMesa.setModel(modelo);
         datosTablaMesa.setCellSelectionEnabled(false);
@@ -65,7 +65,7 @@ public class FormMesa extends javax.swing.JFrame {
     } //DataTable valores iniciales
 
     @SuppressWarnings("unchecked")
-    
+
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
@@ -79,6 +79,7 @@ public class FormMesa extends javax.swing.JFrame {
         jScrollPane3 = new javax.swing.JScrollPane();
         datosTablaMesa = new javax.swing.JTable();
         btnVolver = new javax.swing.JButton();
+        btnEntrar = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -137,11 +138,22 @@ public class FormMesa extends javax.swing.JFrame {
             }
         });
         jScrollPane3.setViewportView(datosTablaMesa);
+        if (datosTablaMesa.getColumnModel().getColumnCount() > 0) {
+            datosTablaMesa.getColumnModel().getColumn(0).setResizable(false);
+            datosTablaMesa.getColumnModel().getColumn(1).setResizable(false);
+        }
 
         btnVolver.setText("VOLVER");
         btnVolver.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnVolverActionPerformed(evt);
+            }
+        });
+
+        btnEntrar.setText("ENTRAR");
+        btnEntrar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEntrarActionPerformed(evt);
             }
         });
 
@@ -160,19 +172,20 @@ public class FormMesa extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addGroup(layout.createSequentialGroup()
-                                    .addComponent(jLabel1)
-                                    .addGap(2, 2, 2)
-                                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGroup(layout.createSequentialGroup()
-                                    .addComponent(btnGuardar)
-                                    .addGap(64, 64, 64)
-                                    .addComponent(btnBorrar)))
+                            .addComponent(jLabel3)
+                            .addGap(468, 468, 468))
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                            .addComponent(jLabel1)
+                            .addGap(2, 2, 2)
+                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGap(216, 216, 216))
                         .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                            .addComponent(jLabel3)
-                            .addGap(468, 468, 468)))
+                            .addComponent(btnGuardar)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                            .addComponent(btnBorrar)
+                            .addGap(12, 12, 12)
+                            .addComponent(btnEntrar)
+                            .addGap(200, 200, 200)))
                     .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 456, javax.swing.GroupLayout.PREFERRED_SIZE)))
         );
         layout.setVerticalGroup(
@@ -189,7 +202,8 @@ public class FormMesa extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnGuardar)
-                    .addComponent(btnBorrar))
+                    .addComponent(btnBorrar)
+                    .addComponent(btnEntrar))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel3)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -207,55 +221,53 @@ public class FormMesa extends javax.swing.JFrame {
                 int filaSeleccionada = seleccionarFila();
                 String nombre = txtNombreMesa.getText();
                 
-                if(filaSeleccionada >=0 ){
+
+                if (filaSeleccionada >= 0) {
                     int id = (int) datosTablaMesa.getModel().getValueAt(filaSeleccionada, 0);
                     if (!MesaControladora.SiMesaExiste(nombre)) {
-                        if(MesaControladora.ActualizarMesa(id, nombre)){
-                        JOptionPane.showMessageDialog(null, "Mesa Modificada.");
+                        if (MesaControladora.ActualizarMesa(id, nombre)) {
+                            JOptionPane.showMessageDialog(null, "Mesa Modificada.");
                         }
-                    }else{
+                    } else {
                         JOptionPane.showMessageDialog(null, "Ya existe una mesa con el mismo nombre.");
                     }
-                }else{
+                } else {
                     if (!MesaControladora.SiMesaExiste(nombre)) {
-                        if(MesaControladora.CrearMesa(nombre)){
-                        JOptionPane.showMessageDialog(null, "Mesa Guardada");
+                        if (MesaControladora.CrearMesa(nombre)) {
+                            JOptionPane.showMessageDialog(null, "Mesa Guardada");
                         }
-                    }else{
-                       JOptionPane.showMessageDialog(null, "Ya existe una mesa con el mismo nombre.");
+                    } else {
+                        JOptionPane.showMessageDialog(null, "Ya existe una mesa con el mismo nombre.");
                     }
                 }
-            this.reiniciarTablaMesa();
+                this.reiniciarTablaMesa();
             }
         }
     }//GEN-LAST:event_btnGuardarActionPerformed
 
-    private int seleccionarFila()
-    {
+    private int seleccionarFila() {
         int i = datosTablaMesa.getSelectedRow();
-        
-        if(i > -1)
-        {
+
+        if (i > -1) {
             return i;
         }
         return -1;
     }
-    
-    private void datosTablaMesaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_datosTablaMesaMouseClicked
-       int i = datosTablaMesa.getSelectedRow();
-        String nombre = (String) datosTablaMesa.getModel().getValueAt(i, 1);
-        txtNombreMesa.setText(nombre); //nombre
-    }//GEN-LAST:event_datosTablaMesaMouseClicked
 
+    private void datosTablaMesaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_datosTablaMesaMouseClicked
+            int i = datosTablaMesa.getSelectedRow();
+            String nombre = (String) datosTablaMesa.getModel().getValueAt(i, 1);
+            txtNombreMesa.setText(nombre); //nombre
+    }//GEN-LAST:event_datosTablaMesaMouseClicked
+   
     private void btnBorrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBorrarActionPerformed
-         if (evt.getSource() == btnBorrar) {
+        if (evt.getSource() == btnBorrar) {
             int filaSeleccionada = seleccionarFila();
             if (filaSeleccionada >= 0) {
                 int id = (int) datosTablaMesa.getModel().getValueAt(filaSeleccionada, 0);
                 MesaControladora.BorrarMesa(id);
                 reiniciarTablaMesa();
-            } 
-            else {
+            } else {
                 JOptionPane.showMessageDialog(null, "Error al elminar la mesa");
             }
         }
@@ -266,6 +278,44 @@ public class FormMesa extends javax.swing.JFrame {
         FormIndex formIndex = new FormIndex();
         formIndex.setVisible(true);
     }//GEN-LAST:event_btnVolverActionPerformed
+
+    private void btnEntrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEntrarActionPerformed
+        
+        int filaSeleccionada = seleccionarFila();
+        if (filaSeleccionada != -1) {
+            String nombreMesa = (String) datosTablaMesa.getModel().getValueAt(filaSeleccionada, 1);
+            int idMesa = (int) datosTablaMesa.getModel().getValueAt(filaSeleccionada, 0);
+            // Comprueba si hay una ventana previa abierta y la cierra si es el caso
+            if (ventanaActual != null) {
+                ventanaActual.dispose();// Cierra el formulario actual si existe uno abierto
+            }
+           
+            // Crea una nueva instancia de FormMesa
+            FormSelectedMesa formSelectedMesa = null;
+            try {
+                formSelectedMesa = new FormSelectedMesa(nombreMesa, idMesa);
+            } catch (SQLException ex) {
+                Logger.getLogger(FormMesa.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            // Añade un WindowListener para la ventana formMesa
+            formSelectedMesa.addWindowListener(new WindowAdapter() {
+                @Override
+                // Define un método (cerrarVentana) que se espera que maneje el cierre de la ventana
+                public void windowClosed(WindowEvent e) {
+                    // Acciones a realizar cuando se cierra FormMesa
+                    setVisible(true); // Vuelve a mostrar el FormMesa al cerrar formSelectedMesa
+                }
+            });
+            // Muestra la ventana formSelectedMesa
+            formSelectedMesa.setVisible(true);
+            // Actualiza la referencia de ventana actual (ventanaActual) a formSelectedMesa
+            ventanaActual = formSelectedMesa;
+            // Oculta el FormMesa al abrir formSelectedMesa
+            this.setVisible(false);
+        }else {
+        JOptionPane.showMessageDialog(null, "Debes seleccionar una mesa para entrar.");
+        }
+    }//GEN-LAST:event_btnEntrarActionPerformed
 
     /**
      * @param args the command line arguments
@@ -283,32 +333,24 @@ public class FormMesa extends javax.swing.JFrame {
                     break;
                 }
             }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(FormMesa.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(FormMesa.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(FormMesa.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(FormMesa.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
-        //</editor-fold>
-        //</editor-fold>
+
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                try {
-                    new FormMesa().setVisible(true);
-                } catch (SQLException ex) {
-                    Logger.getLogger(FormMesa.class.getName()).log(Level.SEVERE, null, ex);
-                }
+        java.awt.EventQueue.invokeLater(() -> {
+            try {
+                new FormMesa().setVisible(true);
+            } catch (SQLException ex) {
+                Logger.getLogger(FormMesa.class.getName()).log(Level.SEVERE, null, ex);
             }
         });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnBorrar;
+    private javax.swing.JButton btnEntrar;
     private javax.swing.JButton btnGuardar;
     private javax.swing.JButton btnVolver;
     private javax.swing.JTable datosTablaMesa;
@@ -320,20 +362,18 @@ public class FormMesa extends javax.swing.JFrame {
     private javax.swing.JTextPane txtNombreMesa;
     // End of variables declaration//GEN-END:variables
 
-    
     public void AgregarFila(int id) {
         javax.swing.table.DefaultTableModel modelo = (javax.swing.table.DefaultTableModel) datosTablaMesa.getModel();
         modelo.addRow(MesaControladora.RequestObjectIndex(id));
         datosTablaMesa.setModel(modelo);
     }
 
-    
     public void EliminarFila(int id) {
         int columna = 0;
         String IDString = String.valueOf(id);
         javax.swing.table.DefaultTableModel modelo = (javax.swing.table.DefaultTableModel) datosTablaMesa.getModel();
         for (int i = 0; i < modelo.getRowCount(); i++) {
-            
+
             if (modelo.getValueAt(i, columna).toString().equals(IDString)) {
                 modelo.removeRow(i);
             }
@@ -344,6 +384,5 @@ public class FormMesa extends javax.swing.JFrame {
     public void ModificarFila(int id) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
-    
-    
+
 }

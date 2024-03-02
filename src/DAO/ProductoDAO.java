@@ -1,6 +1,7 @@
 package DAO;
 
 import ControladoraConnector.ControladoraConnector;
+import Modelo.ProductoCompletoDTO;
 import Modelo.ProductoDTO;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -49,21 +50,58 @@ public class ProductoDAO implements IDAO {
         return false;
     }
 
+    // Método para obtener todos los productos con información de precios y stock
+    public List<ProductoCompletoDTO> obtenerProductosCompletos() throws SQLException {
+        List<ProductoCompletoDTO> productos = new ArrayList<>();
+        String query = "SELECT p.id_productos, p.nombre, p.descripcion, p.costo, pn.stock, pr.valor "
+                + "FROM productos p "
+                + "LEFT JOIN productos_no_elaborados pn ON p.id_productos = pn.id_productos "
+                + "LEFT JOIN (SELECT id_productos, MAX(fecha) AS fecha_max FROM precios GROUP BY id_productos)pr_max "
+                + "ON p.id_productos = pr_max.id_productos "
+                + "LEFT JOIN precios pr ON pr_max.id_productos = pr.id_productos AND pr_max.fecha_max = pr.fecha";
+        try (PreparedStatement statement = ConnectorController.getConnection().prepareStatement(query); ResultSet resultSet = statement.executeQuery()) {
+            while (resultSet.next()) {
+                ProductoCompletoDTO productoCompleto;
+                productoCompleto = new ProductoCompletoDTO(
+                        resultSet.getInt("id_productos"),
+                        resultSet.getString("nombre"),
+                        resultSet.getString("descripcion"),
+                        resultSet.getFloat("costo"),
+                        resultSet.getFloat("valor"),
+                        resultSet.getInt("stock"));
+                productos.add(productoCompleto);
+            }
+        }
+        return productos;
+    }
+
     @Override
-    public List<ProductoDTO> mostrar() {
-        List Salida = new ArrayList();
-        String sql = "select id_productos, nombre, descripcion, costo from productos;";
+    public List<ProductoCompletoDTO> mostrar() {
+        List<ProductoCompletoDTO> salida = new ArrayList<>();
+        String sql = "SELECT p.id_productos, p.nombre, p.descripcion, pn.stock, pr.valor "
+                + "FROM productos p "
+                + "INNER JOIN productos_no_elaborados pn ON p.id_productos = pn.id_productos "
+                + "INNER JOIN precios pr ON p.id_productos = pr.id_productos "
+                + "WHERE pr.fecha = (SELECT MAX(fecha) FROM precios WHERE id_productos = p.id_productos);";
         try (PreparedStatement state = ConnectorController.getConnection().prepareStatement(sql); ResultSet result = state.executeQuery()) {
             while (result.next()) {
-                ProductoDTO producto = new ProductoDTO(result.getInt(1), result.getString(2), result.getString(3), result.getFloat(4));
-                Salida.add(producto);
+                ProductoCompletoDTO producto = new ProductoCompletoDTO(
+                        result.getString("nombre"),
+                        result.getString("descripcion"),
+                        result.getFloat("valor"),
+                        result.getInt("stock"));
+                salida.add(producto);
             }
         } catch (SQLException ex) {
             Logger.getLogger(ProductoDAO.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             ConnectorController.CloseConnection();
         }
-        return Salida;
+        for (ProductoCompletoDTO producto : salida) {
+        String nombreYDescripcion = producto.getNombre() + " - " + producto.getDescripcion();
+        System.out.println(nombreYDescripcion); // O cualquier otra acción que desees realizar
+    }
+        return salida;
     }
 
     @Override
@@ -104,7 +142,7 @@ public class ProductoDAO implements IDAO {
     @Override
     public Object porId(int id) {
         ProductoDTO producto = new ProductoDTO();
-        String sql = "select id_productos, nombre, descripcion, costo from productos WHERE id_productos = ?";
+        String sql = "SELECT id_productos, nombre, descripcion, costo FROM productos WHERE id_productos = ?";
         try (PreparedStatement st = ConnectorController.getConnection().prepareStatement(sql)) {
             st.setString(1, Integer.toString(id));
             ResultSet result = st.executeQuery();

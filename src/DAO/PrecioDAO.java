@@ -105,14 +105,14 @@ public class PrecioDAO implements IDAO {
         return false;
     }
 
-    @Override
+    
+        @Override
     public void borrar(Object e) {
-        PrecioDTO pre = (PrecioDTO) e;
-        String sql = "DELETE FROM precios WHERE id_precios = ?";
+        PrecioDTO precio = (PrecioDTO) e;
+        String sql = "DELETE FROM precios WHERE id_productos = ?";
         try {
             PreparedStatement st = ConnectorController.getConnection().prepareStatement(sql);
-            st.setInt(1, pre.getId());
-            JOptionPane.showMessageDialog(null, "ID : " + pre.getId());
+            st.setInt(1, precio.getIdProducto());
             st.executeUpdate();
         } catch (SQLException ex) {
             Logger.getLogger(PrecioDAO.class.getName()).log(Level.SEVERE, null, ex);
@@ -125,12 +125,11 @@ public class PrecioDAO implements IDAO {
     @Override
     public Object porId(int id) {
         PrecioDTO pre = new PrecioDTO();
-        String sql = "select id_precio, valor, fecha from Precios WHERE id_precio = ?";
+        String sql = "SELECT id_precios, valor, fecha FROM precios WHERE id_precios = ?";
         try {
             PreparedStatement st = ConnectorController.getConnection().prepareStatement(sql);
             st.setString(1, Integer.toString(id));
             ResultSet result = st.executeQuery();
-            //JOptionPane.showMessageDialog(null,"En Execute Query");
             if (result.next()) {
                 PrecioDTO clone = new PrecioDTO(result.getInt(1), result.getFloat(2), result.getDate(3));
                 pre = clone;
@@ -146,7 +145,7 @@ public class PrecioDAO implements IDAO {
     
     public Object PrecioActual() {
         PrecioDTO preact = new PrecioDTO();
-        String sql = "select id_precios,valor,fecha, costo from Precios WHERE id_precios = ?";
+        String sql = "SELECT id_precios,valor,fecha, costo FROM precios WHERE id_precios = ?";
         try {
             PreparedStatement state = ConnectorController.getConnection().prepareStatement(sql);
             ResultSet result = state.executeQuery();
@@ -167,7 +166,7 @@ public class PrecioDAO implements IDAO {
 
     public Object VerHistorialPrecio() {
        PrecioDTO ultimo = new PrecioDTO();
-        String sql = "select id_precios,valor,fecha, costo from Precios WHERE id_precios = ?";
+        String sql = "SELECT id_precios,valor,fecha, costo FROM precios WHERE id_precios = ?";
         try {
             PreparedStatement state = ConnectorController.getConnection().prepareStatement(sql);
             ResultSet result = state.executeQuery();
@@ -185,4 +184,6 @@ public class PrecioDAO implements IDAO {
         }
         return ultimo;
     }
+
+    
 }
