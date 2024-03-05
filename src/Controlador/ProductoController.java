@@ -232,4 +232,9 @@ public class ProductoController {
         return datosFila;
     }
 //</editor-fold>
+
+    public ProductoCompletoDTO buscarProductoPorNombre(String nombreProducto, String descripcionProducto) {
+        ProductoCompletoDTO producto = (ProductoCompletoDTO) ProductoDAO.porNombreDescripcion(nombreProducto, descripcionProducto);
+        return producto;
+    }
 }

@@ -98,9 +98,9 @@ public class ProductoDAO implements IDAO {
             ConnectorController.CloseConnection();
         }
         for (ProductoCompletoDTO producto : salida) {
-        String nombreYDescripcion = producto.getNombre() + " - " + producto.getDescripcion();
-        System.out.println(nombreYDescripcion); // O cualquier otra acción que desees realizar
-    }
+            String nombreYDescripcion = producto.getNombre() + " - " + producto.getDescripcion();
+            System.out.println(nombreYDescripcion); // O cualquier otra acción que desees realizar
+        }
         return salida;
     }
 
@@ -161,7 +161,7 @@ public class ProductoDAO implements IDAO {
 
     public Object porNombre(String nombre, String descripcion, Float costo) {
         ProductoDTO producto = new ProductoDTO();
-        String sql = "select id_productos, nombre, descripcion, costo from productos WHERE nombre = ? AND descripcion = ? AND costo = ?";
+        String sql = "SELECT id_productos, nombre, descripcion, costo FROM productos WHERE nombre = ? AND descripcion = ? AND costo = ?";
         try (PreparedStatement st = ConnectorController.getConnection().prepareStatement(sql)) {
             st.setString(1, nombre);
             st.setString(2, descripcion);
@@ -172,6 +172,34 @@ public class ProductoDAO implements IDAO {
                 producto.setNombre(result.getString(2));
                 producto.setDescripcion(result.getString(3));
                 producto.setCosto(result.getFloat(4));
+                return producto;
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(ProductoDAO.class.getName()).log(Level.SEVERE, null, ex);
+            JOptionPane.showMessageDialog(null, "Error al seleccionar");
+        } finally {
+            ConnectorController.CloseConnection();
+        }
+        return null;
+    }
+
+    public Object porNombreDescripcion(String nombre, String descripcion) {
+        ProductoCompletoDTO producto = new ProductoCompletoDTO();
+        String sql = "SELECT p.id_productos, p.nombre, p.descripcion, pn.stock, pr.valor "
+                + "FROM productos p "
+                + "INNER JOIN productos_no_elaborados pn ON p.id_productos = pn.id_productos "
+                + "INNER JOIN precios pr ON p.id_productos = pr.id_productos "
+                + "WHERE pr.fecha = (SELECT MAX(fecha) FROM precios WHERE id_productos = p.id_productos)"
+                + "WHERE nombre = ? AND descripcion = ?";
+        try (PreparedStatement st = ConnectorController.getConnection().prepareStatement(sql)) {
+            st.setString(1, nombre);
+            st.setString(2, descripcion);
+            ResultSet result = st.executeQuery();
+            if (result.next()) {
+                producto.setIdProducto(result.getInt(1));
+                producto.setNombre(result.getString(2));
+                producto.setDescripcion(result.getString(3));
+                producto.setPrecio(result.getFloat(4));
                 return producto;
             }
         } catch (SQLException ex) {

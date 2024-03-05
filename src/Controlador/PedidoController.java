@@ -56,38 +56,15 @@ public class PedidoController {
         List<PedidoDTO> pedidos = PedidoDAO.mostrar(); // Obtener la lista de todos los pedidos
         for (PedidoDTO pedido : pedidos) {
             if (pedido.getIdMesa() == idMesa && pedido.getEstadoPedido() == EstadoPedido.ACTIVO) {
+                obtenerIdPedido(pedido.getId());
                 return true; // Si encuentra un pedido activo para la mesa, retorna true
             }
         }
         return false;
 
     }
-    //<editor-fold defaultstate="collapsed" desc=" CRUD ITEMS "> 
-
-    public void CrearItems(int cantidad, Object productos) {
-        ProductoCompletoDTO producto = (ProductoCompletoDTO) productos;
-        ItemsDTO crearItem = new ItemsDTO(cantidad, producto);
-        crearItem.setCostoTotal(cantidad, producto);
-        if (ItemsDAO.crear(crearItem)) {
-
-        }
-
+    public void obtenerIdPedido(){
+        
+        
     }
-
-    public List LeerItems() {
-        return ItemsDAO.mostrar();
-    }
-
-    public void ActualizarItems(int id, int cantidad, float costoTotal) {
-        ItemsDTO actItems = new ItemsDTO(id, cantidad, costoTotal);
-        ItemsDAO.actualizar(actItems);
-    }
-
-    public void BorrarItems(int id) {
-        ItemsDTO borrarItems = new ItemsDTO(id);
-        ItemsDAO.borrar(borrarItems);
-        ListaPedido.remove(borrarItems);
-    }
-
-    //</editor-fold>
 }

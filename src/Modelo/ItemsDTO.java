@@ -79,7 +79,7 @@ public class ItemsDTO {
         this.producto = producto;
     }
     public int getIdPedido() {
-        return id;
+        return idPedido;
     }
 
     public void setIdPedido(int idPedido) {

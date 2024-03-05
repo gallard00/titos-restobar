@@ -128,13 +128,14 @@ public class PedidoDAO implements IDAO {
     @Override
     public Object porId(int id) {
         PedidoDTO ped = new PedidoDTO();
-        String sql = "select it.id_items, it.cantidad, it.costo_total, it.id_pedidos, ped.id_pedidos, ped.fecha_apertura, ped.fecha_cierre, ped.descuento, ped.costo_total, ped.id_items from pedidos as ped INNER JOIN items as it ON ped.id_items = it.id_items WHERE id_pedidos = ?";
+        String sql = "SELECT it.id_items, it.cantidad, it.costo_total, it.id_pedidos, it.id_productos, ped.id_pedidos, ped.fecha_apertura, ped.fecha_cierre, ped.descuento, ped.costo_total, ped.id_mesas, ped.estado_pedido from pedidos AS ped INNER JOIN items AS it ON ped.id_pedido = it.id_pedidos WHERE id_pedidos = ?";
         try {
             PreparedStatement st = ConnectorController.getConnection().prepareStatement(sql);
             st.setString(1, Integer.toString(id));
             ResultSet result = st.executeQuery();
             //JOptionPane.showMessageDialog(null,"En Execute Query");
             if (result.next()) {
+                
                 ItemsDTO it = new ItemsDTO(result.getInt(1), result.getInt(2), result.getFloat(3), (ProductoCompletoDTO) result.getObject(4));
                 PedidoDTO clone = new PedidoDTO(result.getInt(5), result.getDate(6), result.getDate(7), result.getFloat(8), result.getFloat(9), (List<ItemsDTO>) result.getObject(10));
                 ped = clone;

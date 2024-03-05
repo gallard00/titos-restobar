@@ -24,13 +24,14 @@ public class ItemsDAO implements IDAO {
     @Override
     public Boolean crear(Object e) {
         ItemsDTO items = (ItemsDTO) e;
-        String sql = "INSERT INTO items(id_items, cantidad, costo_total, id_productos) value (?, ?, ?, ?);";
+        String sql = "INSERT INTO items(id_items, cantidad, costo_total, id_productos, id_pedidos) value (?, ?, ?, ?, ?);"; 
         try {
-            PreparedStatement st = ConnectorController.getConnection().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            PreparedStatement st = ConnectorController.getConnection().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS); 
             st.setString(1, String.valueOf(items.getId()));
             st.setString(2, String.valueOf(items.getCantidad()));
             st.setString(3, String.valueOf(items.getCostoTotal()));
             st.setString(4, String.valueOf(items.getProducto()));
+            st.setString(5, String.valueOf(items.getIdPedido()));
             st.execute();
             ResultSet rs = st.getGeneratedKeys();
             if (rs.next()) {
@@ -158,5 +159,15 @@ public class ItemsDAO implements IDAO {
         }
         return items;
     }
-
+   /* public List<ItemsDTO> obtenerItem() throws SQLException {
+        List<ItemsDTO> item = new ArrayList<>();
+        String query = ""
+        try (PreparedStatement statement = ConnectorController.getConnection().prepareStatement(query); ResultSet resultSet = statement.executeQuery()) {
+            while (resultSet.next()) {
+                
+            }
+        }
+        return item;
+    }
+*/
 }

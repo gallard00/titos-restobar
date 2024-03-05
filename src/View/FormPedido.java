@@ -1,7 +1,9 @@
 package View;
 
+import Controlador.ItemController;
 import Controlador.PedidoController;
 import Controlador.ProductoController;
+import Modelo.ItemsDTO;
 import Modelo.ProductoCompletoDTO;
 import Modelo.ProductoDTO;
 import java.sql.SQLException;
@@ -11,14 +13,17 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.table.DefaultTableModel;
 
 public class FormPedido extends javax.swing.JFrame {
 
     PedidoController controladoraPedido;
     ProductoController controladoraProducto;
+    ItemController controladoraItem;
     Object productoSeleccionado;
     private String nombreMesa;
     private int idMesa;
+
     /**
      * Creates new form FormPedido
      *
@@ -27,9 +32,10 @@ public class FormPedido extends javax.swing.JFrame {
     public FormPedido() throws SQLException {
         controladoraPedido = PedidoController.GetInstance();
         controladoraProducto = ProductoController.GetInstance();
+        controladoraItem = ItemController.GetInstance();
         initComponents();
     }
-    
+
     public FormPedido(String nombreMesa, int idMesa) throws SQLException {
         this.nombreMesa = nombreMesa;
         this.idMesa = idMesa;
@@ -229,7 +235,26 @@ public class FormPedido extends javax.swing.JFrame {
 
     private void btnAsignarItemAPedidoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAsignarItemAPedidoActionPerformed
         try {
-            controladoraPedido.CrearItems((int) jSpinnerCantidad.getValue(), productoSeleccionado);
+
+            String nombreDescripcion = (String) jComboBoxProductos.getSelectedItem();
+            String[] partes = nombreDescripcion.split(" - ");
+            String nombreProducto = partes[0]; // El primer elemento es el nombre del producto
+            String descripcionProducto = partes[1];
+            int idPedido = (int) 
+            // Obtener el producto completo correspondiente al nombre seleccionado
+            ProductoCompletoDTO productoSeleccionado = controladoraProducto.buscarProductoPorNombre(nombreProducto, descripcionProducto);
+
+            // Obtener la cantidad del spinner
+            int cantidad = (int) jSpinnerCantidad.getValue();
+
+            // Calcular el costo total multiplicando la cantidad por el precio del producto
+            float costoTotal = productoSeleccionado.getPrecio() * cantidad;
+
+            // Crear el nuevo ítem con la cantidad y el costo total
+            controladoraItem.CrearItems(cantidad, costoTotal, productoSeleccionado);
+
+            // Actualizar la tabla del pedido
+            actualizarTablaPedido();
         } catch (Exception e) {
 
         }
@@ -259,7 +284,7 @@ public class FormPedido extends javax.swing.JFrame {
     }//GEN-LAST:event_btnLimpiarActionPerformed
 
     private void btnVolverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVolverActionPerformed
-        this.setVisible(false); 
+        this.setVisible(false);
         FormSelectedMesa formSelectedMesa = null;
         try {
             formSelectedMesa = new FormSelectedMesa(nombreMesa, idMesa);
@@ -268,6 +293,31 @@ public class FormPedido extends javax.swing.JFrame {
         }
         formSelectedMesa.setVisible(true);
     }//GEN-LAST:event_btnVolverActionPerformed
+
+    private void actualizarTablaPedido() {
+
+        // Obtener la lista de ítems del pedido
+        List<? extends Object> listaItems = controladoraPedido.LeerItems();
+
+        // Crear un modelo de tabla
+        DefaultTableModel modelo = new DefaultTableModel();
+
+        // Agregar las columnas al modelo
+        modelo.addColumn("Nombre");
+        modelo.addColumn("Descripción");
+        modelo.addColumn("Precio");
+        modelo.addColumn("Cantidad");
+        modelo.addColumn("Costo Total");
+
+        // Recorrer la lista de ítems y agregar cada uno al modelo de la tabla
+        for (Object item : listaItems) {
+        ItemsDTO itemPedido = (ItemsDTO) item;
+        modelo.addRow(new Object[]{itemPedido.getNombre(), itemPedido.getDescripcion(), itemPedido.getPrecio(), itemPedido.getCantidad(), itemPedido.getCostoTotal()});
+    }
+
+        // Establecer el modelo en la tabla
+        datosTablaPedido.setModel(modelo);
+    }
 
     /**
      * @param args the command line arguments
@@ -289,7 +339,7 @@ public class FormPedido extends javax.swing.JFrame {
             java.util.logging.Logger.getLogger(FormPedido.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
-        
+
         //</editor-fold>
 
         /* Create and display the form */
