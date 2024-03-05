@@ -44,6 +44,13 @@ public class ProductoCompletoDTO {
         this.stock = stock;
     }
 
+    public ProductoCompletoDTO(int idProducto, String nombre, String descripcion, float precio) {
+        this.idProducto = idProducto;
+        this.nombre = nombre;
+        this.descripcion = descripcion;
+        this.precio = precio;
+    }
+
     public ProductoCompletoDTO() {
     }
 

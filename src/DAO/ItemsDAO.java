@@ -30,7 +30,7 @@ public class ItemsDAO implements IDAO {
             st.setString(1, String.valueOf(items.getId()));
             st.setString(2, String.valueOf(items.getCantidad()));
             st.setString(3, String.valueOf(items.getCostoTotal()));
-            st.setString(4, String.valueOf(items.getProducto()));
+            st.setString(4, String.valueOf(items.getIdProducto()));
             st.setString(5, String.valueOf(items.getIdPedido()));
             st.execute();
             ResultSet rs = st.getGeneratedKeys();

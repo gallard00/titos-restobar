@@ -190,7 +190,7 @@ public class ProductoDAO implements IDAO {
                 + "INNER JOIN productos_no_elaborados pn ON p.id_productos = pn.id_productos "
                 + "INNER JOIN precios pr ON p.id_productos = pr.id_productos "
                 + "WHERE pr.fecha = (SELECT MAX(fecha) FROM precios WHERE id_productos = p.id_productos)"
-                + "WHERE nombre = ? AND descripcion = ?";
+                + "AND p.nombre = ? AND p.descripcion = ?";
         try (PreparedStatement st = ConnectorController.getConnection().prepareStatement(sql)) {
             st.setString(1, nombre);
             st.setString(2, descripcion);

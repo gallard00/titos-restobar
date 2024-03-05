@@ -3,15 +3,6 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-            <file>file:/C:/Users/Nahu/Documents/NetBeansProjects/Logica/TitosRestoBar/src/DAO/ProductoDAO.java</file>
-            <file>file:/C:/Users/Nahu/Documents/NetBeansProjects/Logica/TitosRestoBar/src/DAO/ProductoNoElaboradoDAO.java</file>
-=======
-            <file>file:/C:/Users/nahue/Downloads/titos-restobar-master%20(1)/titos-restobar-master/titos-restobar/src/Controlador/ProductoController.java</file>
-            <file>file:/C:/Users/nahue/Downloads/titos-restobar-master%20(1)/titos-restobar-master/titos-restobar/src/View/FormPedido.java</file>
->>>>>>> ac1a9e64cb553d9696822125347cbddcb57018a7
             <file>file:/C:/Users/nahue/Downloads/titos-restobar-master%20(1)/titos-restobar-master/titos-restobar/src/DAO/PedidoDAO.java</file>
             <file>file:/C:/Users/nahue/Downloads/titos-restobar-master%20(1)/titos-restobar-master/titos-restobar/src/View/FormPedido.java</file>
             <file>file:/C:/Users/nahue/Downloads/titos-restobar-master%20(1)/titos-restobar-master/titos-restobar/src/Controlador/ItemController.java</file>
@@ -25,11 +16,7 @@
             <file>file:/C:/Users/nahue/Downloads/titos-restobar-master%20(1)/titos-restobar-master/titos-restobar/src/Controlador/MesaController.java</file>
             <file>file:/C:/Users/nahue/Downloads/titos-restobar-master%20(1)/titos-restobar-master/titos-restobar/src/View/FormSelectedMesa.java</file>
             <file>file:/C:/Users/nahue/Downloads/titos-restobar-master%20(1)/titos-restobar-master/titos-restobar/src/Modelo/PedidoDTO.java</file>
-<<<<<<< HEAD
             <file>file:/C:/Users/nahue/Downloads/titos-restobar-master%20(1)/titos-restobar-master/titos-restobar/src/Modelo/ProductoCompletoDTO.java</file>
-=======
->>>>>>> 1fb7456ad7e252d564f1cd2eff6c94865ee882ae
->>>>>>> ac1a9e64cb553d9696822125347cbddcb57018a7
         </group>
     </open-files>
 </project-private>

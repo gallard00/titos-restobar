@@ -6,6 +6,7 @@ import Controlador.ProductoController;
 import Modelo.ItemsDTO;
 import Modelo.ProductoCompletoDTO;
 import Modelo.ProductoDTO;
+import java.awt.HeadlessException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -13,6 +14,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 public class FormPedido extends javax.swing.JFrame {
@@ -41,6 +43,7 @@ public class FormPedido extends javax.swing.JFrame {
         this.idMesa = idMesa;
         controladoraPedido = PedidoController.GetInstance();
         controladoraProducto = ProductoController.GetInstance();
+        controladoraItem = ItemController.GetInstance();
         initComponents();
         PoblarComboBoxProductos();
     }
@@ -240,22 +243,24 @@ public class FormPedido extends javax.swing.JFrame {
             String[] partes = nombreDescripcion.split(" - ");
             String nombreProducto = partes[0]; // El primer elemento es el nombre del producto
             String descripcionProducto = partes[1];
-            int idPedido = (int) 
+            int idPedidoActivo = controladoraPedido.obtenerIdPedidoActivo(idMesa);
             // Obtener el producto completo correspondiente al nombre seleccionado
-            ProductoCompletoDTO productoSeleccionado = controladoraProducto.buscarProductoPorNombre(nombreProducto, descripcionProducto);
-
+            ProductoCompletoDTO productoBuscado = controladoraProducto.buscarProductoPorNombre(nombreProducto, descripcionProducto);
+            int idProducto = productoBuscado.getIdProducto();
             // Obtener la cantidad del spinner
             int cantidad = (int) jSpinnerCantidad.getValue();
-
+            float valor = (float) productoBuscado.getPrecio();
             // Calcular el costo total multiplicando la cantidad por el precio del producto
-            float costoTotal = productoSeleccionado.getPrecio() * cantidad;
+            float costoTotal = valor * cantidad;
 
             // Crear el nuevo ítem con la cantidad y el costo total
-            controladoraItem.CrearItems(cantidad, costoTotal, productoSeleccionado);
+            if(controladoraItem.CrearItems(cantidad, costoTotal, idProducto, idPedidoActivo)){
+                JOptionPane.showMessageDialog(null, "Producto Agregado");
+            }
 
             // Actualizar la tabla del pedido
             actualizarTablaPedido();
-        } catch (Exception e) {
+        } catch (HeadlessException e) {
 
         }
     }//GEN-LAST:event_btnAsignarItemAPedidoActionPerformed

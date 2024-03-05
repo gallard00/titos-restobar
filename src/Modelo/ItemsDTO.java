@@ -2,13 +2,13 @@ package Modelo;
 
 import java.util.Objects;
 
-
 public class ItemsDTO {
-    
+
     private int id;
     private int cantidad;
     private float costoTotal;
     private ProductoCompletoDTO producto;
+    private int idProducto;
     private int idPedido;
 
     public ItemsDTO() {
@@ -29,10 +29,17 @@ public class ItemsDTO {
         this.cantidad = cantidad;
         this.costoTotal = costoTotal;
     }
-    
+
     public ItemsDTO(int cantidad, ProductoCompletoDTO producto) {
         this.cantidad = cantidad;
         this.producto = producto;
+    }
+
+    public ItemsDTO(int cantidad, float costoTotal, int idProducto, int idPedido) {
+        this.cantidad = cantidad;
+        this.costoTotal = costoTotal;
+        this.idProducto = idProducto;
+        this.idPedido = idPedido;
     }
 
     public ItemsDTO(int id, int cantidad, float costoTotal, ProductoCompletoDTO producto, int idPedido) {
@@ -50,7 +57,6 @@ public class ItemsDTO {
     public void setId(int id) {
         this.id = id;
     }
-    
 
     public int getCantidad() {
         return cantidad;
@@ -65,7 +71,7 @@ public class ItemsDTO {
     }
 
     public void setCostoTotal(int cantidad, ProductoCompletoDTO producto) {
-        
+
         if (producto != null) {
             this.costoTotal = producto.getPrecio() * cantidad;
         }
@@ -78,12 +84,21 @@ public class ItemsDTO {
     public void setProducto(ProductoCompletoDTO producto) {
         this.producto = producto;
     }
+
     public int getIdPedido() {
         return idPedido;
     }
 
     public void setIdPedido(int idPedido) {
         this.idPedido = idPedido;
+    }
+
+    public int getIdProducto() {
+        return idProducto;
+    }
+
+    public void setIdProducto(int idProducto) {
+        this.idProducto = idProducto;
     }
 
     @Override
@@ -125,5 +140,4 @@ public class ItemsDTO {
         return "ItemsDTO{" + "id=" + id + ", cantidad=" + cantidad + ", costoTotal=" + costoTotal + ", producto=" + producto + '}';
     }
 
-    
 }

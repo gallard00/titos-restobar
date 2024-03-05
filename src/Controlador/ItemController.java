@@ -27,12 +27,9 @@ public class ItemController {
         return Instance;
     }
 
-    public void CrearItems(int cantidad, float costoTotal, Object productos) {
-        ProductoCompletoDTO producto = (ProductoCompletoDTO) productos;
-        ItemsDTO crearItem = new ItemsDTO(cantidad, costoTotal, producto);
-        if (ItemsDAO.crear(crearItem)) {
-
-        }
+    public Boolean CrearItems(int cantidad, float costoTotal, int idProducto, int idPedidoActivo) {
+        ItemsDTO crearItem = new ItemsDTO(cantidad, costoTotal, idProducto, idPedidoActivo);
+        return ItemsDAO.crear(crearItem);
 
     }
 
@@ -49,10 +46,11 @@ public class ItemController {
         ItemsDTO borrarItems = new ItemsDTO(id);
         ItemsDAO.borrar(borrarItems);
     }
+
     public List leerItem() throws SQLException {
         return ItemsDAO.obtenerItem();
     }
-/*public List<ItemsDTO> pedirListaItem() {
+    /*public List<ItemsDTO> pedirListaItem() {
         try {
             listaItem = leerItem();
         } catch (SQLException ex) {

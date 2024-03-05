@@ -56,15 +56,21 @@ public class PedidoController {
         List<PedidoDTO> pedidos = PedidoDAO.mostrar(); // Obtener la lista de todos los pedidos
         for (PedidoDTO pedido : pedidos) {
             if (pedido.getIdMesa() == idMesa && pedido.getEstadoPedido() == EstadoPedido.ACTIVO) {
-                obtenerIdPedido(pedido.getId());
                 return true; // Si encuentra un pedido activo para la mesa, retorna true
             }
         }
         return false;
 
     }
-    public void obtenerIdPedido(){
+    public int obtenerIdPedidoActivo(int idMesa){
         
-        
+        List<PedidoDTO> pedidos = PedidoDAO.mostrar(); // Obtener la lista de todos los pedidos
+    for (PedidoDTO pedido : pedidos) {
+        if (pedido.getIdMesa() == idMesa && pedido.getEstadoPedido() == EstadoPedido.ACTIVO) {
+            return  pedido.getId();
+        }
     }
+        return -1;
+    }
+    
 }
