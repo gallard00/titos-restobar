@@ -50,6 +50,16 @@ public class ProductoCompletoDTO {
         this.descripcion = descripcion;
         this.precio = precio;
     }
+    public ProductoCompletoDTO(String nombre, String descripcion, float precio) {
+        this.nombre = nombre;
+        this.descripcion = descripcion;
+        this.precio = precio;
+    }
+
+    public ProductoCompletoDTO(String nombre, String descripcion) {
+        this.nombre = nombre;
+        this.descripcion = descripcion;
+    }
 
     public ProductoCompletoDTO() {
     }

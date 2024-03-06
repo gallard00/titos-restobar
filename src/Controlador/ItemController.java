@@ -4,6 +4,7 @@ import DAO.ItemsDAO;
 import Modelo.ItemsDTO;
 import Modelo.ProductoCompletoDTO;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -12,6 +13,7 @@ import java.util.List;
  */
 public class ItemController {
 
+    private List<ItemsDTO> ListaItems = new ArrayList<>();
     private final ItemsDAO ItemsDAO;
     private static ItemController Instance;
 
@@ -33,6 +35,11 @@ public class ItemController {
 
     }
 
+    public List<ItemsDTO> PedirListaItems() {
+        ListaItems = LeerItems();
+        return ListaItems;
+    }
+
     public List LeerItems() {
         return ItemsDAO.mostrar();
     }
@@ -42,14 +49,16 @@ public class ItemController {
         ItemsDAO.actualizar(actItems);
     }
 
-    public void BorrarItems(int id) {
-        ItemsDTO borrarItems = new ItemsDTO(id);
+    public void BorrarItems(int idItems) {
+        ItemsDTO borrarItems = new ItemsDTO(idItems);
         ItemsDAO.borrar(borrarItems);
+
+    }
+    public List obtenerItemsPedidoActivo(int pedidoActivo){
+        
+       return ItemsDAO.obtenerItemsPedidoActivo(pedidoActivo);
     }
 
-    public List leerItem() throws SQLException {
-        return ItemsDAO.obtenerItem();
-    }
     /*public List<ItemsDTO> pedirListaItem() {
         try {
             listaItem = leerItem();

@@ -9,9 +9,12 @@ import Modelo.PedidoDTO.EstadoPedido;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.DefaultListModel;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
@@ -21,6 +24,7 @@ import javax.swing.JOptionPane;
  */
 public class FormSelectedMesa extends javax.swing.JFrame {
 
+    private DefaultListModel<String> modeloLista;
     private JFrame ventanaActual;
     private String nombreMesa;
     private int idMesa;
@@ -30,6 +34,10 @@ public class FormSelectedMesa extends javax.swing.JFrame {
     public FormSelectedMesa() throws SQLException {
         pedidoControladora = PedidoController.GetInstance();
         initComponents();
+        modeloLista = new DefaultListModel<>();
+        jList1.setModel(modeloLista);
+        // Lógica para agregar los nombres de los productos al modelo de lista
+        agregarNombresProductosAlModeloLista();
     }
 
     public FormSelectedMesa(String nombreMesa, int idMesa) throws SQLException {
@@ -39,6 +47,10 @@ public class FormSelectedMesa extends javax.swing.JFrame {
         initComponents();
         // Configura el nombre de la mesa en el JLabel correspondiente
         jLabel3.setText(nombreMesa);
+        modeloLista = new DefaultListModel<>();
+        jList1.setModel(modeloLista);
+        // Lógica para agregar los nombres de los productos al modelo de lista
+        agregarNombresProductosAlModeloLista();
     }
 
     /**
@@ -236,10 +248,31 @@ public class FormSelectedMesa extends javax.swing.JFrame {
         // Mostrar un mensaje de confirmación con el total del pedido
         // Redirigir a la vista principal o realizar otras acciones necesarias
     }//GEN-LAST:event_btnCerrarActionPerformed
-
+    private void actualizarTabla(){
+        
+    }
     private float calcularDescuento(float total, float descuentoPorcentaje) {
         float descuento = total * (descuentoPorcentaje / 100);
         return total - descuento;
+    }
+
+    private void agregarNombresProductosAlModeloLista() {
+        // Obtener la lista de nombres de productos disponibles en el pedido
+        List<String> nombresProductos = obtenerNombresProductos();
+        // Agregar los nombres de productos al modelo de lista
+        nombresProductos.forEach(modeloLista::addElement);
+    }
+
+    private List<String> obtenerNombresProductos() {
+        // Lógica para obtener los nombres de productos disponibles en el pedido
+        // Debes obtener estos nombres de tu controlador o DAO
+        // Por ahora, simularemos una lista de nombres de productos ficticios
+        List<String> nombresProductos = new ArrayList<>();
+        nombresProductos.add("Producto 1");
+        nombresProductos.add("Producto 2");
+        nombresProductos.add("Producto 3");
+        // Simplemente devolvemos la lista generada para este ejemplo
+        return nombresProductos;
     }
 
     private void ingresarFormPedido() {

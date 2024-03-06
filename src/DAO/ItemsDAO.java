@@ -24,9 +24,9 @@ public class ItemsDAO implements IDAO {
     @Override
     public Boolean crear(Object e) {
         ItemsDTO items = (ItemsDTO) e;
-        String sql = "INSERT INTO items(id_items, cantidad, costo_total, id_productos, id_pedidos) value (?, ?, ?, ?, ?);"; 
+        String sql = "INSERT INTO items(id_items, cantidad, costo_total, id_productos, id_pedidos) value (?, ?, ?, ?, ?);";
         try {
-            PreparedStatement st = ConnectorController.getConnection().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS); 
+            PreparedStatement st = ConnectorController.getConnection().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             st.setString(1, String.valueOf(items.getId()));
             st.setString(2, String.valueOf(items.getCantidad()));
             st.setString(3, String.valueOf(items.getCostoTotal()));
@@ -49,30 +49,28 @@ public class ItemsDAO implements IDAO {
     @Override
     public List<ItemsDTO> mostrar() {
         List listaItems = new ArrayList();
-        String sql = "SELECT  prod.id_productos, prod.nombre, prod.descripcion, prod.costo, pn.stock, pr.valor AS precios, it.id_items, it.cantidad, it.costo_total, it.id_productos "
+        String sql = "SELECT prod.nombre, prod.descripcion, pr.valor AS precios,it.id_items, it.cantidad, it.costo_total "
                 + "FROM items AS it "
                 + "INNER JOIN productos AS prod ON it.id_productos = prod.id_productos "
-                + "LEFT JOIN productos_no_elaborados AS pn ON prod.id_productos = pn.id_productos "
                 + "LEFT JOIN precios AS pr ON prod.id_productos = pr.id_productos "
                 + "ORDER BY pr.fecha DESC";
         try {
             PreparedStatement state = ConnectorController.getConnection().prepareStatement(sql);
             ResultSet result = state.executeQuery(sql);
             while (result.next()) {
-                ProductoCompletoDTO productos = new ProductoCompletoDTO(
-                        result.getInt(1),
-                        result.getString(2),
-                        result.getString(3),
-                        result.getInt(4),
-                        result.getInt(5),
-                        result.getInt(6));
+                String nombreProducto = result.getString(1);
+                String descripcionProducto = result.getString(2);
+                float precio = result.getFloat(3);
+                int idItems = result.getInt(4);
+                int cantidad = result.getInt(5);
+                float costoTotal = result.getFloat(6);
+                
+                ProductoCompletoDTO producto = new ProductoCompletoDTO();
+                producto.setNombre(nombreProducto);
+                producto.setDescripcion(descripcionProducto);
+                producto.setPrecio(precio);
 
-                ItemsDTO items = new ItemsDTO(
-                        result.getInt(7),
-                        result.getInt(8),
-                        result.getFloat(9),
-                        productos);
-
+                ItemsDTO items = new ItemsDTO(idItems, cantidad, costoTotal, producto);
                 listaItems.add(items);
             }
         } catch (SQLException ex) {
@@ -159,15 +157,38 @@ public class ItemsDAO implements IDAO {
         }
         return items;
     }
-   /* public List<ItemsDTO> obtenerItem() throws SQLException {
-        List<ItemsDTO> item = new ArrayList<>();
-        String query = ""
-        try (PreparedStatement statement = ConnectorController.getConnection().prepareStatement(query); ResultSet resultSet = statement.executeQuery()) {
-            while (resultSet.next()) {
+    public List<ItemsDTO> obtenerItemsPedidoActivo(int pedidoActivo){
+     List listaItems = new ArrayList();
+        String sql = "SELECT prod.nombre, prod.descripcion, pr.valor AS precios,it.id_items, it.cantidad, it.costo_total "
+                + "FROM items AS it WHERE it.id_pedidos = ? " 
+                + "INNER JOIN productos AS prod ON it.id_productos = prod.id_productos "
+                + "LEFT JOIN precios AS pr ON prod.id_productos = pr.id_productos "
+                + "ORDER BY pr.fecha DESC";
+        try {
+            PreparedStatement state = ConnectorController.getConnection().prepareStatement(sql);
+            state.setInt(1, pedidoActivo);
+            ResultSet result = state.executeQuery();
+            while (result.next()) {
+                String nombreProducto = result.getString(1);
+                String descripcionProducto = result.getString(2);
+                float precio = result.getFloat(3);
+                int idItems = result.getInt(4);
+                int cantidad = result.getInt(5);
+                float costoTotal = result.getFloat(6);
                 
+                ProductoCompletoDTO producto = new ProductoCompletoDTO();
+                producto.setNombre(nombreProducto);
+                producto.setDescripcion(descripcionProducto);
+                producto.setPrecio(precio);
+
+                ItemsDTO items = new ItemsDTO(idItems, cantidad, costoTotal, producto);
+                listaItems.add(items);
             }
+        } catch (SQLException ex) {
+            Logger.getLogger(ItemsDAO.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            ConnectorController.CloseConnection();
         }
-        return item;
+        return listaItems;
     }
-*/
 }

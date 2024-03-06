@@ -16,12 +16,13 @@ import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumn;
 
 public class FormPedido extends javax.swing.JFrame {
 
     PedidoController controladoraPedido;
     ProductoController controladoraProducto;
-    ItemController controladoraItem;
+    ItemController controladoraItems;
     Object productoSeleccionado;
     private String nombreMesa;
     private int idMesa;
@@ -34,7 +35,7 @@ public class FormPedido extends javax.swing.JFrame {
     public FormPedido() throws SQLException {
         controladoraPedido = PedidoController.GetInstance();
         controladoraProducto = ProductoController.GetInstance();
-        controladoraItem = ItemController.GetInstance();
+        controladoraItems = ItemController.GetInstance();
         initComponents();
     }
 
@@ -43,9 +44,17 @@ public class FormPedido extends javax.swing.JFrame {
         this.idMesa = idMesa;
         controladoraPedido = PedidoController.GetInstance();
         controladoraProducto = ProductoController.GetInstance();
-        controladoraItem = ItemController.GetInstance();
+        controladoraItems = ItemController.GetInstance();
         initComponents();
         PoblarComboBoxProductos();
+        verificarListaItems();
+    }
+
+    public void verificarListaItems() //Verifica si la lista de productos tiene algo
+    {
+        if (!controladoraItems.PedirListaItems().isEmpty()) {
+            actualizarTablaPedido();
+        }
     }
 
     public void PoblarComboBoxProductos() {
@@ -82,6 +91,8 @@ public class FormPedido extends javax.swing.JFrame {
         datosTablaPedido = new javax.swing.JTable();
         btnLimpiar = new javax.swing.JButton();
         btnVolver = new javax.swing.JButton();
+        jLabel4 = new javax.swing.JLabel();
+        jLabel5 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -114,20 +125,20 @@ public class FormPedido extends javax.swing.JFrame {
 
         datosTablaPedido.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null}
             },
             new String [] {
-                "Nombre", "Descripcion", "Precio", "Cantidad"
+                "Nombre", "Descripcion", "Precio", "Cantidad", "Costo Total"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Integer.class
+                java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Integer.class, java.lang.Object.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false, false, false
+                false, false, false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -144,10 +155,10 @@ public class FormPedido extends javax.swing.JFrame {
             datosTablaPedido.getColumnModel().getColumn(0).setPreferredWidth(110);
             datosTablaPedido.getColumnModel().getColumn(1).setResizable(false);
             datosTablaPedido.getColumnModel().getColumn(1).setPreferredWidth(110);
-            datosTablaPedido.getColumnModel().getColumn(2).setResizable(false);
             datosTablaPedido.getColumnModel().getColumn(2).setPreferredWidth(60);
             datosTablaPedido.getColumnModel().getColumn(3).setResizable(false);
             datosTablaPedido.getColumnModel().getColumn(3).setPreferredWidth(40);
+            datosTablaPedido.getColumnModel().getColumn(4).setPreferredWidth(60);
         }
 
         btnLimpiar.setText("LIMPIAR");
@@ -164,6 +175,16 @@ public class FormPedido extends javax.swing.JFrame {
             }
         });
 
+        jLabel4.setBackground(new java.awt.Color(0, 0, 0));
+        jLabel4.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        jLabel4.setForeground(new java.awt.Color(0, 0, 0));
+        jLabel4.setText("TOTAL:");
+
+        jLabel5.setBackground(new java.awt.Color(0, 0, 0));
+        jLabel5.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        jLabel5.setForeground(new java.awt.Color(0, 0, 0));
+        jLabel5.setText("$$$");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -171,6 +192,9 @@ public class FormPedido extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGap(26, 26, 26)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 644, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
@@ -195,11 +219,13 @@ public class FormPedido extends javax.swing.JFrame {
                                 .addComponent(btnAsignarItemAPedido, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(18, 18, 18)
                                 .addComponent(btnBorrar, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(0, 9, Short.MAX_VALUE))))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(67, 67, 67)
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 517, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE))))
+                                .addGap(0, 9, Short.MAX_VALUE))))))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jLabel4)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel5)
+                .addGap(63, 63, 63))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -229,8 +255,12 @@ public class FormPedido extends javax.swing.JFrame {
                             .addComponent(jSpinnerCantidad, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 348, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18))
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 270, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(26, 26, 26)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel4)
+                    .addComponent(jLabel5))
+                .addGap(32, 32, 32))
         );
 
         pack();
@@ -254,7 +284,7 @@ public class FormPedido extends javax.swing.JFrame {
             float costoTotal = valor * cantidad;
 
             // Crear el nuevo ítem con la cantidad y el costo total
-            if(controladoraItem.CrearItems(cantidad, costoTotal, idProducto, idPedidoActivo)){
+            if (controladoraItems.CrearItems(cantidad, costoTotal, idProducto, idPedidoActivo)) {
                 JOptionPane.showMessageDialog(null, "Producto Agregado");
             }
 
@@ -263,9 +293,27 @@ public class FormPedido extends javax.swing.JFrame {
         } catch (HeadlessException e) {
 
         }
+        this.actualizarTablaPedido();
     }//GEN-LAST:event_btnAsignarItemAPedidoActionPerformed
 
     private void btnBorrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBorrarActionPerformed
+        int filaSeleccionada = seleccionarFila();
+        if (filaSeleccionada != -1) { // Verificar si se seleccionó alguna fila
+            // Obtener el modelo de la tabla
+            DefaultTableModel modelo = (DefaultTableModel) datosTablaPedido.getModel();
+            // Obtener el ID del ítem de la fila seleccionada
+            int idItems = (int) modelo.getValueAt(filaSeleccionada, 0);
+            // Eliminar el ítem de la base de datos
+            controladoraItems.BorrarItems(idItems);
+            // Eliminar la fila de la tabla
+            modelo.removeRow(filaSeleccionada);
+            // Mostrar un mensaje de éxito
+            JOptionPane.showMessageDialog(null, "Ítem borrado exitosamente.");
+            actualizarTablaPedido();
+
+        } else {
+            JOptionPane.showMessageDialog(null, "Seleccione una fila para borrar.");
+        }
 
     }//GEN-LAST:event_btnBorrarActionPerformed
 
@@ -301,13 +349,15 @@ public class FormPedido extends javax.swing.JFrame {
 
     private void actualizarTablaPedido() {
 
-        // Obtener la lista de ítems del pedido
-        List<? extends Object> listaItems = controladoraPedido.LeerItems();
+        int pedidoActivo = controladoraPedido.obtenerIdPedidoActivo(idMesa);
+        
+        List<ItemsDTO> listaItems = controladoraItems.obtenerItemsPedidoActivo(pedidoActivo);
 
         // Crear un modelo de tabla
         DefaultTableModel modelo = new DefaultTableModel();
 
         // Agregar las columnas al modelo
+        modelo.addColumn("ID Item");
         modelo.addColumn("Nombre");
         modelo.addColumn("Descripción");
         modelo.addColumn("Precio");
@@ -315,13 +365,50 @@ public class FormPedido extends javax.swing.JFrame {
         modelo.addColumn("Costo Total");
 
         // Recorrer la lista de ítems y agregar cada uno al modelo de la tabla
-        for (Object item : listaItems) {
-        ItemsDTO itemPedido = (ItemsDTO) item;
-        modelo.addRow(new Object[]{itemPedido.getNombre(), itemPedido.getDescripcion(), itemPedido.getPrecio(), itemPedido.getCantidad(), itemPedido.getCostoTotal()});
-    }
+        for (ItemsDTO item : listaItems) {
+
+            ProductoCompletoDTO producto = item.getProducto();
+
+            modelo.addRow(new Object[]{
+                item.getId(),
+                producto.getNombre(),
+                producto.getDescripcion(),
+                producto.getPrecio(),
+                item.getCantidad(),
+                item.getCostoTotal()
+            });
+            
+        }
 
         // Establecer el modelo en la tabla
         datosTablaPedido.setModel(modelo);
+
+        TableColumn columnaIdItem = datosTablaPedido.getColumnModel().getColumn(0);
+        columnaIdItem.setMinWidth(0);
+        columnaIdItem.setMaxWidth(0);
+        columnaIdItem.setPreferredWidth(0);
+        calcularTotalCostos();
+    }
+
+    private void calcularTotalCostos() {
+        DefaultTableModel modelo = (DefaultTableModel) datosTablaPedido.getModel();
+        float total = 0.0f;
+        for (int fila = 0; fila < modelo.getRowCount(); fila++) {
+            float costoTotalItem = (float) modelo.getValueAt(fila, 5); // Suponiendo que la columna 5 contiene el costo total
+            total += costoTotalItem;
+        }
+        String txtTotal = String.valueOf(total);
+        jLabel5.setText(txtTotal);
+        
+    }
+
+    private int seleccionarFila() {
+        int i = datosTablaPedido.getSelectedRow();
+
+        if (i > -1) {
+            return i;
+        }
+        return -1;
     }
 
     /**
@@ -367,6 +454,8 @@ public class FormPedido extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JSpinner jSpinnerCantidad;
     // End of variables declaration//GEN-END:variables

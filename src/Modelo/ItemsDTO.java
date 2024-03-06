@@ -18,6 +18,19 @@ public class ItemsDTO {
         this.id = id;
     }
 
+    public ItemsDTO(int cantidad, float costoTotal) {
+        this.cantidad = cantidad;
+        this.costoTotal = costoTotal;
+
+    }
+
+    public ItemsDTO(int id, int cantidad, float costoTotal, ProductoCompletoDTO producto) {
+        this.id = id;
+        this.cantidad = cantidad;
+        this.costoTotal = costoTotal;
+        this.producto = producto;
+    }
+
     public ItemsDTO(int cantidad, float costoTotal, ProductoCompletoDTO producto) {
         this.cantidad = cantidad;
         this.costoTotal = costoTotal;

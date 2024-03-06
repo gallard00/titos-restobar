@@ -185,9 +185,8 @@ public class ProductoDAO implements IDAO {
 
     public Object porNombreDescripcion(String nombre, String descripcion) {
         ProductoCompletoDTO producto = new ProductoCompletoDTO();
-        String sql = "SELECT p.id_productos, p.nombre, p.descripcion, pn.stock, pr.valor "
+        String sql = "SELECT p.id_productos, p.nombre, p.descripcion, pr.valor "
                 + "FROM productos p "
-                + "INNER JOIN productos_no_elaborados pn ON p.id_productos = pn.id_productos "
                 + "INNER JOIN precios pr ON p.id_productos = pr.id_productos "
                 + "WHERE pr.fecha = (SELECT MAX(fecha) FROM precios WHERE id_productos = p.id_productos)"
                 + "AND p.nombre = ? AND p.descripcion = ?";
