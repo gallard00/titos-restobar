@@ -76,24 +76,7 @@ public class MesaController {
     }
   //</editor-fold>  
     
-    //<editor-fold defaultstate="collapsed" desc=" CRUD de Pedido "> 
-    public void CrearPedido (Date fechaApertura, Date fechaCierre, float descuento, float costoTotal, List<ItemsDTO> producto) {
-        PedidoDTO crearPedido = new PedidoDTO(fechaApertura, fechaCierre, descuento, costoTotal, producto);
-        /*PedidoDAO.crear(crearPedido);*/
-    }
-    
-    public void ActualizarPedido (Date fechaApertura, Date fechaCierre, float descuento, float costoTotal, List<ItemsDTO> producto) {
-        PedidoDTO actPedido = new PedidoDTO(fechaApertura, fechaCierre, descuento, costoTotal, producto);
-        /*PedidoDAO.actualizar(actPedido);*/
-    }
-    
-    public void BorrarPedido (int id) {
-        PedidoDTO borrarPedido = new PedidoDTO(id);
-       /* PedidoDAO.borrar(borrarPedido);*/
-        ListaMesa.remove(borrarPedido);
-    }
-    //</editor-fold>
-    
+
     //<editor-fold defaultstate="collapsed" desc=" Datos de la tabla de Mesa">
     
     public Object[] RequestTableRow(int i)

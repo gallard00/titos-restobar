@@ -30,7 +30,7 @@ public class PedidoController {
         return Instance;
     }
 
-    //<editor-fold defaultstate="collapsed" desc=" CRUD PEDIDO "> 
+    //CRUD PEDIDO 
     public void crearPedido(Date fechaApertura, Date fechaCierre, float descuento, float costoTotal, EstadoPedido estadoPedido, int idMesa) {
         PedidoDTO pedido = new PedidoDTO(fechaApertura, fechaCierre, descuento, costoTotal, estadoPedido, idMesa);
         PedidoDAO.crear(pedido);
@@ -40,18 +40,18 @@ public class PedidoController {
         return PedidoDAO.mostrar();
     }
 
-    public void UpdatePedido(Date fechaApertura, Date fechaCierre, float descuento, float costoTotal, List<ItemsDTO> producto) {
-       // PedidoDTO actped = new PedidoDTO(fechaApertura, fechaCierre, descuento, costoTotal, producto);
-        //PedidoDAO.actualizar(actped);
+    public void actualizarPedido(int idPedido, Date fechaCierre, float descuento, float costoTotal, EstadoPedido estadoPedido) {
+        PedidoDTO pedidoCerrado = new PedidoDTO(idPedido, fechaCierre, descuento, costoTotal, estadoPedido);
+        PedidoDAO.actualizar(pedidoCerrado);
     }
 
-    public void DeletePedido(int id) {
-        PedidoDTO borrped = new PedidoDTO(id);
-        PedidoDAO.borrar(borrped);
-        ListaPedido.remove(borrped);
+    public void borrarPedido(int id) {
+        PedidoDTO pedido = new PedidoDTO(id);
+        PedidoDAO.borrar(pedido);
+        ListaPedido.remove(pedido);
     }
 
-    //</editor-fold>
+//--------------------
     public boolean existePedidoActivo(int idMesa) {
         List<PedidoDTO> pedidos = PedidoDAO.mostrar(); // Obtener la lista de todos los pedidos
         for (PedidoDTO pedido : pedidos) {
@@ -62,15 +62,24 @@ public class PedidoController {
         return false;
 
     }
-    public int obtenerIdPedidoActivo(int idMesa){
-        
+
+    public int obtenerIdPedidoActivo(int idMesa) {
+
         List<PedidoDTO> pedidos = PedidoDAO.mostrar(); // Obtener la lista de todos los pedidos
-    for (PedidoDTO pedido : pedidos) {
-        if (pedido.getIdMesa() == idMesa && pedido.getEstadoPedido() == EstadoPedido.ACTIVO) {
-            return  pedido.getId();
+        for (PedidoDTO pedido : pedidos) {
+            if (pedido.getIdMesa() == idMesa && pedido.getEstadoPedido() == EstadoPedido.ACTIVO) {
+                return pedido.getId();
+            }
         }
-    }
         return -1;
     }
+
+    public List obtenerPedidosCerrados(int idMesa){
+        return PedidoDAO.mostrarPedidosCerrados(idMesa);
+    }
     
+    public PedidoDTO obtenerUnPedidoCerrado(int idPedido){
+        
+        return (PedidoDTO) PedidoDAO.porId(idPedido);
+    }
 }

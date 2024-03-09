@@ -333,7 +333,9 @@ public class FormPedido extends javax.swing.JFrame {
     }//GEN-LAST:event_jComboBoxProductosItemStateChanged
 
     private void btnLimpiarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLimpiarActionPerformed
-        // TODO add your handling code here:
+        int pedidoActivo = controladoraPedido.obtenerIdPedidoActivo(idMesa);
+        controladoraItems.BorrarItemsPorPedido(pedidoActivo);
+        actualizarTablaPedido();
     }//GEN-LAST:event_btnLimpiarActionPerformed
 
     private void btnVolverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVolverActionPerformed
@@ -350,7 +352,7 @@ public class FormPedido extends javax.swing.JFrame {
     private void actualizarTablaPedido() {
 
         int pedidoActivo = controladoraPedido.obtenerIdPedidoActivo(idMesa);
-        
+
         List<ItemsDTO> listaItems = controladoraItems.obtenerItemsPedidoActivo(pedidoActivo);
 
         // Crear un modelo de tabla
@@ -377,7 +379,7 @@ public class FormPedido extends javax.swing.JFrame {
                 item.getCantidad(),
                 item.getCostoTotal()
             });
-            
+
         }
 
         // Establecer el modelo en la tabla
@@ -399,7 +401,7 @@ public class FormPedido extends javax.swing.JFrame {
         }
         String txtTotal = String.valueOf(total);
         jLabel5.setText(txtTotal);
-        
+
     }
 
     private int seleccionarFila() {

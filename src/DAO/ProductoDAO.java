@@ -24,7 +24,7 @@ public class ProductoDAO implements IDAO {
     @Override
     public Boolean crear(Object e) {
         ProductoDTO prod = (ProductoDTO) e;
-        String sql = "insert into productos(id_productos, nombre, descripcion, costo) value (?, ?, ?, ?);";
+        String sql = "INSERT INTO productos(id_productos, nombre, descripcion, costo) VALUE (?, ?, ?, ?);";
         /*
         Se utiliza un try-with-resources (try) 
         para asegurar que los recursos como las conexiones y
@@ -228,5 +228,34 @@ public class ProductoDAO implements IDAO {
         }
 
         return ultimoID;
+    }
+    public List<ProductoCompletoDTO> obtenerProductosPedidoActivo(int pedidoActivo) {
+        List productoPedido = new ArrayList();
+        String sql = "SELECT prod.nombre, prod.descripcion "
+                + "FROM items AS it "
+                + "INNER JOIN productos AS prod ON it.id_productos = prod.id_productos "
+                + "LEFT JOIN precios AS pr ON prod.id_productos = pr.id_productos "
+                + "WHERE it.id_pedidos = ? ";
+        try {
+            PreparedStatement state = ConnectorController.getConnection().prepareStatement(sql);
+            state.setInt(1, pedidoActivo);
+            ResultSet result = state.executeQuery();
+            while (result.next()) {
+                String nombreProducto = result.getString(1);
+                String descripcionProducto = result.getString(2);
+
+                ProductoCompletoDTO producto = new ProductoCompletoDTO();
+                producto.setNombre(nombreProducto);
+                producto.setDescripcion(descripcionProducto);
+
+                
+                productoPedido.add(producto);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(ItemsDAO.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            ConnectorController.CloseConnection();
+        }
+        return productoPedido;
     }
 }

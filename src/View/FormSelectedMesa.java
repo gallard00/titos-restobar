@@ -4,8 +4,14 @@
  */
 package View;
 
+import Controlador.ItemController;
 import Controlador.PedidoController;
+import Controlador.ProductoController;
+import Modelo.ItemsDTO;
+import Modelo.PedidoDTO;
 import Modelo.PedidoDTO.EstadoPedido;
+import Modelo.ProductoCompletoDTO;
+import Modelo.ProductoDTO;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.sql.SQLException;
@@ -17,6 +23,7 @@ import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -24,33 +31,30 @@ import javax.swing.JOptionPane;
  */
 public class FormSelectedMesa extends javax.swing.JFrame {
 
-    private DefaultListModel<String> modeloLista;
     private JFrame ventanaActual;
     private String nombreMesa;
     private int idMesa;
 
     PedidoController pedidoControladora;
+    ItemController controladoraItems;
+    ProductoController controladoraProducto;
 
     public FormSelectedMesa() throws SQLException {
         pedidoControladora = PedidoController.GetInstance();
         initComponents();
-        modeloLista = new DefaultListModel<>();
-        jList1.setModel(modeloLista);
-        // Lógica para agregar los nombres de los productos al modelo de lista
-        agregarNombresProductosAlModeloLista();
     }
 
     public FormSelectedMesa(String nombreMesa, int idMesa) throws SQLException {
+        controladoraItems = ItemController.GetInstance();
         pedidoControladora = PedidoController.GetInstance();
+        controladoraProducto = ProductoController.GetInstance();
         this.nombreMesa = nombreMesa;
         this.idMesa = idMesa;
         initComponents();
-        // Configura el nombre de la mesa en el JLabel correspondiente
         jLabel3.setText(nombreMesa);
-        modeloLista = new DefaultListModel<>();
-        jList1.setModel(modeloLista);
-        // Lógica para agregar los nombres de los productos al modelo de lista
-        agregarNombresProductosAlModeloLista();
+        verPedidosCerrados();
+        txtPrecioFinal.setText(String.valueOf(totalPedidoActivo()));
+        verPedidoActivo();
     }
 
     /**
@@ -62,8 +66,6 @@ public class FormSelectedMesa extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jScrollPane1 = new javax.swing.JScrollPane();
-        jList1 = new javax.swing.JList<>();
         btnAgregarProducto = new javax.swing.JButton();
         btnCerrar = new javax.swing.JButton();
         btnBorrar = new javax.swing.JButton();
@@ -72,19 +74,19 @@ public class FormSelectedMesa extends javax.swing.JFrame {
         jLabel3 = new javax.swing.JLabel();
         btnVolver = new javax.swing.JButton();
         jLabel4 = new javax.swing.JLabel();
-        txtDescuento = new javax.swing.JTextField();
         jLabel5 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
         txtPrecioFinal = new javax.swing.JLabel();
+        spnDescuento = new javax.swing.JSpinner();
+        jLabel7 = new javax.swing.JLabel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        tablaPedidosCerrados = new javax.swing.JTable();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        tablaPedidoActivo = new javax.swing.JTable();
+        btnVerPedidoCerrado = new javax.swing.JButton();
+        btnBorrarPedidoCerrado = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-
-        jList1.setModel(new javax.swing.AbstractListModel<String>() {
-            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
-            public int getSize() { return strings.length; }
-            public String getElementAt(int i) { return strings[i]; }
-        });
-        jScrollPane1.setViewportView(jList1);
 
         btnAgregarProducto.setText("AGREGAR");
         btnAgregarProducto.addActionListener(new java.awt.event.ActionListener() {
@@ -108,13 +110,13 @@ public class FormSelectedMesa extends javax.swing.JFrame {
         });
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        jLabel1.setText("Contenido del pedido");
+        jLabel1.setText("Contenido del Pedido Activo");
 
         jLabel2.setFont(new java.awt.Font("Segoe UI", 0, 36)); // NOI18N
         jLabel2.setText("Pedido de");
 
         jLabel3.setFont(new java.awt.Font("Segoe UI", 0, 36)); // NOI18N
-        jLabel3.setText("jLabel3");
+        jLabel3.setText("Mesa");
 
         btnVolver.setText("VOLVER");
         btnVolver.addActionListener(new java.awt.event.ActionListener() {
@@ -129,77 +131,179 @@ public class FormSelectedMesa extends javax.swing.JFrame {
 
         jLabel6.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
 
-        txtPrecioFinal.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        txtPrecioFinal.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         txtPrecioFinal.setText("$$$");
+
+        spnDescuento.setMinimumSize(new java.awt.Dimension(70, 26));
+
+        jLabel7.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        jLabel7.setText("Pedidos Cerrados");
+
+        tablaPedidosCerrados.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "ID", "Fecha Apertura", "Fecha Cierre", "Costo Total"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jScrollPane2.setViewportView(tablaPedidosCerrados);
+        if (tablaPedidosCerrados.getColumnModel().getColumnCount() > 0) {
+            tablaPedidosCerrados.getColumnModel().getColumn(0).setResizable(false);
+            tablaPedidosCerrados.getColumnModel().getColumn(0).setPreferredWidth(25);
+            tablaPedidosCerrados.getColumnModel().getColumn(1).setResizable(false);
+            tablaPedidosCerrados.getColumnModel().getColumn(1).setPreferredWidth(100);
+            tablaPedidosCerrados.getColumnModel().getColumn(2).setResizable(false);
+            tablaPedidosCerrados.getColumnModel().getColumn(2).setPreferredWidth(100);
+            tablaPedidosCerrados.getColumnModel().getColumn(3).setResizable(false);
+        }
+
+        tablaPedidoActivo.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null}
+            },
+            new String [] {
+                "Nombre", "Descripcion", "Cantidad"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jScrollPane3.setViewportView(tablaPedidoActivo);
+        if (tablaPedidoActivo.getColumnModel().getColumnCount() > 0) {
+            tablaPedidoActivo.getColumnModel().getColumn(0).setResizable(false);
+            tablaPedidoActivo.getColumnModel().getColumn(0).setPreferredWidth(100);
+            tablaPedidoActivo.getColumnModel().getColumn(1).setResizable(false);
+            tablaPedidoActivo.getColumnModel().getColumn(1).setPreferredWidth(100);
+            tablaPedidoActivo.getColumnModel().getColumn(2).setResizable(false);
+            tablaPedidoActivo.getColumnModel().getColumn(2).setPreferredWidth(60);
+        }
+
+        btnVerPedidoCerrado.setText("VER");
+        btnVerPedidoCerrado.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnVerPedidoCerradoActionPerformed(evt);
+            }
+        });
+
+        btnBorrarPedidoCerrado.setText("BORRAR");
+        btnBorrarPedidoCerrado.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBorrarPedidoCerradoActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
+                .addGap(40, 40, 40)
+                .addComponent(btnVolver, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(310, 310, 310)
+                .addComponent(jLabel2)
+                .addGap(19, 19, 19)
+                .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 187, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addGroup(layout.createSequentialGroup()
+                .addGap(260, 260, 260)
+                .addComponent(jLabel1)
+                .addGap(192, 192, 192)
+                .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addGroup(layout.createSequentialGroup()
+                .addGap(20, 20, 20)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel4)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(btnAgregarProducto)
+                            .addComponent(btnCerrar, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btnBorrar, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(spnDescuento, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(20, 20, 20)
+                        .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(txtPrecioFinal, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(21, 21, 21)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 377, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(12, 12, 12)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 412, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(34, 34, 34)
-                        .addComponent(btnVolver)
-                        .addGap(57, 57, 57)
-                        .addComponent(jLabel2)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel3))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(18, 18, 18)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel4)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(txtDescuento)
-                                    .addComponent(btnAgregarProducto, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(btnCerrar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(btnBorrar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel5)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(txtPrecioFinal, javax.swing.GroupLayout.DEFAULT_SIZE, 83, Short.MAX_VALUE))))
-                        .addGap(59, 59, 59)
+                        .addGap(50, 50, 50)
+                        .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGap(28, 28, 28)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 317, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btnBorrarPedidoCerrado)
                             .addGroup(layout.createSequentialGroup()
-                                .addGap(57, 57, 57)
-                                .addComponent(jLabel1)))))
-                .addContainerGap(18, Short.MAX_VALUE))
+                                .addComponent(btnVerPedidoCerrado, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addGap(3, 3, 3)))
+                        .addGap(26, 26, 26))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(26, 26, 26)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel2)
-                    .addComponent(jLabel3)
-                    .addComponent(btnVolver))
-                .addGap(32, 32, 32)
-                .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(40, 40, 40)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 374, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(btnAgregarProducto)
+                        .addGap(10, 10, 10)
+                        .addComponent(btnVolver))
+                    .addComponent(jLabel2)
+                    .addComponent(jLabel3))
+                .addGap(22, 22, 22)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel1)
+                    .addComponent(jLabel7))
+                .addGap(8, 8, 8)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 330, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 330, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(21, 21, 21)
+                        .addComponent(jLabel6)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnVerPedidoCerrado)
                         .addGap(18, 18, 18)
-                        .addComponent(btnCerrar)
-                        .addGap(18, 18, 18)
-                        .addComponent(btnBorrar)
+                        .addComponent(btnBorrarPedidoCerrado))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(177, 177, 177)
+                                .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(47, 47, 47)
+                                .addComponent(btnAgregarProducto)
+                                .addGap(13, 13, 13)
+                                .addComponent(btnCerrar)
+                                .addGap(13, 13, 13)
+                                .addComponent(btnBorrar)
+                                .addGap(23, 23, 23)
+                                .addComponent(spnDescuento, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addGap(20, 20, 20)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel4)
-                            .addComponent(txtDescuento, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(18, 18, 18)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel5)
-                            .addComponent(txtPrecioFinal))
-                        .addGap(8, 8, 8)
-                        .addComponent(jLabel6)))
-                .addContainerGap(22, Short.MAX_VALUE))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtPrecioFinal))))
+                .addContainerGap(19, Short.MAX_VALUE))
         );
 
         pack();
@@ -240,39 +344,148 @@ public class FormSelectedMesa extends javax.swing.JFrame {
 
     private void btnCerrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCerrarActionPerformed
         // Calcular el total del pedido con descuento
-        float total = 0; // Debes calcular el total de los ítems
-        float descuentoPorcentaje = Float.parseFloat(txtDescuento.getText());
-        float totalDescuento = calcularDescuento(total, descuentoPorcentaje);
-
-        // Cambiar el estado del pedido a cerrado
-        // Mostrar un mensaje de confirmación con el total del pedido
-        // Redirigir a la vista principal o realizar otras acciones necesarias
+        // Debes calcular el total de los ítems
+        float totalDescuento = totalPedidoActivo() - calcularDescuento();
+        int option = JOptionPane.showConfirmDialog(this, "¿Estás seguro de cerrar el pedido?", "Confirmar cierre de pedido", JOptionPane.YES_NO_OPTION);
+        if (option == JOptionPane.YES_OPTION) {
+            // Si el usuario confirma, procede con el cierre del pedido
+            cerrarPedido(totalDescuento);
+            verPedidoActivo();
+        }
     }//GEN-LAST:event_btnCerrarActionPerformed
-    private void actualizarTabla(){
+
+    private void btnVerPedidoCerradoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVerPedidoCerradoActionPerformed
+       // Obtener el índice de la fila seleccionada en la tabla
+    int filaSeleccionada = tablaPedidosCerrados.getSelectedRow();
+    
+    // Verificar si se ha seleccionado una fila
+    if (filaSeleccionada != -1) {
+        // Obtener el ID del pedido cerrado de la fila seleccionada
+        int idPedido = (int) tablaPedidosCerrados.getValueAt(filaSeleccionada, 0);
         
+        try {
+            // Abrir el formulario FormPedidoCerrado con los parámetros nombreMesa e idPedido
+            ingresarFormPedidoCerrado(idPedido);
+        } catch (SQLException ex) {
+            Logger.getLogger(FormSelectedMesa.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    } else {
+        // Mostrar un mensaje indicando que no se ha seleccionado ningún pedido
+        JOptionPane.showMessageDialog(this, "Por favor, seleccione un pedido cerrado para ver.", "Mensaje", JOptionPane.INFORMATION_MESSAGE);
     }
-    private float calcularDescuento(float total, float descuentoPorcentaje) {
+    }//GEN-LAST:event_btnVerPedidoCerradoActionPerformed
+
+    private void btnBorrarPedidoCerradoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBorrarPedidoCerradoActionPerformed
+       
+        int filaSeleccionada = tablaPedidosCerrados.getSelectedRow();
+        if(filaSeleccionada != -1){
+            int idPedido = (int) tablaPedidosCerrados.getValueAt(filaSeleccionada, 0);
+            pedidoControladora.borrarPedido(idPedido);
+            verPedidosCerrados();
+        }else {
+        // Mostrar un mensaje indicando que no se ha seleccionado ningún pedido
+        JOptionPane.showMessageDialog(this, "Por favor, seleccione un pedido cerrado para borrar.", "Mensaje", JOptionPane.INFORMATION_MESSAGE);
+    }
+    }//GEN-LAST:event_btnBorrarPedidoCerradoActionPerformed
+
+    private void cerrarPedido(float totalDescuento) {
+        // Obtener el id del pedido activo
+        int idPedido = pedidoControladora.obtenerIdPedidoActivo(idMesa);
+        float descuento = calcularDescuento();
+        // Obtener la fecha y hora actual como fecha de cierre
+        Date fechaCierre = new Date();
+        // Actualizar el pedido en la base de datos
+        pedidoControladora.actualizarPedido(idPedido, fechaCierre, descuento, totalDescuento, EstadoPedido.CERRADO);
+        // Actualizar la tabla de pedidos cerrados
+        verPedidosCerrados();
+        // Notificar al usuario que el pedido se cerró correctamente
+        JOptionPane.showMessageDialog(this, "Pedido cerrado exitosamente.");
+        verPedidoActivo();
+    }
+
+    private float totalPedidoActivo() {
+        int idPedido = pedidoControladora.obtenerIdPedidoActivo(idMesa);
+        float total = controladoraItems.calcularTotalPedidoActivo(idPedido);
+        return total;
+    }
+
+    private float calcularDescuento() {
+        float total = totalPedidoActivo();
+// Obtener el valor del JSpinner como un Object
+    Object value = spnDescuento.getValue();
+    
+    // Verificar si el valor es un Integer
+    if (value instanceof Integer) {
+        // Convertir el valor a Float
+        float descuentoPorcentaje = ((Integer) value).floatValue();
+        
+        // Calcular el descuento
         float descuento = total * (descuentoPorcentaje / 100);
-        return total - descuento;
+        return descuento;
+    } else if (value instanceof Float) {
+        // Si ya es un Float, simplemente hacer el casting
+        float descuentoPorcentaje = (Float) value;
+        
+        // Calcular el descuento
+        float descuento = total * (descuentoPorcentaje / 100);
+        return descuento;
+    } else {
+        // Manejar otro tipo de valores aquí, si es necesario
+        return 0.0f; // Valor predeterminado o manejo de errores
+    }        
+//float descuentoPorcentaje = (float) spnDescuento.getValue();
+        //float descuento = total * ((float) descuentoPorcentaje / 100);
+        //return descuento;
     }
 
-    private void agregarNombresProductosAlModeloLista() {
-        // Obtener la lista de nombres de productos disponibles en el pedido
-        List<String> nombresProductos = obtenerNombresProductos();
-        // Agregar los nombres de productos al modelo de lista
-        nombresProductos.forEach(modeloLista::addElement);
+    private void verPedidoActivo() {
+        if (pedidoControladora.existePedidoActivo(idMesa)) {
+            int idPedido = pedidoControladora.obtenerIdPedidoActivo(idMesa);
+            DefaultTableModel modeloPedidoActivo = new DefaultTableModel();
+
+            List<ItemsDTO> listaItems = controladoraItems.obtenerItemsPedidoActivo(idPedido);
+            modeloPedidoActivo.addColumn("Nombre");
+            modeloPedidoActivo.addColumn("Descripcion");
+            modeloPedidoActivo.addColumn("Cantidad");
+            for (ItemsDTO item : listaItems) {
+
+                ProductoCompletoDTO producto = item.getProducto();
+
+                modeloPedidoActivo.addRow(new Object[]{
+                    producto.getNombre(),
+                    producto.getDescripcion(),
+                    item.getCantidad()
+                });
+
+            }
+
+            // Establecer el modelo en la tabla
+            tablaPedidoActivo.setModel(modeloPedidoActivo);
+        }
     }
 
-    private List<String> obtenerNombresProductos() {
-        // Lógica para obtener los nombres de productos disponibles en el pedido
-        // Debes obtener estos nombres de tu controlador o DAO
-        // Por ahora, simularemos una lista de nombres de productos ficticios
-        List<String> nombresProductos = new ArrayList<>();
-        nombresProductos.add("Producto 1");
-        nombresProductos.add("Producto 2");
-        nombresProductos.add("Producto 3");
-        // Simplemente devolvemos la lista generada para este ejemplo
-        return nombresProductos;
+    private void verPedidosCerrados() {
+        DefaultTableModel modeloPedidosCerrados = new DefaultTableModel();
+
+        List<PedidoDTO> listaPedidos = pedidoControladora.obtenerPedidosCerrados(idMesa);
+        modeloPedidosCerrados.addColumn("ID");
+        modeloPedidosCerrados.addColumn("Fecha Apertura");
+        modeloPedidosCerrados.addColumn("Fecha Cierre");
+        modeloPedidosCerrados.addColumn("Costo Total");
+
+        for (PedidoDTO pedido : listaPedidos) {
+            Object[] fila = {
+                pedido.getId(),
+                pedido.getFechaApertura(),
+                pedido.getFechaCierre(),
+                pedido.getCostoTotal()
+            };
+            modeloPedidosCerrados.addRow(fila);
+        }
+
+        // Establecer el modelo en la tabla
+        tablaPedidosCerrados.setModel(modeloPedidosCerrados);
+
     }
 
     private void ingresarFormPedido() {
@@ -294,6 +507,23 @@ public class FormSelectedMesa extends javax.swing.JFrame {
         } catch (SQLException ex) {
             Logger.getLogger(FormSelectedMesa.class.getName()).log(Level.SEVERE, null, ex);
         }
+
+    }
+    private void ingresarFormPedidoCerrado(int idPedido) throws SQLException {
+
+        if (ventanaActual != null) {
+            ventanaActual.dispose();
+        }
+        FormPedidoCerrado formPedidoCerrado = new FormPedidoCerrado(nombreMesa, idPedido);
+        formPedidoCerrado.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosed(WindowEvent e) {
+                setVisible(true);
+            }
+        });
+        formPedidoCerrado.setVisible(true);
+        ventanaActual = formPedidoCerrado;
+        this.setVisible(false);
 
     }
 
@@ -333,7 +563,9 @@ public class FormSelectedMesa extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAgregarProducto;
     private javax.swing.JButton btnBorrar;
+    private javax.swing.JButton btnBorrarPedidoCerrado;
     private javax.swing.JButton btnCerrar;
+    private javax.swing.JButton btnVerPedidoCerrado;
     private javax.swing.JButton btnVolver;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
@@ -341,9 +573,12 @@ public class FormSelectedMesa extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
-    private javax.swing.JList<String> jList1;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTextField txtDescuento;
+    private javax.swing.JLabel jLabel7;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JSpinner spnDescuento;
+    private javax.swing.JTable tablaPedidoActivo;
+    private javax.swing.JTable tablaPedidosCerrados;
     private javax.swing.JLabel txtPrecioFinal;
     // End of variables declaration//GEN-END:variables
 }

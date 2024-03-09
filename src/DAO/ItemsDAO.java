@@ -64,7 +64,7 @@ public class ItemsDAO implements IDAO {
                 int idItems = result.getInt(4);
                 int cantidad = result.getInt(5);
                 float costoTotal = result.getFloat(6);
-                
+
                 ProductoCompletoDTO producto = new ProductoCompletoDTO();
                 producto.setNombre(nombreProducto);
                 producto.setDescripcion(descripcionProducto);
@@ -157,13 +157,15 @@ public class ItemsDAO implements IDAO {
         }
         return items;
     }
-    public List<ItemsDTO> obtenerItemsPedidoActivo(int pedidoActivo){
-     List listaItems = new ArrayList();
-        String sql = "SELECT prod.nombre, prod.descripcion, pr.valor AS precios,it.id_items, it.cantidad, it.costo_total "
-                + "FROM items AS it WHERE it.id_pedidos = ? " 
+
+    public List<ItemsDTO> obtenerItemsPedidoActivo(int pedidoActivo) {
+        List listaItems = new ArrayList();
+        String sql = "SELECT prod.nombre, prod.descripcion, pr.valor AS precios, it.id_items, it.cantidad, it.costo_total "
+                + "FROM items AS it "
                 + "INNER JOIN productos AS prod ON it.id_productos = prod.id_productos "
                 + "LEFT JOIN precios AS pr ON prod.id_productos = pr.id_productos "
-                + "ORDER BY pr.fecha DESC";
+                + "WHERE it.id_pedidos = ? "
+                + "ORDER BY pr.fecha DESC ";
         try {
             PreparedStatement state = ConnectorController.getConnection().prepareStatement(sql);
             state.setInt(1, pedidoActivo);
@@ -175,7 +177,7 @@ public class ItemsDAO implements IDAO {
                 int idItems = result.getInt(4);
                 int cantidad = result.getInt(5);
                 float costoTotal = result.getFloat(6);
-                
+
                 ProductoCompletoDTO producto = new ProductoCompletoDTO();
                 producto.setNombre(nombreProducto);
                 producto.setDescripcion(descripcionProducto);
@@ -191,4 +193,39 @@ public class ItemsDAO implements IDAO {
         }
         return listaItems;
     }
+
+    public void borrarItemsPorPedido(int idPedido) {
+        String sql = "DELETE FROM items WHERE id_pedidos = ?";
+        try {
+            PreparedStatement state = ConnectorController.getConnection().prepareStatement(sql);
+            state.setInt(1, idPedido);
+            state.executeUpdate();
+        } catch (SQLException ex) {
+            Logger.getLogger(ItemsDAO.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            ConnectorController.CloseConnection();
+        }
+    }
+
+    public float calcularTotalPedidoActivo(int idPedido) {
+        float total = 0;
+
+        String sql = "SELECT SUM(costo_total) FROM items WHERE id_pedidos = ? ";
+
+        try (PreparedStatement statement = ConnectorController.getConnection().prepareStatement(sql)) {
+            statement.setInt(1, idPedido);
+            ResultSet resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                total = resultSet.getFloat(1);
+            }
+        } catch (SQLException ex) {
+          Logger.getLogger(ItemsDAO.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            ConnectorController.CloseConnection();
+        
+        }
+
+        return total;
+    }
 }
+

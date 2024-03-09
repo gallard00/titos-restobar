@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 29-02-2024 a las 23:15:49
+-- Tiempo de generación: 10-03-2024 a las 00:27:18
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.0.30
 
@@ -34,6 +34,28 @@ CREATE TABLE `items` (
   `id_productos` int(11) NOT NULL,
   `id_pedidos` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `items`
+--
+
+INSERT INTO `items` (`id_items`, `cantidad`, `costo_total`, `id_productos`, `id_pedidos`) VALUES
+(5, 3, 3900, 10, 1),
+(8, 2, 10400, 11, 1),
+(11, 2, 2600, 10, 1),
+(12, 5, 13000, 15, 1),
+(13, 4, 10400, 16, 1),
+(14, 2, 10400, 11, 1),
+(17, 10, 13000, 10, 3),
+(18, 10, 26000, 16, 3),
+(19, 10, 26000, 15, 3),
+(24, 10, 52000, 11, 3),
+(26, 11, 14300, 10, 5),
+(27, 3, 3900, 10, 8),
+(28, 3, 15600, 11, 8),
+(29, 3, 7800, 15, 8),
+(30, 3, 7800, 16, 8),
+(35, 5, 13000, 15, 4);
 
 -- --------------------------------------------------------
 
@@ -77,13 +99,13 @@ CREATE TABLE `pedidos` (
 --
 
 INSERT INTO `pedidos` (`id_pedidos`, `fecha_apertura`, `fecha_cierre`, `descuento`, `costo_total`, `id_mesas`, `estado_pedido`) VALUES
-(1, '2024-02-29 18:33:36', NULL, 0, 0, 1, 'ACTIVO'),
-(2, '2024-02-29 18:58:04', NULL, 0, 0, 1, 'ACTIVO'),
-(3, '2024-02-29 18:58:20', NULL, 0, 0, 3, 'ACTIVO'),
-(4, '2024-02-29 18:58:43', NULL, 0, 0, 3, 'ACTIVO'),
-(5, '2024-02-29 18:59:30', NULL, 0, 0, 1, 'ACTIVO'),
+(1, '2024-02-29 18:33:36', '2024-03-08 00:00:00', 0, 50700, 1, 'CERRADO'),
+(3, '2024-02-29 18:58:20', '2024-03-08 21:04:06', 0, 117000, 3, 'CERRADO'),
+(4, '2024-02-29 18:58:43', '2024-03-09 15:45:47', 0, 13000, 3, 'CERRADO'),
+(5, '2024-02-29 18:59:30', '2024-03-08 00:00:00', 2860, 11440, 1, 'CERRADO'),
 (6, '2024-02-29 19:02:19', NULL, 0, 0, 2, 'ACTIVO'),
-(7, '2024-02-29 19:04:34', NULL, 0, 0, 5, 'ACTIVO');
+(7, '2024-02-29 19:04:34', NULL, 0, 0, 5, 'ACTIVO'),
+(8, '2024-03-09 15:41:30', '2024-03-09 15:41:57', 7020, 28080, 1, 'CERRADO');
 
 -- --------------------------------------------------------
 
@@ -205,7 +227,7 @@ ALTER TABLE `productos_no_elaborados`
 -- AUTO_INCREMENT de la tabla `items`
 --
 ALTER TABLE `items`
-  MODIFY `id_items` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_items` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=36;
 
 --
 -- AUTO_INCREMENT de la tabla `mesas`
@@ -217,7 +239,7 @@ ALTER TABLE `mesas`
 -- AUTO_INCREMENT de la tabla `pedidos`
 --
 ALTER TABLE `pedidos`
-  MODIFY `id_pedidos` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id_pedidos` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT de la tabla `precios`

@@ -5,6 +5,7 @@ import Modelo.ItemsDTO;
 import Modelo.PedidoDTO;
 import Modelo.PedidoDTO.EstadoPedido;
 import Modelo.ProductoCompletoDTO;
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -89,17 +90,24 @@ public class PedidoDAO implements IDAO {
 
     @Override
     public Boolean actualizar(Object e) {
-        PedidoDTO ped = (PedidoDTO) e;
-        String sql = "update Pedidos set fecha_apertura = ?, fecha_cierre = ?, descuento = ?, costo_total = ?, id_items = ? where id_pedidos = ?;";
+        PedidoDTO pedido = (PedidoDTO) e;
+        String sql = "UPDATE pedidos SET fecha_cierre = ?, descuento = ?, costo_total = ?, estado_pedido = ? WHERE id_pedidos = ?";
         try {
             PreparedStatement st = ConnectorController.getConnection().prepareStatement(sql);
-            st.setString(1, String.valueOf(ped.getFechaApertura()));
-            st.setString(2, String.valueOf(ped.getFechaCierre()));
-            st.setString(3, String.valueOf(ped.getDescuento()));
-            st.setString(4, String.valueOf(ped.getCostoTotal()));
-            st.setString(5, String.valueOf(ped.getProducto()));
-            st.executeUpdate();
-            return true;
+            // Establecer los parámetros del PreparedStatement adecuadamente
+            SimpleDateFormat fechaModificada = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            String fechaNuevaCierre = fechaModificada.format(pedido.getFechaCierre());
+            st.setString(1, fechaNuevaCierre);
+            st.setFloat(2, pedido.getDescuento());
+            st.setFloat(3, pedido.getCostoTotal());
+            st.setString(4, pedido.getEstadoPedido().toString()); // Convertir el enum EstadoPedido a String
+            st.setInt(5, pedido.getId()); // Establecer el id del pedido
+
+            // Ejecutar la actualización
+            int filasActualizadas = st.executeUpdate();
+
+            // Verificar si se actualizó correctamente al menos una fila
+            return filasActualizadas > 0;
         } catch (SQLException ex) {
             Logger.getLogger(PedidoDAO.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
@@ -111,7 +119,7 @@ public class PedidoDAO implements IDAO {
     @Override
     public void borrar(Object e) {
         PedidoDTO ped = (PedidoDTO) e;
-        String sql = "DELETE FROM Pedidos WHERE id_pedidos = ?";
+        String sql = "DELETE FROM pedidos WHERE id_pedidos = ?";
         try {
             PreparedStatement st = ConnectorController.getConnection().prepareStatement(sql);
             st.setInt(1, ped.getId());
@@ -125,22 +133,46 @@ public class PedidoDAO implements IDAO {
         }
     }
 
+    /*
     @Override
     public Object porId(int id) {
-        PedidoDTO ped = new PedidoDTO();
-        String sql = "SELECT it.id_items, it.cantidad, it.costo_total, it.id_pedidos, it.id_productos, ped.id_pedidos, ped.fecha_apertura, ped.fecha_cierre, ped.descuento, ped.costo_total, ped.id_mesas, ped.estado_pedido from pedidos AS ped INNER JOIN items AS it ON ped.id_pedido = it.id_pedidos WHERE id_pedidos = ?";
-        try {
-            PreparedStatement st = ConnectorController.getConnection().prepareStatement(sql);
-            st.setString(1, Integer.toString(id));
+        PedidoDTO ped = null;
+        String sql = "SELECT ped.descuento, ped.costo_total, "
+               + "it.id_items, it.cantidad, it.costo_total AS costo_item, "
+               + "prod.id_productos, prod.nombre, prod.descripcion "
+               + "FROM pedidos AS ped "
+               + "INNER JOIN items AS it ON ped.id_pedidos = it.id_pedidos "
+               + "INNER JOIN productos AS prod ON it.id_productos = prod.id_productos "
+               + "WHERE ped.id_pedidos = ?";
+        try(PreparedStatement st = ConnectorController.getConnection().prepareStatement(sql)) {
+            
+            st.setInt(1, id);
             ResultSet result = st.executeQuery();
-            //JOptionPane.showMessageDialog(null,"En Execute Query");
+            ped = new PedidoDTO();
             if (result.next()) {
-                
-                ItemsDTO it = new ItemsDTO(result.getInt(1), result.getInt(2), result.getFloat(3), (ProductoCompletoDTO) result.getObject(4));
-                PedidoDTO clone = new PedidoDTO(result.getInt(5), result.getDate(6), result.getDate(7), result.getFloat(8), result.getFloat(9), (List<ItemsDTO>) result.getObject(10));
-                ped = clone;
-                it = null;
+                // Crear un nuevo objeto PedidoDTO y asignarle los valores de la fila actual del ResultSet
+               
+                ped.setDescuento(result.getFloat("descuento"));
+                ped.setCostoTotal(result.getFloat("costo_total"));
             }
+            List<ItemsDTO> items = new ArrayList<>();
+            while(result.next()){
+                
+                ProductoCompletoDTO producto = new ProductoCompletoDTO();
+                producto.setNombre(result.getString("nombre"));
+                producto.setDescripcion(result.getString("descripcion"));
+                
+                // Crear un nuevo objeto ItemsDTO y asignarle los valores de la fila actual del ResultSet
+                
+                ItemsDTO item = new ItemsDTO();
+                item.setCantidad(result.getInt("cantidad"));
+                item.setCostoTotal(result.getFloat("costo_total"));
+                item.setProducto(producto);
+
+               items.add(item);
+               
+            }
+         ped.setItems(items);
         } catch (SQLException ex) {
             Logger.getLogger(PedidoDAO.class.getName()).log(Level.SEVERE, null, ex);
             JOptionPane.showMessageDialog(null, "Error en seleccion de ID");
@@ -148,6 +180,83 @@ public class PedidoDAO implements IDAO {
             ConnectorController.CloseConnection();
         }
         return ped;
+    }
+     */
+    @Override
+public Object porId(int id) {
+    PedidoDTO ped = null;
+    String sql = "SELECT ped.descuento, ped.costo_total, "
+           + "it.id_items, it.cantidad, it.costo_total AS costo_item, "
+           + "prod.id_productos, prod.nombre, prod.descripcion "
+           + "FROM pedidos AS ped "
+           + "INNER JOIN items AS it ON ped.id_pedidos = it.id_pedidos "
+           + "INNER JOIN productos AS prod ON it.id_productos = prod.id_productos "
+           + "WHERE ped.id_pedidos = ?";
+    try {
+        try(Connection conn = ConnectorController.getConnection(); 
+            PreparedStatement st = conn.prepareStatement(sql)) {
+            
+            st.setInt(1, id);
+            ResultSet result = st.executeQuery();
+            ped = new PedidoDTO();
+            if (result.next()) {
+                // Crear un nuevo objeto PedidoDTO y asignarle los valores de la fila actual del ResultSet
+               
+                ped.setDescuento(result.getFloat("descuento"));
+                ped.setCostoTotal(result.getFloat("costo_total"));
+            }
+            List<ItemsDTO> items = new ArrayList<>();
+            while(result.next()){
+                
+                ProductoCompletoDTO producto = new ProductoCompletoDTO();
+                producto.setNombre(result.getString("nombre"));
+                producto.setDescripcion(result.getString("descripcion"));
+                
+                // Crear un nuevo objeto ItemsDTO y asignarle los valores de la fila actual del ResultSet
+                
+                ItemsDTO item = new ItemsDTO();
+                item.setCantidad(result.getInt("cantidad"));
+                item.setCostoTotal(result.getFloat("costo_total"));
+                item.setProducto(producto);
+
+               items.add(item);
+               
+            }
+         ped.setItems(items);
+        }
+    } catch (SQLException ex) {
+        Logger.getLogger(PedidoDAO.class.getName()).log(Level.SEVERE, null, ex);
+        JOptionPane.showMessageDialog(null, "Error en seleccion de ID");
+    } finally {
+        ConnectorController.CloseConnection();
+    }
+    return ped;
+}
+
+    public List<PedidoDTO> mostrarPedidosCerrados(int idMesa) {
+        List<PedidoDTO> listaPedido = new ArrayList<>();
+        String sql = "SELECT id_pedidos, fecha_apertura, fecha_cierre, costo_total FROM pedidos WHERE id_mesas = ? AND estado_pedido = 'CERRADO'";
+        try {
+            PreparedStatement state = ConnectorController.getConnection().prepareStatement(sql);
+            state.setInt(1, idMesa);
+            ResultSet result = state.executeQuery();
+            while (result.next()) {
+                int id = result.getInt(1);
+                Date fechaApertura = result.getDate(2);
+                Date fechaCierre = result.getDate(3);
+                float costoTotal = result.getFloat(4);
+                //String estadoPedidoStr = result.getString(7); // Obtener el estado del pedido como String
+                //EstadoPedido estadoPedido = EstadoPedido.valueOf(estadoPedidoStr); // Convertir el String al enum EstadoPedido
+
+                PedidoDTO ped = new PedidoDTO(id, fechaApertura, fechaCierre, costoTotal);
+                listaPedido.add(ped);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(PedidoDAO.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            ConnectorController.CloseConnection();
+        }
+        return listaPedido;
     }
 
 }

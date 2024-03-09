@@ -54,11 +54,19 @@ public class ItemController {
         ItemsDAO.borrar(borrarItems);
 
     }
-    public List obtenerItemsPedidoActivo(int pedidoActivo){
-        
-       return ItemsDAO.obtenerItemsPedidoActivo(pedidoActivo);
+
+    public List obtenerItemsPedidoActivo(int pedidoActivo) {
+
+        return ItemsDAO.obtenerItemsPedidoActivo(pedidoActivo);
     }
 
+    public void BorrarItemsPorPedido(int idPedido) {
+        ItemsDAO.borrarItemsPorPedido(idPedido);
+    }
+    
+    public float calcularTotalPedidoActivo(int idPedido){
+        return ItemsDAO.calcularTotalPedidoActivo(idPedido);
+    }
     /*public List<ItemsDTO> pedirListaItem() {
         try {
             listaItem = leerItem();

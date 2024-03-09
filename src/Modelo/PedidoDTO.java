@@ -1,5 +1,6 @@
 package Modelo;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -15,7 +16,7 @@ public class PedidoDTO {
     private Date fechaCierre;
     private float descuento;
     private float costoTotal;
-    private List<ItemsDTO> producto;
+    private List<ItemsDTO> items;
     private EstadoPedido estadoPedido;
     private int idMesa;
 
@@ -24,6 +25,23 @@ public class PedidoDTO {
 
     public PedidoDTO(int id) {
         this.id = id;
+    }
+
+    public PedidoDTO(int id, Date fechaApertura, Date fechaCierre, float costoTotal) {
+        this.id = id;
+        this.fechaApertura = fechaApertura;
+        this.fechaCierre = fechaCierre;
+        this.costoTotal = costoTotal;
+
+    }
+
+    public PedidoDTO(int id, Date fechaCierre, float descuento, float costoTotal, EstadoPedido estadoPedido) {
+        this.id = id;
+        this.fechaCierre = fechaCierre;
+        this.descuento = descuento;
+        this.costoTotal = costoTotal;
+        this.estadoPedido = estadoPedido;
+
     }
 
     public PedidoDTO(Date fechaApertura, Date fechaCierre, float descuento, float costoTotal, EstadoPedido estadoPedido, int idMesa) {
@@ -35,15 +53,16 @@ public class PedidoDTO {
         this.idMesa = idMesa;
     }
 
-    public PedidoDTO(Date fechaApertura, Date fechaCierre, float descuento, float costoTotal, List<ItemsDTO> producto, EstadoPedido estadoPedido) {
+    public PedidoDTO(Date fechaApertura, Date fechaCierre, float descuento, float costoTotal, List<ItemsDTO> items, EstadoPedido estadoPedido) {
         this.fechaApertura = fechaApertura;
         this.fechaCierre = fechaCierre;
         this.descuento = descuento;
         this.costoTotal = costoTotal;
-        this.producto = producto;
+        this.items = items;
         this.estadoPedido = estadoPedido;
     }
- public PedidoDTO(int id, Date fechaApertura, Date fechaCierre, float descuento, float costoTotal, int idMesa, EstadoPedido estadoPedido) {
+
+    public PedidoDTO(int id, Date fechaApertura, Date fechaCierre, float descuento, float costoTotal, int idMesa, EstadoPedido estadoPedido) {
         this.id = id;
         this.fechaApertura = fechaApertura;
         this.fechaCierre = fechaCierre;
@@ -51,15 +70,16 @@ public class PedidoDTO {
         this.costoTotal = costoTotal;
         this.idMesa = idMesa;
         this.estadoPedido = estadoPedido;
-        
+
     }
-    public PedidoDTO(int id, Date fechaApertura, Date fechaCierre, float descuento, float costoTotal, List<ItemsDTO> producto, EstadoPedido estadoPedido, int idMesa) {
+
+    public PedidoDTO(int id, Date fechaApertura, Date fechaCierre, float descuento, float costoTotal, List<ItemsDTO> items, EstadoPedido estadoPedido, int idMesa) {
         this.id = id;
         this.fechaApertura = fechaApertura;
         this.fechaCierre = fechaCierre;
         this.descuento = descuento;
         this.costoTotal = costoTotal;
-        this.producto = producto;
+        this.items = items;
         this.estadoPedido = estadoPedido;
         this.idMesa = idMesa;
     }
@@ -80,12 +100,12 @@ public class PedidoDTO {
         this.costoTotal = costoTotal;
     }
 
-    public List<ItemsDTO> getProducto() {
-        return producto;
+    public List<ItemsDTO> getItems() {
+        return items;
     }
 
-    public void setProducto(List<ItemsDTO> producto) {
-        this.producto = producto;
+    public void setItems(List<ItemsDTO> items) {
+        this.items = items;
     }
 
     public Date getFechaApertura() {
@@ -128,6 +148,13 @@ public class PedidoDTO {
         this.idMesa = idMesa;
     }
 
+    public void agregarItem(ItemsDTO item) {
+        if (items == null) {
+            items = new ArrayList<>();
+        }
+        items.add(item);
+    }
+
     @Override
     public int hashCode() {
         int hash = 7;
@@ -136,7 +163,7 @@ public class PedidoDTO {
         hash = 41 * hash + Objects.hashCode(this.fechaCierre);
         hash = 41 * hash + Float.floatToIntBits(this.descuento);
         hash = 41 * hash + Float.floatToIntBits(this.costoTotal);
-        hash = 41 * hash + Objects.hashCode(this.producto);
+        hash = 41 * hash + Objects.hashCode(this.items);
         return hash;
     }
 
@@ -167,12 +194,12 @@ public class PedidoDTO {
         if (!Objects.equals(this.fechaCierre, other.fechaCierre)) {
             return false;
         }
-        return Objects.equals(this.producto, other.producto);
+        return Objects.equals(this.items, other.items);
     }
 
     @Override
     public String toString() {
-        return "PedidoDTO{" + "id=" + id + ", fechaApertura=" + fechaApertura + ", fechaCierre=" + fechaCierre + ", descuento=" + descuento + ", costoTotal=" + costoTotal + ", producto=" + producto + '}';
+        return "PedidoDTO{" + "id=" + id + ", fechaApertura=" + fechaApertura + ", fechaCierre=" + fechaCierre + ", descuento=" + descuento + ", costoTotal=" + costoTotal + ", producto=" + items + '}';
     }
 
 }
