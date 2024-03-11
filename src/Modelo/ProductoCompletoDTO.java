@@ -1,13 +1,5 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package Modelo;
 
-/**
- *
- * @author nahue
- */
 public class ProductoCompletoDTO {
 
     private int idProducto;
@@ -17,7 +9,6 @@ public class ProductoCompletoDTO {
     private float precio;
     private int stock;
 
-    // Constructor
     public ProductoCompletoDTO(int idProducto, String nombre, String descripcion, float costo, float precio, int stock) {
         this.idProducto = idProducto;
         this.nombre = nombre;
@@ -50,6 +41,7 @@ public class ProductoCompletoDTO {
         this.descripcion = descripcion;
         this.precio = precio;
     }
+
     public ProductoCompletoDTO(String nombre, String descripcion, float precio) {
         this.nombre = nombre;
         this.descripcion = descripcion;
@@ -64,7 +56,6 @@ public class ProductoCompletoDTO {
     public ProductoCompletoDTO() {
     }
 
-    // Getters y setters
     public int getIdProducto() {
         return idProducto;
     }

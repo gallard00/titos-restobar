@@ -24,11 +24,7 @@ public class ProductoNoElaboradoDAO extends ProductoDAO {
     public Boolean crear(Object e) {
         ProductoNoElaboradoDTO prod = (ProductoNoElaboradoDTO) e;
         String sql = "INSERT INTO productos_no_elaborados(stock, id_productos) VALUES (?, ?);";
-        /*
-        Se utiliza un try-with-resources (try) 
-        para asegurar que los recursos como las conexiones y
-        los resultados se cierren automáticamente después de su uso
-         */
+        
         try (PreparedStatement st = ConnectorController.getConnection().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             st.setString(1, String.valueOf(prod.getStock()));
             st.setString(2, String.valueOf(prod.getIdProducto()));
@@ -61,7 +57,7 @@ public class ProductoNoElaboradoDAO extends ProductoDAO {
 
     public Boolean actualizarProductoNoElaborado(Object e) {
         ProductoNoElaboradoDTO prod = (ProductoNoElaboradoDTO) e;
-        String sql = "UPDATE productos_no_elaborados set stock = ? WHERE id_productos = ?;";
+        String sql = "UPDATE productos_no_elaborados SET stock = ? WHERE id_productos = ?;";
         try (PreparedStatement st = ConnectorController.getConnection().prepareStatement(sql)) {
             st.setString(1, String.valueOf(prod.getStock()));
             st.setString(2, String.valueOf(prod.getIdProducto()));
@@ -92,7 +88,7 @@ public class ProductoNoElaboradoDAO extends ProductoDAO {
     
     public Object porId(int idProducto, int stock) {
         ProductoNoElaboradoDTO productoNoElaborado = new ProductoNoElaboradoDTO();
-        String sql = "select id_productos, stock FROM productos WHERE id_productos = ? AND stock = ?";
+        String sql = "SELECT id_productos, stock FROM productos WHERE id_productos = ? AND stock = ?";
         try (PreparedStatement st = ConnectorController.getConnection().prepareStatement(sql)) {
             st.setString(1, Integer.toString(idProducto));
             st.setString(2, Integer.toString(stock));

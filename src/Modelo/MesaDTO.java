@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Objects;
 
 public class MesaDTO {
-    
+
     private int id;
     private String nombre;
     private List<PedidoDTO> pedido;
@@ -83,10 +83,5 @@ public class MesaDTO {
     public String toString() {
         return "MesaDTO{" + "id=" + id + ", nombre=" + nombre + ", pedido=" + pedido + '}';
     }
-    
-    
 
-  
-    
-    
 }

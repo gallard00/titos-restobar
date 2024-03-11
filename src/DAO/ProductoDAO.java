@@ -25,11 +25,7 @@ public class ProductoDAO implements IDAO {
     public Boolean crear(Object e) {
         ProductoDTO prod = (ProductoDTO) e;
         String sql = "INSERT INTO productos(id_productos, nombre, descripcion, costo) VALUE (?, ?, ?, ?);";
-        /*
-        Se utiliza un try-with-resources (try) 
-        para asegurar que los recursos como las conexiones y
-        los resultados se cierren automáticamente después de su uso
-         */
+        
         try (PreparedStatement st = ConnectorController.getConnection().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             st.setString(1, String.valueOf(prod.getIdProducto()));
             st.setString(2, prod.getNombre());
@@ -50,7 +46,6 @@ public class ProductoDAO implements IDAO {
         return false;
     }
 
-    // Método para obtener todos los productos con información de precios y stock
     public List<ProductoCompletoDTO> obtenerProductosCompletos() throws SQLException {
         List<ProductoCompletoDTO> productos = new ArrayList<>();
         String query = "SELECT p.id_productos, p.nombre, p.descripcion, p.costo, pn.stock, pr.valor "
@@ -99,7 +94,7 @@ public class ProductoDAO implements IDAO {
         }
         for (ProductoCompletoDTO producto : salida) {
             String nombreYDescripcion = producto.getNombre() + " - " + producto.getDescripcion();
-            System.out.println(nombreYDescripcion); // O cualquier otra acción que desees realizar
+            System.out.println(nombreYDescripcion); 
         }
         return salida;
     }

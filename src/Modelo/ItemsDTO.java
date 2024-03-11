@@ -92,13 +92,6 @@ public class ItemsDTO {
         this.costoTotal = costoTotal;
     }
 
-    /*public void setCostoTotal(int cantidad, ProductoCompletoDTO producto) {
-
-        if (producto != null) {
-            this.costoTotal = producto.getPrecio() * cantidad;
-        }
-    }*/
-
     public ProductoCompletoDTO getProducto() {
         return producto;
     }

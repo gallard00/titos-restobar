@@ -133,46 +133,44 @@ public class PedidoDAO implements IDAO {
         }
     }
 
-    /*
     @Override
     public Object porId(int id) {
         PedidoDTO ped = null;
         String sql = "SELECT ped.descuento, ped.costo_total, "
-               + "it.id_items, it.cantidad, it.costo_total AS costo_item, "
-               + "prod.id_productos, prod.nombre, prod.descripcion "
-               + "FROM pedidos AS ped "
-               + "INNER JOIN items AS it ON ped.id_pedidos = it.id_pedidos "
-               + "INNER JOIN productos AS prod ON it.id_productos = prod.id_productos "
-               + "WHERE ped.id_pedidos = ?";
-        try(PreparedStatement st = ConnectorController.getConnection().prepareStatement(sql)) {
-            
-            st.setInt(1, id);
-            ResultSet result = st.executeQuery();
-            ped = new PedidoDTO();
-            if (result.next()) {
-                // Crear un nuevo objeto PedidoDTO y asignarle los valores de la fila actual del ResultSet
-               
-                ped.setDescuento(result.getFloat("descuento"));
-                ped.setCostoTotal(result.getFloat("costo_total"));
-            }
-            List<ItemsDTO> items = new ArrayList<>();
-            while(result.next()){
-                
-                ProductoCompletoDTO producto = new ProductoCompletoDTO();
-                producto.setNombre(result.getString("nombre"));
-                producto.setDescripcion(result.getString("descripcion"));
-                
-                // Crear un nuevo objeto ItemsDTO y asignarle los valores de la fila actual del ResultSet
-                
-                ItemsDTO item = new ItemsDTO();
-                item.setCantidad(result.getInt("cantidad"));
-                item.setCostoTotal(result.getFloat("costo_total"));
-                item.setProducto(producto);
+                + "it.id_items, it.cantidad, it.costo_total AS costo_item, "
+                + "prod.id_productos, prod.nombre, prod.descripcion "
+                + "FROM pedidos AS ped "
+                + "INNER JOIN items AS it ON ped.id_pedidos = it.id_pedidos "
+                + "INNER JOIN productos AS prod ON it.id_productos = prod.id_productos "
+                + "WHERE ped.id_pedidos = ?";
+        try {
+            try (Connection conn = ConnectorController.getConnection(); PreparedStatement st = conn.prepareStatement(sql)) {
 
-               items.add(item);
-               
+                st.setInt(1, id);
+                ResultSet result = st.executeQuery();
+                ped = new PedidoDTO();
+                if (result.next()) {
+
+                    ped.setDescuento(result.getFloat("descuento"));
+                    ped.setCostoTotal(result.getFloat("costo_total"));
+                }
+                List<ItemsDTO> items = new ArrayList<>();
+                while (result.next()) {
+
+                    ProductoCompletoDTO producto = new ProductoCompletoDTO();
+                    producto.setNombre(result.getString("nombre"));
+                    producto.setDescripcion(result.getString("descripcion"));
+
+                    ItemsDTO item = new ItemsDTO();
+                    item.setCantidad(result.getInt("cantidad"));
+                    item.setCostoTotal(result.getFloat("costo_total"));
+                    item.setProducto(producto);
+
+                    items.add(item);
+
+                }
+                ped.setItems(items);
             }
-         ped.setItems(items);
         } catch (SQLException ex) {
             Logger.getLogger(PedidoDAO.class.getName()).log(Level.SEVERE, null, ex);
             JOptionPane.showMessageDialog(null, "Error en seleccion de ID");
@@ -181,57 +179,6 @@ public class PedidoDAO implements IDAO {
         }
         return ped;
     }
-     */
-    @Override
-public Object porId(int id) {
-    PedidoDTO ped = null;
-    String sql = "SELECT ped.descuento, ped.costo_total, "
-           + "it.id_items, it.cantidad, it.costo_total AS costo_item, "
-           + "prod.id_productos, prod.nombre, prod.descripcion "
-           + "FROM pedidos AS ped "
-           + "INNER JOIN items AS it ON ped.id_pedidos = it.id_pedidos "
-           + "INNER JOIN productos AS prod ON it.id_productos = prod.id_productos "
-           + "WHERE ped.id_pedidos = ?";
-    try {
-        try(Connection conn = ConnectorController.getConnection(); 
-            PreparedStatement st = conn.prepareStatement(sql)) {
-            
-            st.setInt(1, id);
-            ResultSet result = st.executeQuery();
-            ped = new PedidoDTO();
-            if (result.next()) {
-                // Crear un nuevo objeto PedidoDTO y asignarle los valores de la fila actual del ResultSet
-               
-                ped.setDescuento(result.getFloat("descuento"));
-                ped.setCostoTotal(result.getFloat("costo_total"));
-            }
-            List<ItemsDTO> items = new ArrayList<>();
-            while(result.next()){
-                
-                ProductoCompletoDTO producto = new ProductoCompletoDTO();
-                producto.setNombre(result.getString("nombre"));
-                producto.setDescripcion(result.getString("descripcion"));
-                
-                // Crear un nuevo objeto ItemsDTO y asignarle los valores de la fila actual del ResultSet
-                
-                ItemsDTO item = new ItemsDTO();
-                item.setCantidad(result.getInt("cantidad"));
-                item.setCostoTotal(result.getFloat("costo_total"));
-                item.setProducto(producto);
-
-               items.add(item);
-               
-            }
-         ped.setItems(items);
-        }
-    } catch (SQLException ex) {
-        Logger.getLogger(PedidoDAO.class.getName()).log(Level.SEVERE, null, ex);
-        JOptionPane.showMessageDialog(null, "Error en seleccion de ID");
-    } finally {
-        ConnectorController.CloseConnection();
-    }
-    return ped;
-}
 
     public List<PedidoDTO> mostrarPedidosCerrados(int idMesa) {
         List<PedidoDTO> listaPedido = new ArrayList<>();
@@ -245,8 +192,6 @@ public Object porId(int id) {
                 Date fechaApertura = result.getDate(2);
                 Date fechaCierre = result.getDate(3);
                 float costoTotal = result.getFloat(4);
-                //String estadoPedidoStr = result.getString(7); // Obtener el estado del pedido como String
-                //EstadoPedido estadoPedido = EstadoPedido.valueOf(estadoPedidoStr); // Convertir el String al enum EstadoPedido
 
                 PedidoDTO ped = new PedidoDTO(id, fechaApertura, fechaCierre, costoTotal);
                 listaPedido.add(ped);

@@ -20,24 +20,7 @@ public class PrecioDAO implements IDAO {
     public PrecioDAO() throws SQLException {
         ConnectorController = ControladoraConnector.GetInstanceConnector();
     }
-/*
-    String sql = "insert into precios(id_precios, valor, fecha, id_productos) value (?, ?, ?, ?);";
-        try {
-            PreparedStatement st = ConnectorController.getConnection().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-            st.setString(1, String.valueOf(pre.getId()));
-            st.setString(2, String.valueOf(pre.getValor()));
-            
-            //Formatear la fehca antes de guardarla
-            SimpleDateFormat fechaModificada = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            String fechaNueva = fechaModificada.format(pre.getFecha());
-            st.setString(3, fechaNueva);
-            
-            st.setString(4, String.valueOf(pre.getId()));
-            st.execute();
-            ResultSet rs = st.getGeneratedKeys();
-            if (rs.next()) {
-            rs.getInt(1);
-            }*/
+
     @Override
     public Boolean crear(Object e) {
         PrecioDTO pre = (PrecioDTO) e;
@@ -46,8 +29,6 @@ public class PrecioDAO implements IDAO {
             PreparedStatement st = ConnectorController.getConnection().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             st.setString(1, String.valueOf(pre.getId()));
             st.setString(2, String.valueOf(pre.getValor()));
-            
-            //Formatear la fehca antes de guardarla
             SimpleDateFormat fechaModificada = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             String fechaNueva = fechaModificada.format(pre.getFecha());
             st.setString(3, fechaNueva);
@@ -145,7 +126,7 @@ public class PrecioDAO implements IDAO {
     
     public Object PrecioActual() {
         PrecioDTO preact = new PrecioDTO();
-        String sql = "SELECT id_precios,valor,fecha, costo FROM precios WHERE id_precios = ?";
+        String sql = "SELECT id_precios, valor, fecha, costo FROM precios WHERE id_precios = ?";
         try {
             PreparedStatement state = ConnectorController.getConnection().prepareStatement(sql);
             ResultSet result = state.executeQuery();
