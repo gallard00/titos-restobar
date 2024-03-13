@@ -10,12 +10,31 @@ import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
+/**
+ * Formulario para mostrar la lista de productos disponibles y gestionar su
+ * información. Se encarga de mostrar la lista de productos en una tabla y
+ * proporciona opciones para interactuar con ellos. También permite agregar
+ * nuevos productos, editar los existentes y eliminarlos. Además, muestra los
+ * precios asociados a los productos.
+ *
+ * @throws SQLException Si ocurre un error al acceder a la base de datos.
+ */
 public class FormProducto extends javax.swing.JFrame {
 
+    // Lista para almacenar los IDs de los productos
     private List<Integer> listaIdProducto = new ArrayList<>();
+    // Controlador para gestionar la información de los productos
     ProductoController ProductoControladora;
+    // Controlador para gestionar los precios de los productos
     PrecioController PrecioControladora;
 
+    /**
+     * Constructor de la clase. Inicializa los controladores de productos y
+     * precios. Inicializa los componentes visuales del formulario. Verifica si
+     * hay productos disponibles para mostrar en la tabla.
+     *
+     * @throws SQLException Si ocurre un error al acceder a la base de datos.
+     */
     public FormProducto() throws SQLException {
         ProductoControladora = ProductoController.GetInstance();
         PrecioControladora = PrecioController.GetInstance();
@@ -23,24 +42,39 @@ public class FormProducto extends javax.swing.JFrame {
         verificarListaProductos();
     }
 
-    public void verificarListaProductos() 
-    {
+    /**
+     * Verifica si hay productos disponibles para mostrar en la tabla. Si hay
+     * productos, se reinicia la tabla para mostrar la lista actualizada.
+     */
+    public void verificarListaProductos() {
         if (!ProductoControladora.PedirListaProducto().isEmpty()) {
             reiniciarTablaProducto();
         }
     }
 
+    /**
+     * Valida los datos ingresados en los campos del formulario. Verifica que
+     * los campos de nombre, descripción, costo y aumento no estén vacíos.
+     * También verifica que el valor de la cantidad sea igual o mayor a 1 si el
+     * checkbox no está seleccionado.
+     *
+     * @return true si los datos son válidos, false si hay algún error en la
+     * validación.
+     */
     private boolean validarDatos() {
         {
             try {
+                // Verifica que los campos obligatorios no estén vacíos
                 if (txtNombreProducto.getText().equals("") || txtDescripcion.getText().equals("") || txtCosto.getText().equals("") || txtPorcentajeAumento.getText().equals("")) {
                     throw new Exception();
                 }
             } catch (Exception e) {
+                // Muestra un mensaje de error si algún campo obligatorio está vacío
                 JOptionPane.showMessageDialog(null, "Nombre, descripción, costo y aumento no pueden estar vacios. Reingrese:");
                 return false;
             }
             try {
+                // Verifica que el valor de la cantidad sea igual o mayor a 1 si el checkbox no está seleccionado
                 if (!chkBox.isSelected()) {
                     int spnValor = (int) spnCantidadProducto.getValue();
                     if (spnValor < 1) {
@@ -48,6 +82,7 @@ public class FormProducto extends javax.swing.JFrame {
                     }
                 }
             } catch (Exception e) {
+                // Muestra un mensaje de error si el valor de la cantidad es menor a 1
                 JOptionPane.showMessageDialog(null, "El valor de la cantidad debe ser igual o mayor 1:");
                 return false;
             }
@@ -55,34 +90,48 @@ public class FormProducto extends javax.swing.JFrame {
         return true;
     }
 
+    /**
+     * Reinicia la tabla de productos con los datos actualizados de la lista de
+     * productos. Obtiene la lista completa de productos y actualiza la tabla
+     * con los datos correspondientes.
+     */
     public void reiniciarTablaProducto() {
+        // Crea un nuevo modelo de tabla
         DefaultTableModel modeloProducto = new DefaultTableModel();
-
+        // Obtiene la lista completa de productos
         List<? extends Object> ListaProducto = ProductoControladora.pedirListaProductoCompleto();
-
+        // Agrega las columnas al modelo de la tabla
         modeloProducto.addColumn("Id");
         modeloProducto.addColumn("Nombre");
         modeloProducto.addColumn("Descripcion");
         modeloProducto.addColumn("Costo");
         modeloProducto.addColumn("Precio");
         modeloProducto.addColumn("Cantidad");
-
+        // Itera sobre la lista de productos para agregar cada fila a la tabla
         for (int i = 0; i < ListaProducto.size(); i++) {
             Object[] rowData = ProductoControladora.RequestTableRow(i);
             modeloProducto.addRow(rowData);
         }
-
+        // Establece el modelo de tabla actualizado en la tabla de productos
         datosTablaProducto.setModel(modeloProducto);
         datosTablaProducto.setCellSelectionEnabled(false);
         datosTablaProducto.setRowSelectionAllowed(true);
     }
 
+    /**
+     * Obtiene el índice de la fila seleccionada en la tabla de productos.
+     *
+     * @return El índice de la fila seleccionada. Devuelve -1 si no hay ninguna
+     * fila seleccionada.
+     */
     private int seleccionarFila() {
+        // Obtiene el índice de la fila seleccionada
         int i = datosTablaProducto.getSelectedRow();
-
+        // Verifica si se ha seleccionado una fila válida
         if (i > -1) {
             return i;
         }
+        // Devuelve -1 si no hay ninguna fila seleccionada
         return -1;
     }
 
@@ -289,37 +338,52 @@ public class FormProducto extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
+/**
+     * Maneja el evento de clic en el botón "Guardar". Valida los datos
+     * ingresados y guarda el producto en la base de datos si son válidos.
+     *
+     * @param evt El evento que desencadena esta acción.
+     */
     private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
         if (evt.getSource() == btnGuardar) {
+            // Verifica si los datos ingresados son válidos
             if (validarDatos() == false) {
+                // No hace nada si los datos no son válidos
             } else {
+                // Obtiene la fila seleccionada en la tabla de productos
                 int filaSeleccionada = seleccionarFila();
                 String nombre = txtNombreProducto.getText();
                 String descripcion = txtDescripcion.getText();
                 float costo = Float.parseFloat(txtCosto.getText());
                 float porcentajeAumento = Float.parseFloat(txtPorcentajeAumento.getText());
                 int stock = (int) spnCantidadProducto.getValue();
-
+                // Verifica si se ha seleccionado una fila en la tabla
                 if (filaSeleccionada >= 0) {
+                    // Obtiene el ID del producto seleccionado y su cantidad actual en stock
                     int idProducto = (int) datosTablaProducto.getModel().getValueAt(filaSeleccionada, 0);
                     int cantidadActual = (int) datosTablaProducto.getModel().getValueAt(filaSeleccionada, 5);
                     int nuevaCantidad = cantidadActual + stock;
+                    // Actualiza la cantidad de productos no elaborados en stock
                     ProductoControladora.actualizarProductoNoElaborado(idProducto, nuevaCantidad);
+                    // Verifica si el producto ya existe en la base de datos y lo actualiza
                     if (!ProductoControladora.SiProductoExiste(nombre, descripcion, costo)) {
                         if (ProductoControladora.ActualizarProducto(idProducto, nombre, descripcion, costo)) {
                             JOptionPane.showMessageDialog(null, "Producto Modificado");
+                            // Crea o actualiza el precio del producto
                             PrecioControladora.crearActualizarPrecio(idProducto, costo, porcentajeAumento);
                         }
                     } else {
                         JOptionPane.showMessageDialog(null, "Ya existe un producto con el mismo nombre y descripción. Solo se sumo la nueva cantidad. ");
                     }
                 } else {
+                    // Verifica si el producto ya existe en la base de datos y lo crea
                     if (!ProductoControladora.SiProductoExiste(nombre, descripcion, costo)) {
                         if (ProductoControladora.CrearProducto(nombre, descripcion, costo)) {
-
+                            // Obtiene el ID del nuevo producto
                             int idProductoNuevo = ProductoControladora.obtenerUltimoIDProducto();
+                            // Crea o actualiza el precio del producto
                             PrecioControladora.crearActualizarPrecio(idProductoNuevo, costo, porcentajeAumento);
+                            // Verifica si el producto es elaborado o no y lo guarda en la base de datos
                             if (!chkBox.isSelected()) {
                                 ProductoControladora.crearProductoNoElaborado(idProductoNuevo, stock);
                                 JOptionPane.showMessageDialog(null, "Producto no Elaborado Guardado");
@@ -331,19 +395,33 @@ public class FormProducto extends javax.swing.JFrame {
                         JOptionPane.showMessageDialog(null, "Ya existe un producto con el mismo nombre y descripción");
                     }
                 }
+                // Actualiza la tabla de productos
                 this.reiniciarTablaProducto();
     }//GEN-LAST:event_btnGuardarActionPerformed
         }
     }
 
+    /**
+     * Maneja el evento de clic en el CheckBox "chkBox". Habilita o deshabilita
+     * el spinner de cantidad dependiendo del estado del CheckBox.
+     *
+     * @param evt El evento que desencadena esta acción.
+     */
     private void chkBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkBoxActionPerformed
         if (!evt.equals(chkBox.isSelected())) {
+            // Habilita el spinner de cantidad si el CheckBox está seleccionado
             spnCantidadProducto.setEnabled(true);
         } else {
+            // Deshabilita el spinner de cantidad si el CheckBox no está seleccionado
             spnCantidadProducto.setEnabled(false);
         }
     }//GEN-LAST:event_chkBoxActionPerformed
-
+    /**
+     * Maneja el evento de clic en el botón "btnBorrar". Borra un producto
+     * seleccionado de la tabla de productos.
+     *
+     * @param evt El evento que desencadena esta acción.
+     */
     private void btnBorrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBorrarActionPerformed
         if (evt.getSource() == btnBorrar) {
             int filaSeleccionada = seleccionarFila();
@@ -352,8 +430,10 @@ public class FormProducto extends javax.swing.JFrame {
                 try {
                     int stock = (int) datosTablaProducto.getModel().getValueAt(filaSeleccionada, 5);
                     if (stock > 0) {
+                        // Borra el producto no elaborado si tiene stock
                         ProductoControladora.borrarProductoNoElaborado(idProducto);
                     } else {
+                        // Borra el producto
                         ProductoControladora.BorrarProducto(idProducto);
                     }
                 } catch (SQLException ex) {
@@ -374,7 +454,7 @@ public class FormProducto extends javax.swing.JFrame {
         txtNombreProducto.setText(nombre);
         txtDescripcion.setText(descripcion);
         txtCosto.setText(String.valueOf(costo));
-        
+
     }//GEN-LAST:event_datosTablaProductoMouseClicked
 
     private void btnVolverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVolverActionPerformed

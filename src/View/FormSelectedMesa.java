@@ -17,8 +17,14 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
+/**
+ * FormSelectedMesa es una interfaz gráfica que maneja los pedidos de una mesa
+ * seleccionada. Permite agregar productos, cerrar pedidos, ver pedidos activos
+ * y cerrados, y borrar pedidos cerrados.
+ */
 public final class FormSelectedMesa extends javax.swing.JFrame {
 
+    // Variables de instancia
     private JFrame ventanaActual;
     private String nombreMesa;
     private int idMesa;
@@ -26,6 +32,14 @@ public final class FormSelectedMesa extends javax.swing.JFrame {
     PedidoController pedidoControladora;
     ItemController controladoraItems;
 
+    /**
+     * Constructor de la clase FormSelectedMesa.
+     *
+     * @param nombreMesa El nombre de la mesa seleccionada.
+     * @param idMesa El identificador único de la mesa seleccionada.
+     * @throws SQLException Si ocurre un error al interactuar con la base de
+     * datos.
+     */
     public FormSelectedMesa(String nombreMesa, int idMesa) throws SQLException {
         controladoraItems = ItemController.GetInstance();
         pedidoControladora = PedidoController.GetInstance();
@@ -37,12 +51,22 @@ public final class FormSelectedMesa extends javax.swing.JFrame {
         verificarListaPedidosActivosYCerrados();
     }
 
+    /**
+     * Constructor privado vacío de la clase FormSelectedMesa.
+     *
+     * @throws SQLException Si ocurre un error al interactuar con la base de
+     * datos.
+     */
     private FormSelectedMesa() throws SQLException {
         controladoraItems = ItemController.GetInstance();
         pedidoControladora = PedidoController.GetInstance();
         initComponents();
     }
 
+    /**
+     * Verifica si hay pedidos activos y cerrados para la mesa seleccionada y
+     * actualiza la interfaz en consecuencia.
+     */
     public void verificarListaPedidosActivosYCerrados() {
         if (pedidoControladora.existePedidoActivo(idMesa)) {
             verPedidoActivo();
@@ -299,132 +323,253 @@ public final class FormSelectedMesa extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
+/**
+     * Método invocado cuando se presiona el botón "AGREGAR" para añadir un
+     * producto al pedido activo de la mesa. Si ya existe un pedido activo para
+     * la mesa, muestra un mensaje de advertencia y abre el formulario de
+     * pedido. De lo contrario, crea un nuevo pedido activo y luego abre el
+     * formulario de pedido.
+     *
+     * @param evt El evento de acción que desencadena la invocación del método.
+     */
     private void btnAgregarProductoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarProductoActionPerformed
 
         if (pedidoControladora.existePedidoActivo(idMesa)) {
             JOptionPane.showMessageDialog(this, "¡Ya hay un pedido activo para esta mesa!");
             ingresarFormPedido();
         } else {
+            // Obtener la fecha actual
             Date fechaApertura = new Date();
+            // Aún no hay fecha de cierre, descuento o costo total definidos para el nuevo pedido
             Date fechaCierre = null;
             float descuento = 0;
             float costoTotal = 0;
+            // Estado inicial del nuevo pedido es ACTIVO
             EstadoPedido estadoPedido = EstadoPedido.ACTIVO;
-
-           
+            // Crear un nuevo pedido activo para la mesa seleccionada
             pedidoControladora.crearPedido(fechaApertura, fechaCierre, descuento, costoTotal, estadoPedido, idMesa);
+            // Abrir el formulario de pedido para agregar productos
             ingresarFormPedido();
         }
     }//GEN-LAST:event_btnAgregarProductoActionPerformed
 
     private void btnBorrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBorrarActionPerformed
-       
-    }//GEN-LAST:event_btnBorrarActionPerformed
 
+    }//GEN-LAST:event_btnBorrarActionPerformed
+    /**
+     * Este método se activa cuando se hace clic en el botón "VOLVER". Oculta la
+     * ventana actual y muestra la ventana FormMesa. Si se produce una excepción
+     * SQLException, registra un mensaje de error detallado.
+     *
+     * @param evt El evento del botón "VOLVER"
+     */
     private void btnVolverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVolverActionPerformed
         try {
+            // Oculta la ventana actual
             this.setVisible(false);
+            // Crea una nueva instancia de FormMesa
             FormMesa formMesa = new FormMesa();
+            // Muestra la nueva instancia de FormMesa
             formMesa.setVisible(true);
         } catch (SQLException ex) {
+            // Maneja cualquier excepción SQLException registrando un mensaje de error detallado
             Logger.getLogger(FormSelectedMesa.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_btnVolverActionPerformed
-
+    /**
+     * Este método se activa cuando se hace clic en el botón "CERRAR". Calcula
+     * el descuento total aplicado al pedido activo, muestra un mensaje de
+     * confirmación y, si se confirma, cierra el pedido activo y actualiza la
+     * vista del pedido activo.
+     *
+     * @param evt El evento del botón "CERRAR"
+     */
     private void btnCerrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCerrarActionPerformed
-
+// Calcula el descuento total restando el descuento del total del pedido activo
         float totalDescuento = totalPedidoActivo() - calcularDescuento();
+        // Muestra un cuadro de diálogo de confirmación para cerrar el pedido
         int option = JOptionPane.showConfirmDialog(this, "¿Estás seguro de cerrar el pedido?", "Confirmar cierre de pedido", JOptionPane.YES_NO_OPTION);
+        // Si se confirma el cierre del pedido
         if (option == JOptionPane.YES_OPTION) {
-
+// Cierra el pedido activo con el descuento total calculado
             cerrarPedido(totalDescuento);
+            // Actualiza la vista del pedido activo
             verPedidoActivo();
         }
     }//GEN-LAST:event_btnCerrarActionPerformed
-
+    /**
+     * Este método se activa cuando se hace clic en el botón "VER" de un pedido
+     * cerrado en la tabla de pedidos cerrados. Obtiene la fila seleccionada en
+     * la tabla y verifica si se ha seleccionado un pedido cerrado. Si se ha
+     * seleccionado un pedido cerrado, abre el formulario correspondiente para
+     * ver el detalle del pedido cerrado. Si no se ha seleccionado ningún pedido
+     * cerrado, muestra un mensaje de advertencia.
+     *
+     * @param evt El evento del botón "VER"
+     */
     private void btnVerPedidoCerradoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVerPedidoCerradoActionPerformed
-
+        // Obtiene la fila seleccionada en la tabla de pedidos cerrados
         int filaSeleccionada = tablaPedidosCerrados.getSelectedRow();
-        
+        // Verifica si se ha seleccionado una fila
         if (filaSeleccionada != -1) {
+            // Si se ha seleccionado un pedido cerrado, abre el formulario correspondiente para ver el detalle del pedido cerrado
             ingresarFormPedidoCerrado();
         } else {
-
+            // Si no se ha seleccionado ningún pedido cerrado, muestra un mensaje de advertencia
             JOptionPane.showMessageDialog(this, "Por favor, seleccione un pedido cerrado para ver.", "Mensaje", JOptionPane.INFORMATION_MESSAGE);
         }
     }//GEN-LAST:event_btnVerPedidoCerradoActionPerformed
-
+    /**
+     * Este método se activa cuando se hace clic en el botón "BORRAR" de un
+     * pedido cerrado en la tabla de pedidos cerrados. Obtiene la fila
+     * seleccionada en la tabla y verifica si se ha seleccionado un pedido
+     * cerrado. Si se ha seleccionado un pedido cerrado, obtiene el ID del
+     * pedido y lo borra de la base de datos. Actualiza la tabla de pedidos
+     * cerrados para reflejar los cambios. Si no se ha seleccionado ningún
+     * pedido cerrado, muestra un mensaje de advertencia.
+     *
+     * @param evt El evento del botón "BORRAR"
+     */
     private void btnBorrarPedidoCerradoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBorrarPedidoCerradoActionPerformed
-
+        // Obtiene la fila seleccionada en la tabla de pedidos cerrados
         int filaSeleccionada = tablaPedidosCerrados.getSelectedRow();
+        // Verifica si se ha seleccionado una fila
         if (filaSeleccionada != -1) {
+            // Si se ha seleccionado un pedido cerrado, obtiene el ID del pedido y lo borra de la base de datos
             int idPedido = (int) tablaPedidosCerrados.getValueAt(filaSeleccionada, 0);
+            // Actualiza la tabla de pedidos cerrados para reflejar los cambios
             pedidoControladora.borrarPedido(idPedido);
             verPedidosCerrados();
         } else {
-
+            // Si no se ha seleccionado ningún pedido cerrado, muestra un mensaje de advertencia
             JOptionPane.showMessageDialog(this, "Por favor, seleccione un pedido cerrado para borrar.", "Mensaje", JOptionPane.INFORMATION_MESSAGE);
         }
     }//GEN-LAST:event_btnBorrarPedidoCerradoActionPerformed
-
+    /**
+     * Cierra el pedido activo para la mesa seleccionada. Obtiene el ID del
+     * pedido activo, calcula el descuento aplicado al pedido, obtiene la fecha
+     * de cierre actual, actualiza el estado del pedido a "CERRADO" en la base
+     * de datos, actualiza la tabla de pedidos cerrados para reflejar los
+     * cambios y muestra un mensaje de confirmación de que el pedido se ha
+     * cerrado exitosamente.
+     */
     private void cerrarPedido(float totalDescuento) {
+        // Obtiene el ID del pedido activo para la mesa seleccionada
 
         int idPedido = pedidoControladora.obtenerIdPedidoActivo(idMesa);
+        // Calcula el descuento aplicado al pedido
+
         float descuento = calcularDescuento();
+        // Obtiene la fecha de cierre actual
 
         Date fechaCierre = new Date();
+        // Actualiza el estado del pedido a "CERRADO" en la base de datos
 
         pedidoControladora.actualizarPedido(idPedido, fechaCierre, descuento, totalDescuento, EstadoPedido.CERRADO);
+        // Actualiza la tabla de pedidos cerrados para reflejar los cambios
 
         verPedidosCerrados();
+        // Muestra un mensaje de confirmación de que el pedido se ha cerrado exitosamente
 
         JOptionPane.showMessageDialog(this, "Pedido cerrado exitosamente.");
+        // Actualiza la visualización del pedido activo
+
         verPedidoActivo();
     }
 
+    /**
+     * Calcula el costo total del pedido activo para la mesa seleccionada.
+     * Obtiene el ID del pedido activo, luego utiliza este ID para calcular el
+     * costo total del pedido activo consultando la base de datos a través del
+     * controlador de ítems.
+     *
+     * @return El costo total del pedido activo.
+     */
     private float totalPedidoActivo() {
+        // Obtiene el ID del pedido activo para la mesa seleccionada
+
         int idPedido = pedidoControladora.obtenerIdPedidoActivo(idMesa);
+        // Calcula el costo total del pedido activo utilizando el controlador de ítems
+
         float total = controladoraItems.calcularTotalPedidoActivo(idPedido);
         return total;
     }
 
+    /**
+     * Calcula el descuento aplicado al pedido activo basado en el valor
+     * ingresado en el spinner de descuento. El descuento se calcula como un
+     * porcentaje del costo total del pedido activo. Si el valor ingresado es un
+     * entero o un float, se calcula el descuento y se devuelve. Si el valor no
+     * es ni entero ni float, se devuelve cero.
+     *
+     * @return El descuento aplicado al pedido activo.
+     */
     private float calcularDescuento() {
+        // Obtiene el costo total del pedido activo
+
         float total = totalPedidoActivo();
+        // Obtiene el valor ingresado en el spinner de descuento
 
         Object value = spnDescuento.getValue();
+        // Verifica si el valor ingresado es un entero
 
         if (value instanceof Integer) {
+            // Convierte el valor a float
 
             float descuentoPorcentaje = ((Integer) value).floatValue();
+            // Calcula el descuento como un porcentaje del costo total del pedido activo
 
             float descuento = total * (descuentoPorcentaje / 100);
             return descuento;
-        } else if (value instanceof Float) {
+        } // Verifica si el valor ingresado es un float
+        else if (value instanceof Float) {
+            // Obtiene el valor de descuento como float
 
             float descuentoPorcentaje = (Float) value;
+            // Calcula el descuento como un porcentaje del costo total del pedido activo
 
             float descuento = total * (descuentoPorcentaje / 100);
             return descuento;
-        } else {
+        } // Si el valor ingresado no es ni entero ni float, devuelve cero
+        else {
 
             return 0.0f;
         }
 
     }
 
+    /**
+     * Muestra los detalles del pedido activo en la tabla de la interfaz
+     * gráfica. Obtiene los detalles del pedido activo del controlador de
+     * pedidos y del controlador de ítems. Si existe un pedido activo para la
+     * mesa actual, se muestra en la tabla con los siguientes campos: - Nombre
+     * del producto. - Descripción del producto. - Cantidad solicitada.
+     */
     private void verPedidoActivo() {
+        // Verifica si existe un pedido activo para la mesa actual
+
         if (pedidoControladora.existePedidoActivo(idMesa)) {
+            // Obtiene el ID del pedido activo para la mesa actual
+
             int idPedido = pedidoControladora.obtenerIdPedidoActivo(idMesa);
+            // Crea un nuevo modelo de tabla para mostrar los detalles del pedido activo
+
             DefaultTableModel modeloPedidoActivo = new DefaultTableModel();
+            // Obtiene la lista de ítems del pedido activo
 
             List<ItemsDTO> listaItems = controladoraItems.obtenerItemsPedidoActivo(idPedido);
+            // Agrega las columnas al modelo de tabla
+
             modeloPedidoActivo.addColumn("Nombre");
             modeloPedidoActivo.addColumn("Descripcion");
             modeloPedidoActivo.addColumn("Cantidad");
+            // Itera sobre la lista de ítems del pedido activo
+
             for (ItemsDTO item : listaItems) {
+                // Obtiene el producto asociado al ítem
 
                 ProductoCompletoDTO producto = item.getProducto();
+                // Agrega una fila al modelo de tabla con el nombre, la descripción y la cantidad del producto
 
                 modeloPedidoActivo.addRow(new Object[]{
                     producto.getNombre(),
@@ -433,21 +578,37 @@ public final class FormSelectedMesa extends javax.swing.JFrame {
                 });
 
             }
+            // Establece el modelo de tabla actualizado en la tabla de la interfaz gráfica
 
             tablaPedidoActivo.setModel(modeloPedidoActivo);
         }
     }
 
+    /**
+     * Muestra los pedidos cerrados en la tabla de la interfaz gráfica. Obtiene
+     * los pedidos cerrados del controlador de pedidos. Los detalles de los
+     * pedidos cerrados se muestran en una tabla con los siguientes campos: - ID
+     * del pedido. - Fecha de apertura del pedido. - Fecha de cierre del pedido.
+     * - Costo total del pedido.
+     */
     private void verPedidosCerrados() {
+        // Crea un nuevo modelo de tabla para mostrar los pedidos cerrados
+
         DefaultTableModel modeloPedidosCerrados = new DefaultTableModel();
+        // Obtiene la lista de pedidos cerrados para la mesa actual
 
         List<PedidoDTO> listaPedidos = pedidoControladora.obtenerPedidosCerrados(idMesa);
+        // Agrega las columnas al modelo de tabla
+
         modeloPedidosCerrados.addColumn("ID");
         modeloPedidosCerrados.addColumn("Fecha Apertura");
         modeloPedidosCerrados.addColumn("Fecha Cierre");
         modeloPedidosCerrados.addColumn("Costo Total");
+        // Itera sobre la lista de pedidos cerrados
 
         for (PedidoDTO pedido : listaPedidos) {
+            // Crea una fila con los detalles del pedido y la agrega al modelo de tabla
+
             Object[] fila = {
                 pedido.getId(),
                 pedido.getFechaApertura(),
@@ -456,52 +617,102 @@ public final class FormSelectedMesa extends javax.swing.JFrame {
             };
             modeloPedidosCerrados.addRow(fila);
         }
+        // Establece el modelo de tabla actualizado en la tabla de pedidos cerrados de la interfaz gráfica
 
         tablaPedidosCerrados.setModel(modeloPedidosCerrados);
 
     }
 
+    /**
+     * Abre el formulario para agregar un nuevo pedido. Cierra la ventana actual
+     * si existe, luego crea una nueva instancia del formulario de pedido, le
+     * asigna un observador para manejar el evento de cierre del formulario hijo
+     * y lo hace visible. La ventana actual se establece invisible mientras se
+     * muestra el formulario de pedido.
+     *
+     * @throws SQLException Si ocurre un error al acceder a la base de datos.
+     */
     private void ingresarFormPedido() {
 
         try {
+            // Si hay una ventana actual abierta, la cierra
+
             if (ventanaActual != null) {
                 ventanaActual.dispose();
             }
+            // Crea una nueva instancia del formulario de pedido con el nombre de la mesa y su ID
+
             FormPedido formPedido = new FormPedido(nombreMesa, idMesa);
+            // Agrega un observador para manejar el evento de cierre del formulario hijo
+
             formPedido.addWindowListener(new WindowAdapter() {
                 @Override
                 public void windowClosed(WindowEvent e) {
+                    // Hace visible la ventana actual cuando se cierra el formulario hijo
+
                     setVisible(true);
                 }
             });
+            // Muestra el formulario de pedido
+
             formPedido.setVisible(true);
+            // Establece la nueva ventana actual como el formulario de pedido
+
             ventanaActual = formPedido;
+            // Hace invisible la ventana actual
+
             this.setVisible(false);
         } catch (SQLException ex) {
+            // Registra cualquier excepción de SQL que ocurra
             Logger.getLogger(FormSelectedMesa.class.getName()).log(Level.SEVERE, null, ex);
         }
 
     }
 
-    private void ingresarFormPedidoCerrado(){
-        
+    /**
+     * Abre el formulario para ver un pedido cerrado seleccionado. Obtiene la
+     * fila seleccionada en la tabla de pedidos cerrados y recupera el ID del
+     * pedido. Si hay una ventana actual abierta, la cierra. Luego, crea una
+     * nueva instancia del formulario de pedido cerrado con el nombre de la
+     * mesa, su ID y el ID del pedido. Agrega un observador para manejar el
+     * evento de cierre del formulario hijo. Muestra el formulario de pedido
+     * cerrado y establece la nueva ventana actual como el formulario de pedido
+     * cerrado. Hace invisible la ventana actual mientras se muestra el
+     * formulario de pedido cerrado.
+     *
+     * @throws SQLException Si ocurre un error al acceder a la base de datos.
+     */
+    private void ingresarFormPedidoCerrado() {
+        // Obtiene la fila seleccionada en la tabla de pedidos cerrados
+
         int filaSeleccionada = tablaPedidosCerrados.getSelectedRow();
+        // Obtiene el ID del pedido seleccionado
+
         int idPedido = (int) tablaPedidosCerrados.getValueAt(filaSeleccionada, 0);
         try {
+            // Si hay una ventana actual abierta, la cierra
+
             if (ventanaActual != null) {
                 ventanaActual.dispose();
             }
+            // Crea una nueva instancia del formulario de pedido cerrado con el nombre de la mesa, su ID y el ID del pedido
             FormPedidoCerrado formPedidoCerrado = new FormPedidoCerrado(nombreMesa, idMesa, idPedido);
+            // Agrega un observador para manejar el evento de cierre del formulario hijo
             formPedidoCerrado.addWindowListener(new WindowAdapter() {
                 @Override
                 public void windowClosed(WindowEvent e) {
+                    // Hace visible la ventana actual cuando se cierra el formulario hijo
                     setVisible(true);
                 }
             });
+            // Muestra el formulario de pedido cerrado
             formPedidoCerrado.setVisible(true);
+            // Establece la nueva ventana actual como el formulario de pedido cerrado
             ventanaActual = formPedidoCerrado;
+            // Hace invisible la ventana actual
             this.setVisible(false);
         } catch (SQLException ex) {
+            // Registra cualquier excepción de SQL que ocurra
             Logger.getLogger(FormSelectedMesa.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
