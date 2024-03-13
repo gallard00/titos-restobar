@@ -25,7 +25,7 @@ public class ProductoDAO implements IDAO {
     public Boolean crear(Object e) {
         ProductoDTO prod = (ProductoDTO) e;
         String sql = "INSERT INTO productos(id_productos, nombre, descripcion, costo) VALUE (?, ?, ?, ?);";
-        
+
         try (PreparedStatement st = ConnectorController.getConnection().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             st.setString(1, String.valueOf(prod.getIdProducto()));
             st.setString(2, prod.getNombre());
@@ -94,7 +94,7 @@ public class ProductoDAO implements IDAO {
         }
         for (ProductoCompletoDTO producto : salida) {
             String nombreYDescripcion = producto.getNombre() + " - " + producto.getDescripcion();
-            System.out.println(nombreYDescripcion); 
+            System.out.println(nombreYDescripcion);
         }
         return salida;
     }
@@ -224,6 +224,7 @@ public class ProductoDAO implements IDAO {
 
         return ultimoID;
     }
+
     public List<ProductoCompletoDTO> obtenerProductosPedidoActivo(int pedidoActivo) {
         List productoPedido = new ArrayList();
         String sql = "SELECT prod.nombre, prod.descripcion "
@@ -243,7 +244,6 @@ public class ProductoDAO implements IDAO {
                 producto.setNombre(nombreProducto);
                 producto.setDescripcion(descripcionProducto);
 
-                
                 productoPedido.add(producto);
             }
         } catch (SQLException ex) {

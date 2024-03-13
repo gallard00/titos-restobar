@@ -23,7 +23,7 @@ public class FormMesa extends javax.swing.JFrame {
         verificarListaMesas();
     }
 
-    public void verificarListaMesas() //Verifica si la lista de mesas tiene algo
+    public void verificarListaMesas()
     {
         if (!MesaControladora.PedirListaMesas().isEmpty()) {
             reiniciarTablaMesa();
@@ -285,32 +285,32 @@ public class FormMesa extends javax.swing.JFrame {
         if (filaSeleccionada != -1) {
             String nombreMesa = (String) datosTablaMesa.getModel().getValueAt(filaSeleccionada, 1);
             int idMesa = (int) datosTablaMesa.getModel().getValueAt(filaSeleccionada, 0);
-            // Comprueba si hay una ventana previa abierta y la cierra si es el caso
+            
             if (ventanaActual != null) {
-                ventanaActual.dispose();// Cierra el formulario actual si existe uno abierto
+                ventanaActual.dispose();
             }
            
-            // Crea una nueva instancia de FormMesa
+           
             FormSelectedMesa formSelectedMesa = null;
             try {
                 formSelectedMesa = new FormSelectedMesa(nombreMesa, idMesa);
             } catch (SQLException ex) {
                 Logger.getLogger(FormMesa.class.getName()).log(Level.SEVERE, null, ex);
             }
-            // Añade un WindowListener para la ventana formMesa
+            
             formSelectedMesa.addWindowListener(new WindowAdapter() {
                 @Override
-                // Define un método (cerrarVentana) que se espera que maneje el cierre de la ventana
+                
                 public void windowClosed(WindowEvent e) {
-                    // Acciones a realizar cuando se cierra FormMesa
-                    setVisible(true); // Vuelve a mostrar el FormMesa al cerrar formSelectedMesa
+                    
+                    setVisible(true); 
                 }
             });
-            // Muestra la ventana formSelectedMesa
+            
             formSelectedMesa.setVisible(true);
-            // Actualiza la referencia de ventana actual (ventanaActual) a formSelectedMesa
+            
             ventanaActual = formSelectedMesa;
-            // Oculta el FormMesa al abrir formSelectedMesa
+           
             this.setVisible(false);
         }else {
         JOptionPane.showMessageDialog(null, "Debes seleccionar una mesa para entrar.");
@@ -338,7 +338,7 @@ public class FormMesa extends javax.swing.JFrame {
         }
 
 
-        /* Create and display the form */
+      
         java.awt.EventQueue.invokeLater(() -> {
             try {
                 new FormMesa().setVisible(true);

@@ -1,5 +1,7 @@
 package Modelo;
 
+import java.util.Objects;
+
 public class ProductoCompletoDTO {
 
     private int idProducto;
@@ -102,5 +104,48 @@ public class ProductoCompletoDTO {
 
     public void setStock(int stock) {
         this.stock = stock;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 31 * hash + this.idProducto;
+        hash = 31 * hash + Objects.hashCode(this.nombre);
+        hash = 31 * hash + Objects.hashCode(this.descripcion);
+        hash = 31 * hash + Float.floatToIntBits(this.costo);
+        hash = 31 * hash + Float.floatToIntBits(this.precio);
+        hash = 31 * hash + this.stock;
+        return hash;
+    }
+
+    // equals()
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+        ProductoCompletoDTO other = (ProductoCompletoDTO) obj;
+        return this.idProducto == other.idProducto
+                && Float.compare(this.costo, other.costo) == 0
+                && Float.compare(this.precio, other.precio) == 0
+                && this.stock == other.stock
+                && Objects.equals(this.nombre, other.nombre)
+                && Objects.equals(this.descripcion, other.descripcion);
+    }
+
+    // toString()
+    @Override
+    public String toString() {
+        return "ProductoCompletoDTO{"
+                + "idProducto=" + idProducto
+                + ", nombre='" + nombre + '\''
+                + ", descripcion='" + descripcion + '\''
+                + ", costo=" + costo
+                + ", precio=" + precio
+                + ", stock=" + stock
+                + '}';
     }
 }

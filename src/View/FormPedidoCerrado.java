@@ -1,39 +1,40 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
- */
 package View;
 
 import Controlador.PedidoController;
 import Modelo.ItemsDTO;
 import Modelo.PedidoDTO;
 import Modelo.ProductoCompletoDTO;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.sql.SQLException;
-import java.util.Iterator;
-import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JFrame;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableColumn;
 
-/**
- *
- * @author nahue
- */
-public final class FormPedidoCerrado extends javax.swing.JFrame {
+public class FormPedidoCerrado extends javax.swing.JFrame {
 
+    private JFrame ventanaActual;
     private String nombreMesa;
     private int idPedido;
+    private int idMesa;
     PedidoController controladoraPedido;
 
-    public FormPedidoCerrado(String nombreMesa, int idPedido) throws SQLException {
+    private FormPedidoCerrado() throws SQLException {
         initComponents();
+        controladoraPedido = PedidoController.GetInstance();
+
+    }
+
+    public FormPedidoCerrado(String nombreMesa, int idMesa, int idPedido) throws SQLException {
+        initComponents();
+        this.nombreMesa = nombreMesa;
+        this.idPedido = idPedido;
+        this.idMesa = idMesa;
         controladoraPedido = PedidoController.GetInstance();
         lblPedidoId.setText(String.valueOf(idPedido));
         lblNombreMesa.setText(nombreMesa);
         verTablaPedidoCerrado(idPedido);
-    }
-
-    private FormPedidoCerrado() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
     @SuppressWarnings("unchecked")
@@ -67,6 +68,11 @@ public final class FormPedidoCerrado extends javax.swing.JFrame {
         lblPedidoId.setText("ID");
 
         btnVolver.setText("VOLVER");
+        btnVolver.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnVolverActionPerformed(evt);
+            }
+        });
 
         tablaPedidoCerrado.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -172,16 +178,41 @@ public final class FormPedidoCerrado extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void btnVolverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVolverActionPerformed
+
+        try {
+            volverFormSelectedMesa();
+        } catch (SQLException ex) {
+            Logger.getLogger(FormPedidoCerrado.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_btnVolverActionPerformed
+    private void volverFormSelectedMesa() throws SQLException {
+
+        if (ventanaActual != null) {
+            ventanaActual.dispose();
+        }
+        FormMesa formMesa = new FormMesa();
+        formMesa.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosed(WindowEvent e) {
+                setVisible(true);
+            }
+        });
+        formMesa.setVisible(true);
+        ventanaActual = formMesa;
+        this.setVisible(false);
+
+    }
+
     public void verTablaPedidoCerrado(int idPedido) {
-        
+
         PedidoDTO pedidoCerrado = controladoraPedido.obtenerUnPedidoCerrado(idPedido);
         DefaultTableModel modelo = new DefaultTableModel();
-        // Agregar las columnas al modelo
+
         modelo.addColumn("Nombre");
         modelo.addColumn("Descripción");
         modelo.addColumn("Cantidad");
         modelo.addColumn("Precio");
-        // Recorrer la lista de ítems y agregar cada uno al modelo de la tabla
         for (ItemsDTO item : pedidoCerrado.getItems()) {
             ProductoCompletoDTO producto = item.getProducto();
             modelo.addRow(new Object[]{
@@ -191,12 +222,12 @@ public final class FormPedidoCerrado extends javax.swing.JFrame {
                 item.getCostoTotal()
             });
         }
-        
+
         float total = pedidoCerrado.getCostoTotal();
         lblTotal.setText(String.valueOf(total));
         float descuento = pedidoCerrado.getDescuento();
         lblDescuento.setText(String.valueOf(descuento));
-        
+
         tablaPedidoCerrado.setModel(modelo);
     }
 
@@ -213,20 +244,23 @@ public final class FormPedidoCerrado extends javax.swing.JFrame {
                     break;
                 }
             }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(FormPedidoCerrado.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(FormPedidoCerrado.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(FormPedidoCerrado.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(FormPedidoCerrado.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
 
+        //</editor-fold>
+
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(() -> {
-            new FormPedidoCerrado().setVisible(true);
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    new FormPedidoCerrado().setVisible(true);
+                } catch (SQLException ex) {
+                    Logger.getLogger(FormPedidoCerrado.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
         });
     }
 

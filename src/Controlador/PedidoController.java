@@ -106,7 +106,6 @@ public class PedidoController {
         return false;
 
     }
-
     /**
      * Obtiene el ID de un pedido activo para la mesa especificada.
      *

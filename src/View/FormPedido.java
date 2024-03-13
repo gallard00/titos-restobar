@@ -25,11 +25,6 @@ public class FormPedido extends javax.swing.JFrame {
     private String nombreMesa;
     private int idMesa;
 
-    /**
-     * Creates new form FormPedido
-     *
-     * @throws java.sql.SQLException
-     */
     public FormPedido() throws SQLException {
         controladoraPedido = PedidoController.GetInstance();
         controladoraProducto = ProductoController.GetInstance();
@@ -48,8 +43,7 @@ public class FormPedido extends javax.swing.JFrame {
         verificarListaItems();
     }
 
-    public void verificarListaItems() //Verifica si la lista de productos tiene algo
-    {
+    public void verificarListaItems() {
         if (!controladoraItems.PedirListaItems().isEmpty()) {
             actualizarTablaPedido();
         }
@@ -60,7 +54,7 @@ public class FormPedido extends javax.swing.JFrame {
         List<String> nombresYDescripciones = new ArrayList<>();
 
         for (ProductoCompletoDTO producto : listaProductos) {
-            // Concatenamos el nombre y la descripción para mostrar en el ComboBox
+
             String nombreYDescripcion = producto.getNombre() + " - " + producto.getDescripcion();
             nombresYDescripciones.add(nombreYDescripcion);
         }
@@ -269,24 +263,22 @@ public class FormPedido extends javax.swing.JFrame {
 
             String nombreDescripcion = (String) jComboBoxProductos.getSelectedItem();
             String[] partes = nombreDescripcion.split(" - ");
-            String nombreProducto = partes[0]; // El primer elemento es el nombre del producto
+            String nombreProducto = partes[0];
             String descripcionProducto = partes[1];
             int idPedidoActivo = controladoraPedido.obtenerIdPedidoActivo(idMesa);
-            // Obtener el producto completo correspondiente al nombre seleccionado
+
             ProductoCompletoDTO productoBuscado = controladoraProducto.buscarProductoPorNombre(nombreProducto, descripcionProducto);
             int idProducto = productoBuscado.getIdProducto();
-            // Obtener la cantidad del spinner
+
             int cantidad = (int) jSpinnerCantidad.getValue();
             float valor = (float) productoBuscado.getPrecio();
-            // Calcular el costo total multiplicando la cantidad por el precio del producto
+
             float costoTotal = valor * cantidad;
 
-            // Crear el nuevo ítem con la cantidad y el costo total
             if (controladoraItems.CrearItems(cantidad, costoTotal, idProducto, idPedidoActivo)) {
                 JOptionPane.showMessageDialog(null, "Producto Agregado");
             }
 
-            // Actualizar la tabla del pedido
             actualizarTablaPedido();
         } catch (HeadlessException e) {
 
@@ -296,16 +288,12 @@ public class FormPedido extends javax.swing.JFrame {
 
     private void btnBorrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBorrarActionPerformed
         int filaSeleccionada = seleccionarFila();
-        if (filaSeleccionada != -1) { // Verificar si se seleccionó alguna fila
-            // Obtener el modelo de la tabla
+        if (filaSeleccionada != -1) {
+
             DefaultTableModel modelo = (DefaultTableModel) datosTablaPedido.getModel();
-            // Obtener el ID del ítem de la fila seleccionada
             int idItems = (int) modelo.getValueAt(filaSeleccionada, 0);
-            // Eliminar el ítem de la base de datos
             controladoraItems.BorrarItems(idItems);
-            // Eliminar la fila de la tabla
             modelo.removeRow(filaSeleccionada);
-            // Mostrar un mensaje de éxito
             JOptionPane.showMessageDialog(null, "Ítem borrado exitosamente.");
             actualizarTablaPedido();
 
@@ -317,16 +305,10 @@ public class FormPedido extends javax.swing.JFrame {
 
     private void jComboBoxProductosItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jComboBoxProductosItemStateChanged
         if (evt.getStateChange() == java.awt.event.ItemEvent.SELECTED) {
-            // Obtener el índice seleccionado
             int indiceSeleccionado = jComboBoxProductos.getSelectedIndex();
             List<ProductoCompletoDTO> listaProductos = controladoraProducto.pedirListaProductoCompleto();
-            // Obtener el ProductoDTO correspondiente a partir del índice
             ProductoCompletoDTO productoSeleccionado = listaProductos.get(indiceSeleccionado);
 
-            // Aquí puedes mostrar los detalles del producto en otros componentes de la interfaz de usuario
-            // Por ejemplo:
-            // jTextFieldNombre.setText(productoSeleccionado.getNombre());
-            // jTextFieldDescripcion.setText(productoSeleccionado.getDescripcion());
         }
     }//GEN-LAST:event_jComboBoxProductosItemStateChanged
 
@@ -353,10 +335,8 @@ public class FormPedido extends javax.swing.JFrame {
 
         List<ItemsDTO> listaItems = controladoraItems.obtenerItemsPedidoActivo(pedidoActivo);
 
-        // Crear un modelo de tabla
         DefaultTableModel modelo = new DefaultTableModel();
 
-        // Agregar las columnas al modelo
         modelo.addColumn("ID Item");
         modelo.addColumn("Nombre");
         modelo.addColumn("Descripción");
@@ -364,7 +344,6 @@ public class FormPedido extends javax.swing.JFrame {
         modelo.addColumn("Cantidad");
         modelo.addColumn("Costo Total");
 
-        // Recorrer la lista de ítems y agregar cada uno al modelo de la tabla
         for (ItemsDTO item : listaItems) {
 
             ProductoCompletoDTO producto = item.getProducto();
@@ -380,7 +359,6 @@ public class FormPedido extends javax.swing.JFrame {
 
         }
 
-        // Establecer el modelo en la tabla
         datosTablaPedido.setModel(modelo);
 
         TableColumn columnaIdItem = datosTablaPedido.getColumnModel().getColumn(0);
@@ -394,7 +372,7 @@ public class FormPedido extends javax.swing.JFrame {
         DefaultTableModel modelo = (DefaultTableModel) datosTablaPedido.getModel();
         float total = 0.0f;
         for (int fila = 0; fila < modelo.getRowCount(); fila++) {
-            float costoTotalItem = (float) modelo.getValueAt(fila, 5); // Suponiendo que la columna 5 contiene el costo total
+            float costoTotalItem = (float) modelo.getValueAt(fila, 5);
             total += costoTotalItem;
         }
         String txtTotal = String.valueOf(total);

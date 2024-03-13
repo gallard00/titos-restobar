@@ -98,16 +98,16 @@ public class MesaDAO implements IDAO {
     }
 
     @Override
-    public Object porId(int id) {
-        MesaDTO mesa = new MesaDTO();
-        String sql = "select id_mesas, nombre from mesas WHERE id_mesas = ?";
+    public String porId(int id) {
+        String nombreMesa = null;
+        String sql = "SELECT nombre FROM mesas WHERE id_mesas = ?";
         try {
             PreparedStatement st = ConnectorController.getConnection().prepareStatement(sql);
             st.setString(1, Integer.toString(id));
             ResultSet result = st.executeQuery();
             if (result.next()) {
-                MesaDTO clone = new MesaDTO(result.getInt(1), result.getString(2));
-                mesa = clone;
+                nombreMesa = result.getString(1);
+                
             }
         } catch (SQLException ex) {
             Logger.getLogger(MesaDAO.class.getName()).log(Level.SEVERE, null, ex);
@@ -115,7 +115,7 @@ public class MesaDAO implements IDAO {
         }finally {
              ConnectorController.CloseConnection();
         }
-        return null;
+        return nombreMesa;
     }
     
     public Object porNombre(String nombre) {

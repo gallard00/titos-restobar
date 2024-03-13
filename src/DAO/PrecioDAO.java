@@ -1,6 +1,5 @@
 package DAO;
 
-
 import ControladoraConnector.ControladoraConnector;
 import Modelo.PrecioDTO;
 import java.sql.PreparedStatement;
@@ -15,8 +14,9 @@ import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 
 public class PrecioDAO implements IDAO {
-        ControladoraConnector ConnectorController;
-    
+
+    ControladoraConnector ConnectorController;
+
     public PrecioDAO() throws SQLException {
         ConnectorController = ControladoraConnector.GetInstanceConnector();
     }
@@ -32,19 +32,19 @@ public class PrecioDAO implements IDAO {
             SimpleDateFormat fechaModificada = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             String fechaNueva = fechaModificada.format(pre.getFecha());
             st.setString(3, fechaNueva);
-            
+
             st.setString(4, String.valueOf(pre.getIdProducto()));
-            
+
             st.execute();
             ResultSet rs = st.getGeneratedKeys();
             if (rs.next()) {
-            rs.getInt(1);
+                rs.getInt(1);
             }
             return true;
         } catch (SQLException ex) {
             Logger.getLogger(PrecioDAO.class.getName()).log(Level.SEVERE, null, ex);
-        }finally {
-             ConnectorController.CloseConnection();
+        } finally {
+            ConnectorController.CloseConnection();
         }
         return false;
     }
@@ -57,13 +57,13 @@ public class PrecioDAO implements IDAO {
             PreparedStatement state = ConnectorController.getConnection().prepareStatement(sql);
             ResultSet result = state.executeQuery(sql);
             while (result.next()) {
-                PrecioDTO pre = new PrecioDTO(result.getInt(1), result.getFloat(2), result.getDate(3));      
+                PrecioDTO pre = new PrecioDTO(result.getInt(1), result.getFloat(2), result.getDate(3));
                 Salida.add(pre);
             }
         } catch (SQLException ex) {
             Logger.getLogger(PrecioDAO.class.getName()).log(Level.SEVERE, null, ex);
-        }finally {
-             ConnectorController.CloseConnection();
+        } finally {
+            ConnectorController.CloseConnection();
         }
         return Salida;
     }
@@ -80,14 +80,13 @@ public class PrecioDAO implements IDAO {
             return true;
         } catch (SQLException ex) {
             Logger.getLogger(PrecioDAO.class.getName()).log(Level.SEVERE, null, ex);
-        }finally {
-             ConnectorController.CloseConnection();
+        } finally {
+            ConnectorController.CloseConnection();
         }
         return false;
     }
 
-    
-        @Override
+    @Override
     public void borrar(Object e) {
         PrecioDTO precio = (PrecioDTO) e;
         String sql = "DELETE FROM precios WHERE id_productos = ?";
@@ -98,8 +97,8 @@ public class PrecioDAO implements IDAO {
         } catch (SQLException ex) {
             Logger.getLogger(PrecioDAO.class.getName()).log(Level.SEVERE, null, ex);
             JOptionPane.showMessageDialog(null, "Error, la base de datos no guardo los cambios");
-        }finally {
-             ConnectorController.CloseConnection();
+        } finally {
+            ConnectorController.CloseConnection();
         }
     }
 
@@ -118,12 +117,12 @@ public class PrecioDAO implements IDAO {
         } catch (SQLException ex) {
             Logger.getLogger(PrecioDAO.class.getName()).log(Level.SEVERE, null, ex);
             JOptionPane.showMessageDialog(null, "Error en seleccion de ID");
-        }finally {
-             ConnectorController.CloseConnection();
+        } finally {
+            ConnectorController.CloseConnection();
         }
         return pre;
     }
-    
+
     public Object PrecioActual() {
         PrecioDTO preact = new PrecioDTO();
         String sql = "SELECT id_precios, valor, fecha, costo FROM precios WHERE id_precios = ?";
@@ -131,40 +130,39 @@ public class PrecioDAO implements IDAO {
             PreparedStatement state = ConnectorController.getConnection().prepareStatement(sql);
             ResultSet result = state.executeQuery();
             while (result.next()) {
-                PrecioDTO historial = new PrecioDTO(result.getInt(1), 
-                        result.getFloat(2), 
+                PrecioDTO historial = new PrecioDTO(result.getInt(1),
+                        result.getFloat(2),
                         result.getDate(3));
-                      
+
                 preact = historial;
             }
         } catch (SQLException ex) {
             Logger.getLogger(ProductoDAO.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
-             ConnectorController.CloseConnection();
+            ConnectorController.CloseConnection();
         }
         return preact;
     }
 
     public Object VerHistorialPrecio() {
-       PrecioDTO ultimo = new PrecioDTO();
+        PrecioDTO ultimo = new PrecioDTO();
         String sql = "SELECT id_precios,valor,fecha, costo FROM precios WHERE id_precios = ?";
         try {
             PreparedStatement state = ConnectorController.getConnection().prepareStatement(sql);
             ResultSet result = state.executeQuery();
             while (result.next()) {
-                PrecioDTO historial = new PrecioDTO(result.getInt(1), 
-                        result.getFloat(2), 
+                PrecioDTO historial = new PrecioDTO(result.getInt(1),
+                        result.getFloat(2),
                         result.getDate(3));
-                      
+
                 ultimo = historial;
             }
         } catch (SQLException ex) {
             Logger.getLogger(ProductoDAO.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
-             ConnectorController.CloseConnection();
+            ConnectorController.CloseConnection();
         }
         return ultimo;
     }
 
-    
 }

@@ -4,7 +4,6 @@ import Controlador.PrecioController;
 import Controlador.ProductoController;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -24,7 +23,7 @@ public class FormProducto extends javax.swing.JFrame {
         verificarListaProductos();
     }
 
-    public void verificarListaProductos() //Verifica si la lista de productos tiene algo
+    public void verificarListaProductos() 
     {
         if (!ProductoControladora.PedirListaProducto().isEmpty()) {
             reiniciarTablaProducto();
@@ -76,7 +75,7 @@ public class FormProducto extends javax.swing.JFrame {
         datosTablaProducto.setModel(modeloProducto);
         datosTablaProducto.setCellSelectionEnabled(false);
         datosTablaProducto.setRowSelectionAllowed(true);
-    } //Datos de la Tabla, valores iniciales.
+    }
 
     private int seleccionarFila() {
         int i = datosTablaProducto.getSelectedRow();
@@ -319,7 +318,6 @@ public class FormProducto extends javax.swing.JFrame {
                     if (!ProductoControladora.SiProductoExiste(nombre, descripcion, costo)) {
                         if (ProductoControladora.CrearProducto(nombre, descripcion, costo)) {
 
-                            // Crea un nuevo precio al guardar un nuevo producto
                             int idProductoNuevo = ProductoControladora.obtenerUltimoIDProducto();
                             PrecioControladora.crearActualizarPrecio(idProductoNuevo, costo, porcentajeAumento);
                             if (!chkBox.isSelected()) {
@@ -376,8 +374,7 @@ public class FormProducto extends javax.swing.JFrame {
         txtNombreProducto.setText(nombre);
         txtDescripcion.setText(descripcion);
         txtCosto.setText(String.valueOf(costo));
-        // o
-        // txtCosto.setText("" + costo); // Método 2
+        
     }//GEN-LAST:event_datosTablaProductoMouseClicked
 
     private void btnVolverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVolverActionPerformed

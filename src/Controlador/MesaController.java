@@ -87,7 +87,6 @@ public class MesaController {
      *
      * @return una lista de objetos MesaDTO.
      */
-
     public List<MesaDTO> PedirListaMesas() {
         ListaMesa = LeerMesa();
         return ListaMesa;
@@ -121,6 +120,10 @@ public class MesaController {
             return true;
         }
         return false;
+    }
+
+    public String obtenerNombreMesaPorId(int idMesa) throws SQLException {
+        return MesaDAO.porId(idMesa);
     }
 
     /**

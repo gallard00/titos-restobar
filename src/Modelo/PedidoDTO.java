@@ -158,12 +158,14 @@ public class PedidoDTO {
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 41 * hash + this.id;
-        hash = 41 * hash + Objects.hashCode(this.fechaApertura);
-        hash = 41 * hash + Objects.hashCode(this.fechaCierre);
-        hash = 41 * hash + Float.floatToIntBits(this.descuento);
-        hash = 41 * hash + Float.floatToIntBits(this.costoTotal);
-        hash = 41 * hash + Objects.hashCode(this.items);
+        hash = 31 * hash + this.id;
+        hash = 31 * hash + Objects.hashCode(this.fechaApertura);
+        hash = 31 * hash + Objects.hashCode(this.fechaCierre);
+        hash = 31 * hash + Float.floatToIntBits(this.descuento);
+        hash = 31 * hash + Float.floatToIntBits(this.costoTotal);
+        hash = 31 * hash + Objects.hashCode(this.items);
+        hash = 31 * hash + Objects.hashCode(this.estadoPedido);
+        hash = 31 * hash + this.idMesa;
         return hash;
     }
 
@@ -188,18 +190,27 @@ public class PedidoDTO {
         if (Float.floatToIntBits(this.costoTotal) != Float.floatToIntBits(other.costoTotal)) {
             return false;
         }
+        if (this.idMesa != other.idMesa) {
+            return false;
+        }
         if (!Objects.equals(this.fechaApertura, other.fechaApertura)) {
             return false;
         }
         if (!Objects.equals(this.fechaCierre, other.fechaCierre)) {
             return false;
         }
-        return Objects.equals(this.items, other.items);
+        if (!Objects.equals(this.items, other.items)) {
+            return false;
+        }
+        if (this.estadoPedido != other.estadoPedido) {
+            return false;
+        }
+        return true;
     }
 
     @Override
     public String toString() {
-        return "PedidoDTO{" + "id=" + id + ", fechaApertura=" + fechaApertura + ", fechaCierre=" + fechaCierre + ", descuento=" + descuento + ", costoTotal=" + costoTotal + ", producto=" + items + '}';
+        return "PedidoDTO{" + "id=" + id + ", fechaApertura=" + fechaApertura + ", fechaCierre=" + fechaCierre + ", descuento=" + descuento + ", costoTotal=" + costoTotal + ", items=" + items + ", estadoPedido=" + estadoPedido + ", idMesa=" + idMesa + '}';
     }
 
 }

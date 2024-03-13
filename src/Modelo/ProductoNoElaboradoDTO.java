@@ -12,12 +12,12 @@ public class ProductoNoElaboradoDTO extends ProductoDTO {
     public ProductoNoElaboradoDTO(int stock) {
         this.stock = stock;
     }
-    
+
     public ProductoNoElaboradoDTO(int idProducto, int stock) {
         this.stock = stock;
         this.idProducto = idProducto;
     }
-    
+
     public ProductoNoElaboradoDTO(int idProducto, String nombre, String descripcion, float costo, int stock) {
         super(idProducto, nombre, descripcion, costo);
         this.stock = stock;

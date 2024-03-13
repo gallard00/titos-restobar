@@ -1,9 +1,5 @@
 package titorestobar;
 import View.FormIndex;
-import View.FormPedido;
-import java.sql.SQLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /*
 
@@ -12,7 +8,7 @@ import java.util.logging.Logger;
 -- Programación Orientada a Objetos --
 
 //Comentario: Cuando agregas un "Producto" elaborado no tiene un stock/cantidad, pero un "ProductoNoElaborado"
-//            si lo tiene, nosotros todavia no implementamos el poder guardar "ProductoNoElaborado", solo el Producto.
+
 
 */
 public class TitosRestoBar {
